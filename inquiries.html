@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز المساعدة والأسئلة الشائعة - ScrollyTale</title>
+    <style>
+        /* ==========================================================================
+           1. نظام الألوان التأسيسي والتهيئة المظلمة
+           ========================================================================== */
+        :root {
+            --bg-page: #020205;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --neon-cyan: #00f2fe;
+            --neon-glow: rgba(0, 242, 254, 0.15);
+            --text-bright: #ffffff;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-bright);
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-section h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* ==========================================================================
+           2. هيكلة الصفحة المنقسمة المتجاوبة (Responsive Split Layout)
+           ========================================================================== */
+        .inquiries-container {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: start;
+        }
+
+        .main-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 15px;
+        }
+
+        /* ==========================================================================
+           3. تصميم نموذج إرسال الشكاوى والاستفسارات للواتساب
+           ========================================================================== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px;
+            color: #fff;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-glow);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        select.form-control option {
+            background: #0b0b16;
+            color: #fff;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #25d366, #128c7e); /* ألوان الهوية الخاصة بالواتساب الاحترافي */
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.2);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.4);
+        }
+
+        /* ==========================================================================
+           4. محرك الأسئلة الشائعة الأكورديون الفاخر (Accordion FAQs)
+           ========================================================================== */
+        .faq-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* رأس السؤال القابل للضغط */
+        .faq-question {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 18px 20px;
+            color: #f1f5f9;
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: right;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* سهم الأكورديون الحركي */
+        .faq-icon {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: transform 0.3s ease, color 0.3s;
+        }
+
+        /* صندوق الإجابة المخفي والظاهر بنعومة */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .faq-answer-content {
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            line-height: 1.6;
+            border-top: 1px solid rgba(255,255,255,0.02);
+        }
+
+        /* الحالات النشطة عند فتح السؤال باستخدام الجافاسكريبت */
+        .faq-item.active {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+            color: var(--neon-cyan);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 1000px; /* رقم كبير كافٍ لاحتواء أي نص إجابة */
+            transition: max-height 0.5s cubic-bezier(1, 0, 1, 0);
+        }
+
+        /* ==========================================================================
+           5. شفرة الاستجابة للهواتف الذكية (Mobile Responsive 100%)
+           ========================================================================== */
+        @media (max-width: 900px) {
+            body { padding: 15px 10px; }
+            .header-section { margin-bottom: 25px; }
+            .header-section h1 { font-size: 1.6rem; }
+            
+            /* تحويل التوزيع لصف واحد على الجوال */
+            .inquiries-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .main-card { padding: 20px 15px; border-radius: 14px; }
+            .faq-question { padding: 14px 15px; font-size: 0.92rem; }
+            .faq-answer-content { padding: 15px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-section">
+        <h1>الدعم الفني والأسئلة الشائعة</h1>
+        <p>تصفح الإجابات الفورية السريعة، أو تواصل معنا مباشرة عبر الواتساب لحل مشكلتك.</p>
+    </header>
+
+    <main class="inquiries-container">
+
+        <section class="main-card">
+            <h2 class="card-title"><span>💬</span> مراسلة الدعم المباشر</h2>
+            <form id="whatsappForm">
+                <div class="form-group">
+                    <label for="category">تصنيف المراسلة</label>
+                    <select id="category" class="form-control" required>
+                        <option value="⚙️ مشكلة وعطل تقني">⚙️ مشكلة وعطل تقني</option>
+                        <option value="💳 مالي واشتراكات">💳 استفسار مالي أو اشتراكات</option>
+                        <option value="💡 اقتراح وتطوير">💡 اقتراح وتطوير قوالب</option>
+                        <option value="🤝 طلب تجاري خاص">🤝 طلب تجاري خاص</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">عنوان الرسالة</label>
+                    <input type="text" id="subject" class="form-control" placeholder="اكتب خلاصة الموضوع..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">تفاصيل الشكوى أو الطلب</label>
+                    <textarea id="message" class="form-control" rows="5" placeholder="اشرح لنا المشكلة بالتفصيل هنا..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.324 5.328 0 11.822 0c3.148.012 6.107 1.242 8.33 3.465 2.224 2.223 3.451 5.184 3.447 8.334-.004 6.497-5.329 11.82-11.824 11.82-2.004-.001-3.971-.51-5.713-1.479L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.791-4.382 9.794-9.786.002-2.617-1.015-5.079-2.862-6.93C16.305 2.039 13.846 1.021 11.231 1.02c-5.404 0-9.796 4.384-9.799 9.79-.001 1.52.41 3.003 1.189 4.3l-.996 3.639 3.722-.975zm13.125-7.734c-.214-.107-1.264-.624-1.46-.695-.195-.071-.337-.107-.479.108-.141.214-.549.695-.672.837-.123.142-.246.16-.46.054-.214-.107-.905-.333-1.724-1.064-.637-.568-1.067-1.27-1.192-1.484-.125-.214-.013-.329.094-.435.097-.095.214-.249.321-.373.107-.124.142-.214.214-.356.071-.143.035-.267-.018-.373-.053-.107-.479-1.156-.656-1.581-.173-.414-.347-.359-.479-.365-.124-.006-.266-.007-.408-.007-.141 0-.373.053-.568.266-.195.214-.746.729-.746 1.777 0 1.048.763 2.06 1.869 2.204.107.014 3.692 5.64 8.944 7.91 1.25.54 2.225.862 2.986 1.103 1.255.399 2.401.343 3.304.208.107-.016 1.264-.516 1.442-1.015.177-.5.177-.927.124-.107l-.356-.214z"/></svg>
+                    إرسال عبر واتساب الدعم
+                </button>
+            </form>
+        </section>
+
+        <section class="main-card">
+            <h2 class="card-title"><span>❓</span> الأسئلة الشائعة والإجابات</h2>
+            
+            <div class="faq-wrapper">
+                
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>ما هو ScrollyTale Studio وكيف يستفيد منه مشروعي؟</span>
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            هو استوديو متكامل يتيح لك بناء صفحات ويب قائمة على السرد السينمائي والتحريك المتقدم المتوافق مع حركة تدوير الشاشة (Scroll). يساعدك على عرض منتجاتك أو سيرتك الذاتية بأسلوب يخطف الأبصار ويزيد المبيعات.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>هل يمكنني الترقية أو إلغاء الاشتراك في الباقات بأي وقت؟</span>
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            نعم بكل تأكيد! يمكنك الترقية من باقة إلى باقة أخرى أعلى فوراً، وسيتم احتساب فارق الأيام المتبقية فقط في حسابك. كما يمكنك إلغاء الاشتراك في أي وقت دون أي شروط معقدة.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>هل تظهر حقوق أو شعار المنصة في الباقات المدفوعة؟</span>
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            في الباقة المجانية يظهر الشعار بشكل إلزامي. في الباقة الناشئة (7$) يظهر بشكل مصغر جداً. أما في باقة المخرج السينمائي (19$) وباقة الوكالات (49$) فيتم إزالة أي أثر لشعار المنصة تماماً لتظهر المشاريع باسمك الشخصي أو اسم شركتك (White-Label).
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>كيف يمكنني تحميل الأكواد البرمجية للموقع بعد تصميمه؟</span>
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            بمجرد الانتهاء من تصميم وتجهيز القالب، ستجد زر "تصدير الكود" داخل لوحة التحكم، وبضغطة واحدة سيقوم النظام بتوليد ملف مضغوط يحتوي على أكواد نظيفة بالكامل (HTML, CSS, Vanilla JavaScript) جاهزة للرفع على أي استضافة خاصة بك.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>ما هي وسائل الدفع المدعومة عند الرغبة في الترقية؟</span>
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            في التحديث القادم سنقوم بربط بوابات دفع عالمية ومحلية مرنة لتسهيل المعاملات لجميع المطورين والمبدعين في كافة الأماكن بسلاسة قصوى.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // [1] محرك تشغيل الأكورديون للأسئلة الشائعة
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const currentItem = button.parentElement;
+                const isActive = currentItem.classList.contains('active');
+                
+                // إغلاق أي سؤال آخر مفتوح حالياً لتوفير مساحة رؤية نظيفة
+                document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+                
+                // إذا لم يكن السؤال الحالي مفتوحاً، قم بفتحه
+                if (!isActive) {
+                    currentItem.classList.add('active');
+                }
+            });
+        });
+
+        // [2] محرك إرسال البيانات وتوليد رابط الواتساب الذكي
+        document.getElementById('whatsappForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // منع الصفحة من التحديث التقليدي
+
+            // جلب البيانات من المدخلات
+            const category = document.getElementById('category').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            // رقم الهاتف المقصود مع المفتاح الدولي بدون (+) أو (00) لتوافق الروابط
+            const phoneNumber = "967774257557"; 
+
+            // تنسيق الرسالة بشكل سينمائي مرتب ومقروء للدعم الفني
+            const whatsAppText = 
+`*إستفسار جديد - ScrollyTale Studio* 🚀
+-----------------------------------
+*📁 التصنيف:* ${category}
+*📌 العنوان:* ${subject}
+
+*📝 التفاصيل والرسالة:*
+${message}
+-----------------------------------
+_أُرسلت من لوحة تحكم المستخدم_`;
+
+            // تشفير النص ليكون متوافقاً مع روابط الويب
+            const encodedText = encodeURIComponent(whatsAppText);
+
+            // إنشاء الرابط العالمي للواتساب لفتح التطبيق أو المتصفح فوراً
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+
+            // فتح المحادثة في نافذة جديدة بذكاء وأمان
+            window.open(whatsappURL, '_blank');
+        });
+    </script>
+</body>
+</html>
