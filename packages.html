@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>باقات ScrollyTale Studio</title>
+    <style>
+        /* ==========================================================================
+           1. نظام الألوان التأسيسي والتهيئة المظلمة
+           ========================================================================== */
+        :root {
+            --bg-page: #020205;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
+            
+            /* ألوان مخصصة ومختلفة للأسعار لإعطاء هوية لكل باقة */
+            --color-free: #94a3b8;
+            --color-starter: #00f2fe;
+            --color-pro: #10b981;
+            --color-agency: #a855f7;
+            
+            --text-bright: #ffffff;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-bright);
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 30px 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-section h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, #64748b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* ==========================================================================
+           2. شبكة التحكم بالباقات المتجاوبة (Responsive Grid)
+           ========================================================================== */
+        .packages-grid {
+            display: grid;
+            max-width: 1200px;
+            margin: 0 auto;
+            /* الوضع الافتراضي للابتوب: 4 باقات في سطر واحد */
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        /* هيكل مستطيل الباقة */
+        .package-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* تأثير حركي فخم عند حوم الماوس */
+        .package-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+
+        /* تمييز الباقة الأكثر مبيعاً (Pro) */
+        .package-card.popular {
+            border-color: var(--color-pro);
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.03) 0%, rgba(255,255,255,0.01) 100%);
+        }
+
+        .badge-popular {
+            position: absolute;
+            top: -12px; left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-pro);
+            color: #000;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            white-space: nowrap;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* تفاصيل المحتوى الداخلي للبطاقة */
+        .pack-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-bright);
+            margin-bottom: 6px;
+        }
+
+        .pack-price {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+        .pack-price span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .pack-target {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            background: rgba(255,255,255,0.06);
+            padding: 6px 10px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+
+        .pack-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        /* قائمة الميزات */
+        .features-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 15px;
+        }
+
+        .features-list li {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .features-list li::before {
+            content: '✦';
+            color: var(--color-starter);
+        }
+        .package-card.popular .features-list li::before {
+            color: var(--color-pro);
+        }
+
+        /* زر الشراء الكوني */
+        .btn-purchase {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+
+        .btn-purchase:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+
+        /* تخصيص أزرار الباقات المدفوعة بلمسة لونية تتطابق مع السعر */
+        .package-card[data-pack="starter"] .btn-purchase:hover { background: var(--color-starter); box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); border-color: var(--color-starter); }
+        .package-card[data-pack="pro"] .btn-purchase { background: var(--color-pro); color: #000; font-weight: 800; border: none;}
+        .package-card[data-pack="pro"] .btn-purchase:hover { background: #12d192; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+        .package-card[data-pack="agency"] .btn-purchase:hover { background: var(--color-agency); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); border-color: var(--color-agency); }
+
+        /* ==========================================================================
+           3. شفرة الاستجابة للجوال (تظهر باقتين في سطر بدقة عالية)
+           ========================================================================== */
+        @media (max-width: 900px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            .header-section {
+                margin-bottom: 25px;
+            }
+            .header-section h1 { font-size: 1.7rem; }
+            .header-section p { font-size: 0.9rem; }
+
+            /* تطبيق قاعدة: كل باقتين في سطر واحد على الجوال */
+            .packages-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px; /* تقليص الفراغات لتناسب الشاشات الصغيرة */
+            }
+
+            /* ضبط الأحجام الداخلية لتناسب الجوال ولا تتداخل الكلمات */
+            .package-card {
+                padding: 15px 12px;
+                border-radius: 14px;
+            }
+
+            .pack-title { font-size: 1.05rem; }
+            .pack-price { font-size: 1.5rem; margin-bottom: 8px; }
+            .pack-target { font-size: 0.75rem; padding: 4px 8px; margin-bottom: 10px; }
+            .pack-desc { font-size: 0.8rem; margin-bottom: 12px; }
+            
+            .features-list { gap: 8px; margin-bottom: 20px; padding-top: 10px; }
+            .features-list li { font-size: 0.78rem; }
+            
+            .btn-purchase { font-size: 0.85rem; padding: 10px; border-radius: 8px; }
+            .badge-popular { font-size: 0.65rem; padding: 3px 10px; top: -10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-section">
+        <h1>ترقية الإمكانيات الإبداعية</h1>
+        <p>اختر الخطة المثالية لرحلتك السينمائية داخل عالم السرد البصري.</p>
+    </header>
+
+    <main class="packages-grid">
+
+        <div class="package-card" data-pack="free">
+            <div>
+                <h2 class="pack-title">باقة الحكواتي الحر</h2>
+                <div class="pack-price" style="color: var(--color-free);">0$ <span>/ للأبد</span></div>
+                <div class="pack-target">🎯 المستهدف: الهواة والمستكشفين</div>
+                <p class="pack-desc">تذوق سحر التحريك السينمائي وابدأ خطواتك الأولى بدون أي تكاليف مادية.</p>
+                
+                <ul class="features-list">
+                    <li>مشروع واحد (1) نشط بالكامل</li>
+                    <li>قالب سينمائي أساسي واحد</li>
+                    <li>تصدير الكود النظيف للموقع</li>
+                    <li style="color: #64748b;">❌ شعار المنصة إلزامي بالأسفل</li>
+                </ul>
+            </div>
+            <a href="checkout.html?plan=free" class="btn-purchase">ابدأ التجربة مجاناً</a>
+        </div>
+
+        <div class="package-card" data-pack="starter">
+            <div>
+                <h2 class="pack-title">الحكواتي الناشئ</h2>
+                <div class="pack-price" style="color: var(--color-starter);">7$ <span>/ شهرياً</span></div>
+                <div class="pack-target">🎯 المستهدف: الطلاب والمصممين الجدد</div>
+                <p class="pack-desc">مثالية لبناء بورتفوليو شخصي مميز وجذب عملائك الأوائل بأسلوب فريد.</p>
+                
+                <ul class="features-list">
+                    <li>مشروعين (2) نشطين في نفس الوقت</li>
+                    <li>الوصول إلى 5 قوالب سينمائية</li>
+                    <li>تصدير الكود البرمجي بالكامل</li>
+                    <li>شعار مصغر جداً وغير ملحوظ</li>
+                </ul>
+            </div>
+            <a href="checkout.html?plan=starter" class="btn-purchase">احصل على الباقة</a>
+        </div>
+
+        <div class="package-card popular" data-pack="pro">
+            <div class="badge-popular">🔥 الأكثر طلباً ومبيعاً</div>
+            <div>
+                <h2 class="pack-title">المخرج السينمائي</h2>
+                <div class="pack-price" style="color: var(--color-pro);">19$ <span>/ شهرياً</span></div>
+                <div class="pack-target">🎯 المستهدف: الـ Freelancers والمحترفين</div>
+                <p class="pack-desc">الحصان الرابح لكل مصمم ومطور يريد كسر الجمود وبناء مشاريع تجارية بلا قيود.</p>
+                
+                <ul class="features-list">
+                    <li>مشاريع غير محدودة (Unlimited)</li>
+                    <li>ربط دومين خاص (Custom Domain)</li>
+                    <li>الوصول الكامل لكل القوالب الحالية والمستقبلية</li>
+                    <li>إزالة شعار المنصة تماماً (White-Label)</li>
+                </ul>
+            </div>
+            <a href="checkout.html?plan=pro" class="btn-purchase">احصل على الباقة</a>
+        </div>
+
+        <div class="package-card" data-pack="agency">
+            <div>
+                <h2 class="pack-title">الاستوديو الخارق</h2>
+                <div class="pack-price" style="color: var(--color-agency);">49$ <span>/ شهرياً</span></div>
+                <div class="pack-target">🎯 المستهدف: الوكالات وفرق العمل</div>
+                <p class="pack-desc">القوة القصوى لشركات التسويق والبرمجة التي تدير مشاريع عملاء ضخمة ومتعددة.</p>
+                
+                <ul class="features-list">
+                    <li>كل مميزات باقة المخرج السينمائي</li>
+                    <li>إضافة فريق عمل (حتى 5 مصممين)</li>
+                    <li>لوحة تحكم مخصصة بشعار وكالتك</li>
+                    <li>إحصائيات تدوير الشاشة (Scroll Analytics)</li>
+                    <li>دعم فني VIP مباشر وسريع</li>
+                </ul>
+            </div>
+            <a href="checkout.html?plan=agency" class="btn-purchase">احصل على الباقة</a>
+        </div>
+
+    </main>
+
+</body>
+</html>
