@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollyTale Studio - لوحة التحكم العالمية</title>
+    <style>
+        /* ==========================================================================
+           1. التأسيس وبيئة الـ Dashboard المظلمة
+           ========================================================================== */
+        :root {
+            --bg-dashboard: #05050d;
+            --glass-nav: rgba(10, 10, 25, 0.7);
+            --neon-active: #00f2fe;
+            --neon-glow: rgba(0, 242, 254, 0.2);
+            --text-muted: #94a3b8;
+            --text-bright: #ffffff;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg-dashboard);
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ==========================================================================
+           2. شريط التنقل الزجاجي العالمي (Premium Glassmorphic Navbar)
+           ========================================================================== */
+        .global-navbar {
+            background: var(--glass-nav);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0 40px;
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* الشعار المضيء */
+        .nav-logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+        .nav-logo span {
+            color: var(--neon-active);
+            text-shadow: 0 0 20px var(--neon-active);
+        }
+
+        /* حاوية التبويبات الذكية */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* زر التبويب الفردي */
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* التبويب النشط */
+        .tab-btn.active {
+            color: var(--text-bright);
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.15), rgba(0, 242, 254, 0.03));
+            box-shadow: inset 0 0 12px rgba(0, 242, 254, 0.2),
+                        0 0 1px var(--neon-active);
+        }
+
+        /* خط نيون صغير أسفل التبويب النشط لمزيد من الفخامة */
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 20%; width: 60%; height: 3px;
+            background: var(--neon-active);
+            border-radius: 4px 4px 0 0;
+            box-shadow: 0 -2px 10px var(--neon-active);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: #fff;
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* أزرار التحكم بالمستخدم اليمينية (تسجيل الخروج) */
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #f43f5e;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-logout:hover {
+            background: #f43f5e;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* ==========================================================================
+           3. نافذة العرض الذكية (Main Viewport Iframe)
+           ========================================================================== */
+        .viewport-wrapper {
+            flex: 1;
+            width: 100%;
+            height: calc(100vh - 80px);
+            position: relative;
+            background: #020205;
+        }
+
+        /* محرك الصفحات الداخلي */
+        #main-viewport {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            transition: opacity 0.3s ease;
+        }
+
+        /* أنميشن سلس أثناء تحميل الصفحات بالداخل */
+        .page-loading {
+            opacity: 0;
+            transform: scale(0.99);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="global-navbar">
+        
+        <div class="nav-logo">Scrolly<span>Tale</span> Studio</div>
+
+        <nav class="tabs-container">
+            <button class="tab-btn active" data-target="templates.html">
+                <span>🎨</span> القوالب
+            </button>
+            <button class="tab-btn" data-target="projects.html">
+                <span>📁</span> مشاريعك
+            </button>
+            <button class="tab-btn" data-target="inquiries.html">
+                <span>💬</span> الاستفسارات
+            </button>
+        </nav>
+
+        <div class="user-controls">
+            <button class="btn-logout" id="btn-logout-cloud">خروج آمن</button>
+        </div>
+    </header>
+
+    <main class="viewport-wrapper">
+        <iframe id="main-viewport" src="templates.html" title="Dashboard Viewport"></iframe>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        // إعدادات مشروعك الحقيقي في Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAlIHbsLSdF7I3QU0tkChUyviTWc13ctec",
+            authDomain: "scrollytale.firebaseapp.com",
+            projectId: "scrollytale",
+            storageBucket: "scrollytale.firebasestorage.app",
+            messagingSenderId: "294561535270",
+            appId: "1:294561535270:web:e051f9a58b881bbc341de7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const viewport = document.getElementById('main-viewport');
+        const tabButtons = document.querySelectorAll('.tab-btn');
+
+        // [1] حارس البوابة الأمنية: لو المستخدم مش مسجل دخول، اطرده لصفحة الـ Login فوراً!
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+            }
+        });
+
+        // [2] محرك تبديل التبويبات الذكي بسلاسة تامة
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // إزالة الحالة النشطة من الزر السابق
+                document.querySelector('.tab-btn.active').classList.remove('active');
+                
+                // تفعيل الزر الجديد
+                button.classList.add('active');
+
+                // عمل أنميشن اختفاء سلس للـ iframe قبل تغيير الرابط
+                viewport.classList.add('page-loading');
+
+                setTimeout(() => {
+                    // تغيير محتوى النافذة بناءً على مسار التبويب
+                    viewport.src = button.getAttribute('data-target');
+                }, 150);
+            });
+        });
+
+        // إزالة تأثير الأنميشن بمجرد اكتمال تحميل الصفحة الداخلية
+        viewport.addEventListener('load', () => {
+            viewport.classList.remove('page-loading');
+        });
+
+        // [3] منطق تسجيل الخروج السحابي والآمن
+        document.getElementById('btn-logout-cloud').addEventListener('click', async () => {
+            if(confirm("هل أنت متأكد من رغبتك في تسجيل الخروج؟")) {
+                try {
+                    await signOut(auth);
+                    window.location.href = "index.html";
+                } catch (error) {
+                    alert("حدث خطأ أثناء الخروج: " + error.message);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
