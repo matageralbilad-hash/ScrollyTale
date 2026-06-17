@@ -6,21 +6,28 @@
     <title>ScrollyTale Studio - لوحة التحكم العالمية</title>
     <style>
         /* ==========================================================================
-           1. التأسيس وبيئة الـ Dashboard المظلمة
+           1. التأسيس والمتغيرات الديناميكية (تتغير فوراً من الإعدادات!)
            ========================================================================== */
         :root {
-            --bg-dashboard: #05050d;
-            --glass-nav: rgba(10, 10, 25, 0.7);
-            --neon-active: #00f2fe;
+            --bg-dashboard: #03030a;
+            --glass-nav: rgba(8, 8, 20, 0.75);
+            --neon-active: #00f2fe; /* اللون الافتراضي */
             --neon-glow: rgba(0, 242, 254, 0.2);
-            --text-muted: #94a3b8;
+            --text-muted: #64748b;
             --text-bright: #ffffff;
+            --panel-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body, html {
-            margin: 0; padding: 0;
             width: 100%; height: 100%;
             background-color: var(--bg-dashboard);
+            color: var(--text-bright);
             font-family: system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
@@ -28,99 +35,107 @@
         }
 
         /* ==========================================================================
-           2. شريط التنقل الزجاجي العالمي (Premium Glassmorphic Navbar)
+           2. شريط التنقل المتجاوب الذكي (Responsive Global Navbar)
            ========================================================================== */
         .global-navbar {
             background: var(--glass-nav);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 0 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 0 30px;
             height: 80px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: relative;
             z-index: 100;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* الشعار المضيء */
         .nav-logo {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 900;
-            color: #fff;
-            letter-spacing: -0.5px;
+            white-space: nowrap;
         }
         .nav-logo span {
             color: var(--neon-active);
-            text-shadow: 0 0 20px var(--neon-active);
+            text-shadow: 0 0 15px var(--neon-glow);
+            transition: color 0.3s;
         }
 
-        /* حاوية التبويبات الذكية */
+        /* حاوية التبويبات الرئيسية الوسطى */
+        .tabs-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
         .tabs-container {
             display: flex;
-            gap: 10px;
-            position: relative;
+            gap: 6px;
             background: rgba(0, 0, 0, 0.4);
-            padding: 6px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
+            padding: 5px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.03);
         }
 
-        /* زر التبويب الفردي */
         .tab-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            padding: 12px 28px;
-            font-size: 1rem;
+            padding: 10px 22px;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
+            border-radius: 10px;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
 
-        /* التبويب النشط */
         .tab-btn.active {
             color: var(--text-bright);
-            background: linear-gradient(135deg, rgba(0, 242, 254, 0.15), rgba(0, 242, 254, 0.03));
-            box-shadow: inset 0 0 12px rgba(0, 242, 254, 0.2),
-                        0 0 1px var(--neon-active);
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 0 15px var(--neon-glow);
+            border-bottom: 2px solid var(--neon-active);
         }
 
-        /* خط نيون صغير أسفل التبويب النشط لمزيد من الفخامة */
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 20%; width: 60%; height: 3px;
-            background: var(--neon-active);
-            border-radius: 4px 4px 0 0;
-            box-shadow: 0 -2px 10px var(--neon-active);
-        }
-
-        .tab-btn:hover:not(.active) {
-            color: #fff;
-            background: rgba(255,255,255,0.03);
-        }
-
-        /* أزرار التحكم بالمستخدم اليمينية (تسجيل الخروج) */
-        .user-controls {
+        /* قسم الأدوات المعزول (إعدادات + خروج) */
+        .utility-controls {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+        }
+
+        /* زر الإعدادات الفخم المنفصل */
+        .btn-settings {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        .btn-settings.active {
+            color: var(--neon-active);
+            border-color: var(--neon-active);
+            box-shadow: 0 0 15px var(--neon-glow);
+            background: rgba(0, 242, 254, 0.05);
         }
 
         .btn-logout {
             background: transparent;
-            border: 1px solid rgba(244, 63, 94, 0.3);
+            border: 1px solid rgba(244, 63, 94, 0.2);
             color: #f43f5e;
-            padding: 10px 20px;
+            padding: 9px 16px;
             border-radius: 10px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -128,69 +143,223 @@
         .btn-logout:hover {
             background: #f43f5e;
             color: #fff;
-            box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
-            transform: translateY(-1px);
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.3);
         }
 
         /* ==========================================================================
-           3. نافذة العرض الذكية (Main Viewport Iframe)
+           3. حاوية المحتوى المزدوجة (Iframe للروابط / Div للإعدادات)
            ========================================================================== */
-        .viewport-wrapper {
+        .main-content-area {
             flex: 1;
-            width: 100%;
-            height: calc(100vh - 80px);
             position: relative;
-            background: #020205;
+            background: #010103;
         }
 
-        /* محرك الصفحات الداخلي */
         #main-viewport {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             border: none;
-            background: transparent;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
         }
 
-        /* أنميشن سلس أثناء تحميل الصفحات بالداخل */
-        .page-loading {
-            opacity: 0;
-            transform: scale(0.99);
+        /* لوحة الإعدادات المدمجة الخرافية (Inline Panel) */
+        #settings-panel {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #04040c;
+            z-index: 50;
+            padding: 40px;
+            overflow-y: auto;
+            display: none; /* مخفية افتراضياً */
+        }
+        #settings-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .settings-grid {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .settings-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .settings-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* أزرار اختيار الألوان واللغات */
+        .options-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .opt-btn {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .opt-btn.selected {
+            border-color: var(--neon-active);
+            color: #fff;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+            box-shadow: 0 0 10px var(--neon-glow);
+        }
+
+        /* دوائر مخصصة للألوان السحرية */
+        .color-dot {
+            width: 24px; height: 24px; border-radius: 50%; display: inline-block;
+        }
+
+        /* ==========================================================================
+           4. الهيكلة الخاصة بالجوالات والتابلت (Responsive Engine)
+           ========================================================================== */
+        @media (max-width: 900px) {
+            .global-navbar {
+                height: auto;
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .tabs-wrapper {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* تحويل التبويبات لشريط سحب أفقي ناعم على الجوال */
+            .tabs-container {
+                width: 100%;
+                overflow-x: auto;
+                scrollbar-width: none; /* إخفاء شريط التمرير للـ Firefox */
+                -webkit-overflow-scrolling: touch;
+                padding: 4px;
+            }
+            .tabs-container::-webkit-scrollbar {
+                display: none; /* إخفاء شريط التمرير للـ Chrome والـ Safari */
+            }
+
+            .tab-btn {
+                padding: 10px 16px;
+                font-size: 0.88rem;
+            }
+
+            .utility-controls {
+                position: absolute;
+                top: 15px;
+                left: 15px;
+            }
+            
+            #settings-panel {
+                padding: 20px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
+    <!-- 🌐 شريط التنقل المتكيف عالمياً -->
     <header class="global-navbar">
-        
+        <!-- اللوجو -->
         <div class="nav-logo">Scrolly<span>Tale</span> Studio</div>
 
-        <nav class="tabs-container">
-            <button class="tab-btn active" data-target="templates.html">
-                <span>🎨</span> القوالب
-            </button>
-            <button class="tab-btn" data-target="projects.html">
-                <span>📁</span> مشاريعك
-            </button>
-            <button class="tab-btn" data-target="inquiries.html">
-                <span>💬</span> الاستفسارات
-            </button>
-        </nav>
+        <!-- التبويبات المسرودة -->
+        <div class="tabs-wrapper">
+            <nav class="tabs-container" id="main-tabs-nav">
+                <button class="tab-btn active" data-target="templates.html">🎨 القوالب</button>
+                <button class="tab-btn" data-target="projects.html">📁 مشاريعك</button>
+                <button class="tab-btn" data-target="inquiries.html">💬 الاستفسارات</button>
+                <button class="tab-btn" data-target="packages.html">💎 الباقات</button>
+            </nav>
+        </div>
 
-        <div class="user-controls">
-            <button class="btn-logout" id="btn-logout-cloud">خروج آمن</button>
+        <!-- التحكم المنعزل (الاعدادات والخروج) -->
+        <div class="utility-controls">
+            <button class="btn-settings" id="trigger-settings" title="الإعدادات">⚙️</button>
+            <button class="btn-logout" id="btn-logout-cloud">خروج</button>
         </div>
     </header>
 
-    <main class="viewport-wrapper">
+    <!-- 📺 ساحة العرض المزدوجة المذهلة -->
+    <main class="main-content-area">
+        <!-- نافذة الصفحات -->
         <iframe id="main-viewport" src="templates.html" title="Dashboard Viewport"></iframe>
+
+        <!-- لوحة التحكم الداخلية الفاخرة للإعدادات -->
+        <div id="settings-panel">
+            <div class="settings-grid">
+                <h2 style="font-size: 2rem; margin-bottom: 10px;">⚙️ الإعدادات العالمية</h2>
+                <p style="color: #64748b; margin-bottom: 20px;">قم بتخصيص بيئة العمل الخاصة بك لتناسب أسلوب إبداعك.</p>
+
+                <!-- كرت مظهر الألوان (يعمل حياً!) -->
+                <div class="settings-card">
+                    <h3>🎨 لون الهوية (Neon Theme)</h3>
+                    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 15px;">اختر اللون المضيء للوحة التحكم الخاصة بك:</p>
+                    <div class="options-row">
+                        <button class="opt-btn selected" onclick="changeThemeColor('#00f2fe', 'rgba(0, 242, 254, 0.2)', this)">
+                            <span class="color-dot" style="background: #00f2fe;"></span> سايبر سيان
+                        </button>
+                        <button class="opt-btn" onclick="changeThemeColor('#10b981', 'rgba(16, 185, 129, 0.2)', this)">
+                            <span class="color-dot" style="background: #10b981;"></span> ماتركس أخضر
+                        </button>
+                        <button class="opt-btn" onclick="changeThemeColor('#a855f7', 'rgba(168, 85, 247, 0.2)', this)">
+                            <span class="color-dot" style="background: #a855f7;"></span> الماجنتا الملكي
+                        </button>
+                    </div>
+                </div>
+
+                <!-- كرت اللغة -->
+                <div class="settings-card">
+                    <h3>🌐 لغة المنصة</h3>
+                    <div class="options-row">
+                        <button class="opt-btn selected">العربية (RTl)</button>
+                        <button class="opt-btn" onclick="alert('سيتم توفير اللغة الإنجليزية في التحديث القادم بمجرد ربط القوالب!')">English (LTR)</button>
+                    </div>
+                </div>
+
+                <!-- كرت مظهر الواجهة -->
+                <div class="settings-card">
+                    <h3>👁️ وضع الرؤية والمظهر</h3>
+                    <div class="options-row">
+                        <button class="opt-btn selected">سماوي داكن الفخامة (Deep Dark)</button>
+                        <button class="opt-btn" onclick="alert('مطور الويب الحقيقي لا يستخدم الوضع المضيء ☀️ حفاظاً على عينيه! 😉')">الوضع المضيء (خيار غير مستحب)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
+    <!-- ==========================================================================
+       5. محرك التشغيل الذكي والربط السحابي
+       ========================================================================== */ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-        // إعدادات مشروعك الحقيقي في Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAlIHbsLSdF7I3QU0tkChUyviTWc13ctec",
             authDomain: "scrollytale.firebaseapp.com",
@@ -204,50 +373,67 @@
         const auth = getAuth(app);
 
         const viewport = document.getElementById('main-viewport');
+        const settingsPanel = document.getElementById('settings-panel');
         const tabButtons = document.querySelectorAll('.tab-btn');
+        const btnSettings = document.getElementById('trigger-settings');
 
-        // [1] حارس البوابة الأمنية: لو المستخدم مش مسجل دخول، اطرده لصفحة الـ Login فوراً!
+        // [1] حارس البوابة المطور مع مهلة أمان لمنع الطرد الخاطئ عند التحميل السريع
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-                window.location.href = "index.html";
+                setTimeout(() => {
+                    if (!auth.currentUser) {
+                        window.location.href = "index.html";
+                    }
+                }, 1000);
             }
         });
 
-        // [2] محرك تبديل التبويبات الذكي بسلاسة تامة
+        // [2] التنقل بين الأزرار الرئيسية وإغلاق الإعدادات تلقائياً عند فتح صفحة أخرى
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // إزالة الحالة النشطة من الزر السابق
-                document.querySelector('.tab-btn.active').classList.remove('active');
+                document.querySelector('.tab-btn.active')?.classList.remove('active');
+                btnSettings.classList.remove('active'); // إلغاء نشاط الإعدادات
+                settingsPanel.classList.remove('active'); // إخفاء لوحة الإعدادات
                 
-                // تفعيل الزر الجديد
                 button.classList.add('active');
-
-                // عمل أنميشن اختفاء سلس للـ iframe قبل تغيير الرابط
-                viewport.classList.add('page-loading');
+                viewport.style.opacity = '0';
 
                 setTimeout(() => {
-                    // تغيير محتوى النافذة بناءً على مسار التبويب
                     viewport.src = button.getAttribute('data-target');
+                    viewport.style.display = 'block';
+                    viewport.style.opacity = '1';
                 }, 150);
             });
         });
 
-        // إزالة تأثير الأنميشن بمجرد اكتمال تحميل الصفحة الداخلية
-        viewport.addEventListener('load', () => {
-            viewport.classList.remove('page-loading');
+        // [3] كود زر الإعدادات المعزول (Inline Trigger)
+        btnSettings.addEventListener('click', () => {
+            // إلغاء نشاط كل أزرار التبويبات الأخرى
+            document.querySelector('.tab-btn.active')?.classList.remove('active');
+            
+            // تفعيل زر الإعدادات وإظهار اللوحة
+            btnSettings.classList.add('active');
+            viewport.style.display = 'none'; // إخفاء الـ iframe تماماً
+            settingsPanel.classList.add('active'); // إطلاق لوحة الإعدادات
         });
 
-        // [3] منطق تسجيل الخروج السحابي والآمن
+        // [4] تسجيل الخروج الآمن
         document.getElementById('btn-logout-cloud').addEventListener('click', async () => {
-            if(confirm("هل أنت متأكد من رغبتك في تسجيل الخروج؟")) {
-                try {
-                    await signOut(auth);
-                    window.location.href = "index.html";
-                } catch (error) {
-                    alert("حدث خطأ أثناء الخروج: " + error.message);
-                }
+            if(confirm("هل تريد تسجيل الخروج والعودة لبوابة التأمين؟")) {
+                await signOut(auth);
+                window.location.href = "index.html";
             }
         });
+
+        // جعل دالة تغيير الألوان متاحة عالمياً للاستخدام في الـ onclick
+        window.changeThemeColor = function(color, glow, element) {
+            document.documentElement.style.setProperty('--neon-active', color);
+            document.documentElement.style.setProperty('--neon-glow', glow);
+            
+            // تحديث الكلاس المختار للزر المعني
+            element.parentElement.querySelector('.opt-btn.selected').classList.remove('selected');
+            element.classList.add('selected');
+        }
     </script>
 </body>
 </html>
