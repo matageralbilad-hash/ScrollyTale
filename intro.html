@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollyTale Studio - العرض السينمائي</title>
+    <style>
+        /* ==========================================================================
+           1. التأسيس ونظام الـ Scroll-Snap الفاخر
+           ========================================================================== */
+        :root {
+            --bg-deep: #020205;
+            --neon-green: #10b981;
+            --neon-cyan: #00f2fe;
+            --neon-magenta: #f43f5e;
+            --text-main: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+        }
+
+        body, html {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+            /* جعل السكرول ينجذب تلقائياً للشاشات كاملة مثل تطبيقات الهاتف الفخمة */
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+
+        /* هيكل القسم الكامل */
+        section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            scroll-snap-align: start;
+            perspective: 1500px;
+            overflow: hidden;
+        }
+
+        /* ==========================================================================
+           2. المؤثرات البصرية المشتركة (Cinematic Framework)
+           ========================================================================== */
+        .content-wrapper {
+            text-align: center;
+            z-index: 10;
+            max-width: 900px;
+            padding: 0 20px;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* عناوين عملاقة بتدرج لوني */
+        .huge-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+
+        .huge-title span {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sub-text {
+            font-size: 1.4rem;
+            color: #94a3b8;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* مؤشر التدوير السفلي الحركي */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .mouse-wheel {
+            width: 20px; height: 35px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            position: relative;
+        }
+        .mouse-wheel::after {
+            content: '';
+            position: absolute;
+            width: 4px; height: 8px;
+            background: var(--neon-cyan);
+            left: 50%; transform: translateX(-50%);
+            top: 6px; border-radius: 2px;
+            animation: wheelScroll 1.5s infinite;
+        }
+        @keyframes wheelScroll {
+            0% { top: 6px; opacity: 1; }
+            100% { top: 20px; opacity: 0; }
+        }
+
+        /* ==========================================================================
+           3. تخصيص الحركات لكل قسم (انفجار الـ CSS عند الظهور)
+           ========================================================================== */
+        
+        /* --- القسم الأول: الصدمة الترحيبية --- */
+        #sec-welcome {
+            background: radial-gradient(circle at center, #0a1128 0%, var(--bg-deep) 80%);
+        }
+        #sec-welcome .huge-title {
+            transform: scale(0.5) translateZ(-500px);
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        /* عندما يصبح القسم نشطاً بفعل الجافاسكريبت */
+        #sec-welcome.active .huge-title {
+            transform: scale(1) translateZ(0);
+            opacity: 1;
+        }
+
+        /* --- القسم الثاني: الأبعاد الثلاثية المبعثرة --- */
+        #sec-features {
+            background: #020208;
+        }
+        .floating-cards {
+            display: flex; gap: 30px; margin-top: 50px;
+        }
+        .feat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 30px; border-radius: 20px; flex: 1;
+            backdrop-filter: blur(10px);
+            transform: rotateY(-50deg) translateZ(-200px);
+            opacity: 0;
+            transition: all 1s ease;
+        }
+        #sec-features.active .feat-card {
+            transform: rotateY(0) translateZ(0); opacity: 1;
+        }
+        /* تأخير زمني حركي بين الكروت ليعطي انطباع مذهل */
+        #sec-features.active .feat-card:nth-child(2) { transition-delay: 0.2s; border-color: var(--neon-cyan); }
+        #sec-features.active .feat-card:nth-child(3) { transition-delay: 0.4s; }
+
+        /* --- القسم الثالث: الاندماج والامتداد البصري --- */
+        #sec-freedom {
+            background: linear-gradient(180deg, #020208 0%, #090514 100%);
+        }
+        .giant-word {
+            font-size: 10rem; font-weight: 900; color: rgba(255,255,255,0.01);
+            position: absolute; white-space: nowrap; letter-spacing: 20px;
+            transition: all 1.5s cubic-bezier(0.1, 1, 0.1, 1);
+            transform: scale(2);
+        }
+        #sec-freedom.active .giant-word {
+            color: rgba(0, 242, 254, 0.05); transform: scale(1); letter-spacing: 2px;
+        }
+
+        /* --- القسم الرابع: بوابة العبور الكبرى (Portal) --- */
+        #sec-portal {
+            background: radial-gradient(circle at bottom, #130924 0%, var(--bg-deep) 70%);
+        }
+        
+        /* الزر الفوق طبيعي المضيء */
+        .portal-btn {
+            position: relative;
+            display: inline-block;
+            margin-top: 40px;
+            padding: 24px 60px;
+            font-size: 1.4rem; font-weight: 800;
+            color: #fff; background: #000;
+            border-radius: 50px; border: none; cursor: pointer;
+            text-decoration: none; overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.2);
+            transition: all 0.4s;
+            transform: scale(0.8); opacity: 0;
+        }
+        #sec-portal.active .portal-btn {
+            transform: scale(1); opacity: 1; transition-delay: 0.5s;
+        }
+
+        /* حلقة النيون الذكية حول الزر */
+        .portal-btn::before {
+            content: ''; position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(var(--neon-cyan), var(--neon-magenta), var(--neon-green), var(--neon-cyan));
+            animation: spinPortal 4s linear infinite;
+            z-index: 1;
+        }
+        .portal-btn span {
+            position: relative; z-index: 5;
+            background: #07070c; padding: 18px 54px;
+            display: block; border-radius: 48px;
+        }
+        .portal-btn:hover {
+            transform: scale(1.08) !important;
+            box-shadow: 0 0 60px rgba(244, 63, 94, 0.6);
+        }
+        @keyframes spinPortal {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <section id="sec-welcome">
+        <div class="content-wrapper">
+            <h1 class="huge-title">مرحباً بك في <span>العصر الجديد</span></h1>
+            <p class="sub-text">تم التحقق من هويتك السحابية بنجاح. أنت الآن على وشك التخلي عن الأساليب التقليدية في بناء الويب.</p>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse-wheel"></div>
+            <span>دحرج العجلة لأسفل لرؤية السحر</span>
+        </div>
+    </section>
+
+    <section id="sec-features">
+        <div class="content-wrapper">
+            <h1 class="huge-title">تحكّم بـ <span>الزمن والحركة</span></h1>
+            <p class="sub-text">هندسة بصرية مبنية خصيصاً للمصممين الذين يكرهون الجمود.</p>
+            
+            <div class="floating-cards">
+                <div class="feat-card">
+                    <h3>🎬 أنميشن سينمائي</h3>
+                    <p style="color: #64748b; margin-top: 10px;">عناصر تتحرك وتتفاعل مع تدوير الشاشة بدقة متناهية.</p>
+                </div>
+                <div class="feat-card">
+                    <h3>⚡ أداء صاروخي</h3>
+                    <p style="color: #64748b; margin-top: 10px;">أكواد نظيفة مسبقة الصنع ومحسنة لتصدر محركات البحث.</p>
+                </div>
+                <div class="feat-card">
+                    <h3>🧩 سحب وإفلات</h3>
+                    <p style="color: #64748b; margin-top: 10px;">واجهة بصرية متكاملة تولد لك صفحات معقدة في دقائق.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sec-freedom">
+        <div class="giant-word">SCROLLYTALE</div>
+        <div class="content-wrapper">
+            <h1 class="huge-title">حرية كاملة <span>بدون كود</span></h1>
+            <p class="sub-text">اصنع السرد القصصي لمنتجك، دع الصور تتداخل، النصوص تتدفق، واجعل العميل يعيش تجربة بصرية لا تُنسى.</p>
+        </div>
+    </section>
+
+    <section id="sec-portal">
+        <div class="content-wrapper">
+            <h1 class="huge-title">هل أنت مستعد <span>للإقلاع؟</span></h1>
+            <p class="sub-text">اضغط على البوابة الكونية للدخول مباشرة إلى معرض القوالب وتدشين أول مشروع لك.</p>
+            
+            <a href="templates.html" class="portal-btn">
+                <span>اقتحام لوحة التحكم 🛸</span>
+            </a>
+        </div>
+    </section>
+
+    <script>
+        // دالة سحرية تراقب الشاشات وتفعل أنميشن الـ CSS فور دخول الشاشة للعين
+        const observerOptions = {
+            root: null,
+            threshold: 0.4 // تفعيل الحركة عندما يظهر 40% من القسم
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    // إلغاء الكلاس عند الخروج لإعادة الأنميشن إذا صعد المستخدم للأعلى مجدداً
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+
+        // ربط المراقب بجميع أقسام الصفحة
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
