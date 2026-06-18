@@ -3,182 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScrollyTale Studio - إتمام الاشتراك الآمن</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    
+    <title>بوابة إتمام الدفع والتفعيل سحابياً</title>
     <style>
         :root {
-            --bg-page: #020205;
-            --card-bg: rgba(255, 255, 255, 0.02);
-            --card-border: rgba(255, 255, 255, 0.05);
-            
-            --color-free: #94a3b8;
-            --color-starter: #00f2fe;
-            --color-pro: #10b981;
-            --color-agency: #a855f7;
-            
-            --text-bright: #ffffff;
-            --text-muted: #64748b;
+            --bg-dark-base: #07090e;
+            --surface-card: #11141d;
+            --border-line: #1f293d;
+            --text-main: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --color-starter: #38bdf8;
+            --color-pro: #a855f7;
+            --color-agency: #f43f5e;
+            --accent-green: #10b981;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-page); color: var(--text-bright);
-            font-family: system-ui, -apple-system, sans-serif;
-            padding: 30px 20px; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
+            background-color: var(--bg-dark-base);
+            color: var(--text-main);
+            font-family: system-ui, sans-serif;
+            margin: 0;
+            padding: 30px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
-        header {
-            max-width: 1200px; width: 100%; margin: 0 auto 30px auto;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--card-border); padding-bottom: 20px;
+        .checkout-wrapper {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 25px;
+            max-width: 1100px;
+            width: 100%;
         }
 
-        .logo-text {
-            font-size: 1.5rem; font-weight: 900; letter-spacing: 1px;
-            background: linear-gradient(135deg, #fff, var(--text-muted));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        @media (max-width: 850px) {
+            .checkout-wrapper { grid-template-columns: 1fr; }
         }
 
-        .secure-badge {
-            font-size: 0.85rem; color: var(--color-pro); background: rgba(16, 185, 129, 0.05);
-            padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.15);
-            display: flex; align-items: center; gap: 6px;
+        .panel-box {
+            background-color: var(--surface-card);
+            border: 1px solid var(--border-line);
+            border-radius: 16px;
+            padding: 30px;
+            box-sizing: border-box;
         }
 
-        .checkout-grid {
-            display: grid; grid-template-columns: 1.4fr 1fr; max-width: 1200px;
-            width: 100%; margin: 0 auto; gap: 25px; align-items: start; flex: 1;
+        h2.panel-title {
+            margin-top: 0;
+            font-size: 1.4rem;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
         }
 
-        .panel-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 26px; backdrop-filter: blur(10px); }
-        .panel-card h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        /* ستايل الفاتورة التفاعلية */
+        .invoice-title { font-size: 1.6rem; margin: 0 0 5px 0; }
+        .invoice-target { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 15px; }
+        .invoice-price { font-size: 2.2rem; font-weight: bold; margin-bottom: 25px; }
+        .invoice-price span { font-size: 1rem; color: var(--text-secondary); }
 
-        .tabs-container { display: flex; gap: 12px; margin-bottom: 25px; }
-        .tab-button {
-            flex: 1; background: rgba(255, 255, 255, 0.01); border: 1px solid var(--card-border);
-            color: var(--text-muted); padding: 14px; border-radius: 12px; cursor: pointer;
-            font-size: 0.95rem; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.25s ease;
+        .invoice-features { padding: 0; list-style: none; margin: 0; }
+        .invoice-features li {
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .tab-button:hover { border-color: rgba(255, 255, 255, 0.15); color: #fff; }
-        .tab-button.active { background: rgba(255, 255, 255, 0.04); border-color: var(--text-bright); color: #fff; }
+        .invoice-features li::before {
+            content: "✓";
+            color: var(--color-starter);
+            font-weight: bold;
+        }
+
+        /* ستايل بوابات الدفع والتفعيل */
+        .tabs-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background-color: #1e293b;
+            color: var(--text-main);
+        }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .paddle-box { border: 1px dashed rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 45px 20px; text-align: center; background: rgba(0, 0, 0, 0.15); }
-        .paddle-box i { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 15px; }
-        .btn-paddle-trigger { background: #fff; color: #000; border: none; padding: 13px 30px; font-size: 0.95rem; font-weight: 800; border-radius: 10px; cursor: pointer; transition: all 0.25s ease; margin-top: 15px; }
-        .btn-paddle-trigger:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
-
-        .local-details { background: rgba(255, 255, 255, 0.01); border: 1px solid var(--card-border); border-radius: 12px; padding: 18px; margin-bottom: 20px; }
-        .row-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
-        .row-item:last-child { border: none; }
-        .row-label { color: var(--text-muted); font-size: 0.9rem; }
-        .row-val { color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }
-
-        .whatsapp-instruction { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
-        .btn-whatsapp-send {
-            background: #25d366; color: #fff; width: 100%; padding: 14px; border: none;
-            border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; transition: all 0.25s ease; margin-bottom: 25px;
-        }
-        .btn-whatsapp-send:hover { background: #1ebd54; box-shadow: 0 0 15px rgba(37, 211, 102, 0.3); }
-
-        .activation-area { border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px; }
-        .input-wrapper { display: flex; gap: 10px; margin-top: 12px; }
-        .input-wrapper input {
-            flex: 1; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--card-border);
-            padding: 12px; border-radius: 10px; color: #fff; font-size: 1rem; text-align: center; text-transform: uppercase; letter-spacing: 1px;
-        }
-        .input-wrapper input:focus { outline: none; border-color: rgba(255,255,255,0.2); }
-        .btn-submit-code { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); color: #fff; padding: 0 22px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.25s ease; }
-        .btn-submit-code:hover { background: #fff; color: #000; }
-
-        .summary-card { border-color: var(--card-border); }
-        .summary-header { padding-bottom: 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 20px; }
-        .plan-badge-target { font-size: 0.78rem; font-weight: 700; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; display: inline-block; margin-top: 6px; }
-        .price-display { font-size: 2.2rem; font-weight: 900; margin-top: 10px; }
-        .price-display span { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
-
-        .features-summary-list { list-style: none; margin-bottom: 25px; }
-        .features-summary-list li { font-size: 0.88rem; color: #cbd5e1; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .features-summary-list li::before { content: '✦'; color: var(--color-starter); }
-
-        @media (max-width: 900px) {
-            .checkout-grid { grid-template-columns: 1fr; }
-            .summary-card { order: -1; }
+        .payment-option-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin-bottom: 15px;
+            text-decoration: none;
+            transition: opacity 0.2s;
         }
 
-        .alert-box { display: none; margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 0.88rem; text-align: center; }
-        .alert-box.error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .alert-box.success { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .btn-paddle { background-color: #000; color: #fff; border: 1px solid #2d3748; }
+        .btn-whatsapp { background-color: #25d366; color: #000; }
+
+        .activation-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .activation-group input {
+            flex-grow: 1;
+            background-color: #07090e;
+            border: 1px solid var(--border-line);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .activation-group button {
+            background-color: var(--text-main);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 0 24px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .alert-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+            line-height: 1.4;
+        }
+        .alert-box.success { background-color: #064e3b; color: #a7f3d0; border: 1px solid #047857; }
+        .alert-box.error { background-color: #7f1d1d; color: #fca5a5; border: 1px solid #b91c1c; }
+
+        .local-banks-info {
+            background-color: #07090e;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px dashed #334155;
+        }
     </style>
+
+    <!-- استدعاء سكريبتات الفايربيس الأساسية الثلاثة المتوافقة سريعة الاستجابة v9 -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
-    <header>
-        <div class="logo-text">ScrollyTale Studio</div>
-        <div class="secure-badge"><i class="fas fa-lock"></i> اتصال مشفر وآمن</div>
-    </header>
-
-    <div class="checkout-grid">
+    <div class="checkout-wrapper">
         
-        <div class="panel-card">
-            <h2><i class="fas fa-shield-halved"></i> إتمام عملية الدفع</h2>
+        <!-- القسم الأيمن: اختيار بوابة الدفع / إدخال كود التفعيل التلقائي -->
+        <div class="panel-box">
+            <h2 class="panel-title">إتمام عملية الاشتراك السحابي</h2>
             
-            <div class="tabs-container">
-                <button id="tab-digital-btn" class="tab-button active" onclick="togglePaymentTab('digital')">
-                    <i class="fas fa-globe"></i> بطاقة فيزا / ماستركارد
-                </button>
-                <button id="tab-local-btn" class="tab-button" onclick="togglePaymentTab('local')">
-                    <i class="fas fa-money-bill-transfer"></i> تحويل محلي (اليمن)
+            <div class="tabs-header">
+                <button class="tab-btn active" id="tab-digital-btn" onclick="togglePaymentTab('digital')">💳 دفع إلكتروني مباشر</button>
+                <button class="tab-btn" id="tab-local-btn" onclick="togglePaymentTab('local')">🏦 تحويل محلي / كود تفعيل</button>
+            </div>
+
+            <!-- تبويب الدفع الإلكتروني المباشر -->
+            <div class="tab-content active" id="content-digital">
+                <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 25px;">اختر وسيلة الدفع الرقمية الفورية لتفعيل حسابك بشكل مؤتمت وتلقائي تماماً في ثوانٍ معدودة:</p>
+                
+                <button class="payment-option-btn btn-paddle" onclick="openPaddleCheckout()">
+                    🔒 الدفع الآمن عبر بوابة Paddle العالمية
                 </button>
             </div>
 
-            <div id="content-digital" class="tab-content active">
-                <div class="paddle-box">
-                    <i class="fa-solid fa-credit-card"></i>
-                    <p style="font-size: 0.95rem; margin-bottom: 6px;">الدفع الرقمي المباشر والمحمي</p>
-                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 20px;">يدعم الفيزا والماستركارد و Apple Pay عبر شركة Paddle العالمية.</p>
-                    <button class="btn-paddle-trigger" onclick="openPaddleCheckout()">ابدأ الدفع الآمن</button>
-                </div>
-            </div>
-
-            <div id="content-local" class="tab-content">
-                <div class="local-details">
-                    <div class="row-item">
-                        <span class="row-label">الحساب البنكي (بنك الكريمي)</span>
-                        <span class="row-val">123456789</span>
-                    </div>
-                    <div class="row-item">
-                        <span class="row-label">الحوالات (موني غرام / النجم / الامتياز)</span>
-                        <span class="row-val" style="color: var(--color-starter);">اكتب اسمك الثلاثي هنا</span>
-                    </div>
-                    <div class="row-item">
-                        <span class="row-label">إجمالي المبلغ المطلوب</span>
-                        <span class="row-val" id="local-price-val" style="font-size: 1.1rem; color: #fff;">0$</span>
-                    </div>
+            <!-- تبويب التحويل المحلي وبطاقات التفعيل الكودية -->
+            <div class="tab-content" id="content-local">
+                <div class="local-banks-info">
+                    <b>📌 طرق التحويل والاتصال المتوفرة لدينا:</b><br>
+                    • الكريمي إكسبرس (الحساب الرقمي الموحد للأفراد)<br>
+                    • النجم / المتميز / أو أي شبكة تحويل محلية معتمدة.<br>
+                    • القيمة المطلوبة: <span id="local-price-val" style="color: #fbbf24; font-weight: bold;">--</span>
                 </div>
 
-                <div class="whatsapp-instruction">
-                    <i class="fa-brands fa-whatsapp" style="color: #25d366; margin-left: 5px;"></i>
-                    يرجى تحويل قيمة الخطة المحددة، ثم التقط صورة شاشة (Screenshot) لعملية التحويل، واضغط على الزر بالأسفل لإرسالها للإدارة مباشرة عبر الواتساب لتستلم كود التفعيل الفريد الخاص بك.
-                </div>
-
-                <a href="#" id="whatsapp-action-btn" target="_blank" class="btn-whatsapp-send">
-                    <i class="fa-brands fa-whatsapp"></i> إرسال صورة الإشعار للواتساب
+                <a href="#" target="_blank" class="payment-option-btn btn-whatsapp" id="whatsapp-action-btn">
+                    💬 تواصل عبر الواتساب لإرسال الإشعار وطلب الكود
                 </a>
 
-                <div class="activation-area">
-                    <label style="font-size: 0.9rem; font-weight: 700;">أدخل كود التفعيل الممنوح لك:</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="coupon-code-input" placeholder="ST-XXXX-XXXX" maxlength="25">
-                        <button class="btn-submit-code" onclick="processActivationCode()">تفعيل</button>
+                <div style="margin-top: 30px; border-top: 1px solid var(--border-line); padding-top: 20px;">
+                    <label style="display:block; margin-bottom:8px; font-weight:bold; font-size:0.95rem;">هل تملك كود تفعيل؟ أدخله هنا لترقية حسابك حياً:</label>
+                    <div class="activation-group">
+                        <input type="text" id="coupon-code-input" placeholder="SCROLLY-XXXX-XXXX" autocomplete="off">
+                        <button onclick="processActivationCode()">تفعيل الخطة</button>
                     </div>
                     <div id="alert-response" class="alert-box"></div>
                 </div>
@@ -186,20 +227,21 @@
 
         </div>
 
-        <div class="panel-card summary-card">
-            <div class="summary-header">
-                <h3 id="plan-display-name" style="font-size: 1.3rem; font-weight: 800;">اسم الباقة</h3>
-                <div id="plan-display-target" class="pack-target plan-badge-target">المستهدف</div>
-                <div class="price-display" id="plan-display-price">0$ <span>/ شهرياً</span></div>
-            </div>
-
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">الميزات التي ستحصل عليها في حسابك:</p>
-            <ul class="features-summary-list" id="plan-display-features"></ul>
+        <!-- القسم الأيسر: ملخص الفاتورة والباقة المختارة -->
+        <div class="panel-box" style="border-left: 1px solid var(--border-line);">
+            <h2 class="panel-title">ملخص طلبك السينمائي</h2>
+            <h3 class="invoice-title" id="plan-display-name">--</h3>
+            <div class="invoice-target" id="plan-display-target">--</div>
+            <div class="invoice-price" id="plan-display-price">--</div>
+            
+            <p style="font-weight: bold; font-size: 0.95rem; margin-bottom: 12px; color: var(--text-secondary);">المميزات المشمولة في الفاتورة الحالية:</p>
+            <ul class="invoice-features" id="plan-display-features"></ul>
         </div>
 
     </div>
 
     <script>
+        // تكوين الفايربيس (تأكد من مطابقتها لكل الملفات لتوحيد المشروع)
         const firebaseConfig = {
             apiKey: "AIzaSyAlIHbsLSdF7I3QU0tkChUyviTWc13ctec",
             authDomain: "scrollytale.firebaseapp.com",
@@ -212,49 +254,35 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
 
-        // تحديث ميزات ومواصفات الخطط المتوافقة مع تعديلاتك الجديدة تماماً
+        // قاعدة البيانات الثابتة لتفاصيل الخطط والربط
         const officialPlans = {
             starter: {
                 title: "الحكواتي الناشئ",
                 price: "$7",
                 target: "🎯 المستهدف: الطلاب والمصممين الجدد",
                 color: "var(--color-starter)",
-                features: [
-                    "مشروعين (2) نشطين في نفس الوقت",
-                    "الوصول إلى 5 قوالب سينمائية",
-                    "تصدير الكود البرمجي بالكامل",
-                    "شعار المنصة موجود (لكن صغير جداً)"
-                ]
+                features: ["مشروعين (2) نشطين في نفس الوقت", "الوصول إلى 5 قوالب سينمائية", "تصدير الكود البرمجي بالكامل", "شعار المنصة موجود (لكن صغير جداً)"]
             },
             pro: {
                 title: "المخرج السينمائي",
                 price: "$19",
                 target: "🎯 المستهدف: الـ Freelancers والمحترفين",
                 color: "var(--color-pro)",
-                features: [
-                    "مشاريع غير محدودة (Unlimited)",
-                    "ربط دومين خاص (Custom Domain)",
-                    "الوصول الكامل لكل القوالب الحالية والمستقبلية",
-                    "إزالة شعار المنصة تماماً (White-Label)"
-                ]
+                features: ["مشاريع غير محدودة (Unlimited)", "ربط دومين خاص (Custom Domain)", "الوصول الكامل لكل القوالب الحالية والمستقبلية", "إزالة شعار المنصة تماماً (White-Label)"]
             },
             agency: {
                 title: "الاستوديو الخارق",
                 price: "$49",
                 target: "🎯 المستهدف: الوكالات وفرق العمل",
                 color: "var(--color-agency)",
-                features: [
-                    "كل مميزات باقة المخرج السينمائي",
-                    "إضافة فريق عمل (حتى 5 مصممين)",
-                    "لوحة تحكم مخصصة بشعار وكالتك",
-                    "إحصائيات تدوير الشاشة (Scroll Analytics)",
-                    "دعم فني VIP مباشر وسريع"
-                ]
+                features: ["كل مميزات باقة المخرج السينمائي", "إضافة فريق عمل (حتى 5 مصممين)", "لوحة تحكم مخصصة بشعار وكالتك", "إحصائيات تدوير الشاشة (Scroll Analytics)", "دعم فني VIP مباشر وسريع"]
             }
         };
 
-        let activePlanKey = "pro"; 
+        let activePlanKey = "pro"; // الافتراضي في حال عدم وجود بارامتر
+        let currentUser = null; 
 
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
@@ -272,6 +300,16 @@
 
             renderInvoiceData();
             buildWhatsAppLink();
+
+            // مراقبة حساب المستخدم لربط الكود المفعل بـ UID الخاص به ومزامنة الحفظ
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log("المستخدم مسجل دخول وجاهز للتفعيل:", user.uid);
+                } else {
+                    console.warn("تنبيه: لم يتم اكتشاف مستخدم مسجل الدخول، التفعيل المحلي قد لا يُحفظ في المتصفح بشكل دائم.");
+                }
+            });
         });
 
         function renderInvoiceData() {
@@ -281,7 +319,7 @@
             document.getElementById('plan-display-name').style.color = plan.color;
             document.getElementById('plan-display-target').innerText = plan.target;
             document.getElementById('plan-display-price').innerHTML = `${plan.price} <span>/ شهرياً</span>`;
-            document.getElementById('local-price-val').innerText = `${plan.price} (أو ما يعادله بالريال)`;
+            document.getElementById('local-price-val').innerText = `${plan.price} (أو ما يعادله بالعملة المحلية)`;
 
             const container = document.getElementById('plan-display-features');
             container.innerHTML = "";
@@ -294,8 +332,7 @@
         }
 
         function buildWhatsAppLink() {
-            // تحديث الرقم وإضافة كود اليمن الدولي 967 ليعمل التحويل للواتساب بدون مشاكل
-            const adminPhone = "967774257557";
+            const adminPhone = "967774257557"; // رقم الإدارة الخاص بك
             const planInfo = officialPlans[activePlanKey];
             const textMsg = `مرحباً ScrollyTale Studio، لقد قمت بتحويل الرسوم للاشتراك في [ ${planInfo.title} ] بقيمة ${planInfo.price}. مرفق لكم صورة إشعار التحويل، يرجى تزويدي بكود تفعيل الحساب المخصص لي.`;
             
@@ -318,7 +355,7 @@
         }
 
         function openPaddleCheckout() {
-            alert(`سيتم الآن فتح نافذة Paddle المدعومة لتسجيل باقة [ ${officialPlans[activePlanKey].title} ] بمبلغ ${officialPlans[activePlanKey].price}`);
+            alert(`سيتم الآن فتح نافذة Paddle الآمنة لتسجيل باقة [ ${officialPlans[activePlanKey].title} ] بمبلغ ${officialPlans[activePlanKey].price}`);
         }
 
         async function processActivationCode() {
@@ -335,7 +372,7 @@
             }
 
             try {
-                feedbackBox.innerText = "⏳ جاري الفحص السحابي الحامي...";
+                feedbackBox.innerText = "⏳ جاري الاتصال السحابي الحامي وفحص البيانات...";
 
                 const docRef = db.collection("activation_codes").doc(userInput);
                 const docSnap = await docRef.get();
@@ -349,26 +386,47 @@
                         return;
                     }
 
+                    // حرق الكود سحابياً لمنع التكرار
                     await docRef.update({
                         status: "burned",
-                        burnedAt: new Date().toISOString()
+                        burnedAt: new Date().toISOString(),
+                        activatedBy: currentUser ? currentUser.uid : "anonymous_user"
                     });
 
                     const assignedPlan = codeData.plan;
+
+                    // الربط الحاسم الفوري والمزامنة مع صفحة الباقات
+                    if (currentUser) {
+                        const storageKey = `scrolly_plan_${currentUser.uid}`;
+                        const expiryDate = Date.now() + (30 * 24 * 60 * 60 * 1000); // 30 يوماً بالملي ثانية
+                        
+                        const localPlanData = {
+                            planName: assignedPlan,
+                            expiryDate: expiryDate
+                        };
+                        
+                        localStorage.setItem(storageKey, JSON.stringify(localPlanData));
+                    }
+
                     feedbackBox.className = "alert-box success";
-                    feedbackBox.innerHTML = `🎉 مبروك! تم قبول الكود سحابياً. ترقت باقتك إلى <b>[ ${officialPlans[assignedPlan].title} ]</b> بنجاح!`;
+                    feedbackBox.innerHTML = `🎉 ممتاز! تم قبول الكود وتفعيل اشتراكك بنجاح في باقة <b>[ ${officialPlans[assignedPlan].title} ]</b> لمدة 30 يوماً!`;
                     
                     activePlanKey = assignedPlan;
                     renderInvoiceData();
 
+                    // العودة التلقائية لصفحة الباقات بعد ثانيتين ونصف لرؤية الزر المقفل حياً
+                    setTimeout(() => {
+                        window.location.href = "packages.html";
+                    }, 2500);
+
                 } else {
                     feedbackBox.className = "alert-box error";
-                    feedbackBox.innerText = "❌ كود التفعيل غير صحيح أو ليس مسجلاً في سيرفراتنا.";
+                    feedbackBox.innerText = "❌ كود التفعيل غير صحيح أو انتهت صلاحيته السحابية.";
                 }
 
             } catch (error) {
                 feedbackBox.className = "alert-box error";
-                feedbackBox.innerText = "❌ حدث خطأ في الاتصال. تأكد من اتصال الإنترنت أو قواعد Firestore.";
+                feedbackBox.innerText = "❌ حدث خطأ غير متوقع أثناء الاتصال بـ Firestore. يرجى مراجعة إعدادات قاعدة البيانات والتأكد من اتصالك.";
                 console.error(error);
             }
         }
