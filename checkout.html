@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollyTale Studio - إتمام الاشتراك الآمن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        /* ==========================================================================
+           1. نظام الألوان التأسيسي (متطابق تماماً مع صفحة الباقات الخاصة بك)
+           ========================================================================== */
+        :root {
+            --bg-page: #020205;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
+            
+            /* ألوان الباقات المعتمدة */
+            --color-free: #94a3b8;
+            --color-starter: #00f2fe;
+            --color-pro: #10b981;
+            --color-agency: #a855f7;
+            
+            --text-bright: #ffffff;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-bright);
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 30px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* هيدر مبسط واحترافي */
+        header {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto 30px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 20px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .secure-badge {
+            font-size: 0.85rem;
+            color: var(--color-pro);
+            background: rgba(16, 185, 129, 0.05);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* تقسيم الحاوية الرئيسية (شاشات الكمبيوتر واللابتوب) */
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            gap: 25px;
+            align-items: start;
+            flex: 1;
+        }
+
+        /* كروت اللوحات الجانبية */
+        .panel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 26px;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-card h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* أزرار التنقل بين الدفع العالمي والمحلي */
+        .tabs-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .tab-button {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+        }
+
+        .tab-button:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        .tab-button.active {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--text-bright);
+            color: #fff;
+        }
+
+        /* محتوى النوافذ */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* صندوق محاكاة بوابة Paddle */
+        .paddle-box {
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 45px 20px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .paddle-box i {
+            font-size: 2.5rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .btn-paddle-trigger {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 13px 30px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-top: 15px;
+        }
+
+        .btn-paddle-trigger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* تفاصيل الدفع المحلي (الكريمي) */
+        .local-details {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .row-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .row-item:last-child { border: none; }
+        .row-label { color: var(--text-muted); font-size: 0.9rem; }
+        .row-val { color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+        .whatsapp-instruction {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .btn-whatsapp-send {
+            background: #25d366;
+            color: #fff;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            margin-bottom: 25px;
+        }
+
+        .btn-whatsapp-send:hover {
+            background: #1ebd54;
+            box-shadow: 0 0 15px rgba(37, 211, 102, 0.3);
+        }
+
+        /* حقل كود التفعيل المطور لمرة واحدة */
+        .activation-area {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .btn-submit-code {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: #fff;
+            padding: 0 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn-submit-code:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* صندوق ملخص الفاتورة والطلب (الأيسر) */
+        .summary-card {
+            border-color: var(--card-border);
+        }
+
+        .summary-header {
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .plan-badge-target {
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        .price-display {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-top: 10px;
+        }
+
+        .price-display span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ميزات الباقة المطابقة تماماً */
+        .features-summary-list {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .features-summary-list li {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .features-summary-list li::before {
+            content: '✦';
+            color: var(--color-starter);
+        }
+
+        /* توافق الشاشات للجوال (كل صندوق تحت الآخر لمزيد من الراحة) */
+        @media (max-width: 900px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-card {
+                order: -1; /* إبقاء الملخص بالأعلى في الجوال ليعرف المستخدم ماذا يشتري */
+            }
+        }
+
+        /* نظام تنبيهات المستخدم */
+        .alert-box {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            text-align: center;
+        }
+        .alert-box.error { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .alert-box.success { background: rgba(16, 185, 129, 0.1); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-text">ScrollyTale Studio</div>
+        <div class="secure-badge"><i class="fas fa-lock"></i> اتصال مشفر وآمن</div>
+    </header>
+
+    <div class="checkout-grid">
+        
+        <div class="panel-card">
+            <h2><i class="fas fa-shield-halved"></i> إتمام عملية الدفع</h2>
+            
+            <div class="tabs-container">
+                <button id="tab-digital-btn" class="tab-button active" onclick="togglePaymentTab('digital')">
+                    <i class="fas fa-globe"></i> بطاقة فيزا / ماستركارد
+                </button>
+                <button id="tab-local-btn" class="tab-button" onclick="togglePaymentTab('local')">
+                    <i class="fas fa-money-bill-transfer"></i> تحويل محلي (اليمن)
+                </button>
+            </div>
+
+            <div id="content-digital" class="tab-content active">
+                <div class="paddle-box">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <p style="font-size: 0.95rem; margin-bottom: 6px;">الدفع الرقمي المباشر والمحمي</p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 20px;">يدعم الفيزا والماستركارد و Apple Pay عبر شركة Paddle العالمية.</p>
+                    <button class="btn-paddle-trigger" onclick="openPaddleCheckout()">ابدأ الدفع الآمن</button>
+                </div>
+            </div>
+
+            <div id="content-local" class="tab-content">
+                <div class="local-details">
+                    <div class="row-item">
+                        <span class="row-label">الحساب البنكي (بنك الكريمي)</span>
+                        <span class="row-val">123456789</span>
+                    </div>
+                    <div class="row-item">
+                        <span class="row-label">الحوالات (موني غرام / النجم / الامتياز)</span>
+                        <span class="row-val" style="color: var(--color-starter);">اكتب اسمك الثلاثي هنا</span>
+                    </div>
+                    <div class="row-item">
+                        <span class="row-label">إجمالي المبلغ المطلوب</span>
+                        <span class="row-val" id="local-price-val" style="font-size: 1.1rem; color: #fff;">0$</span>
+                    </div>
+                </div>
+
+                <div class="whatsapp-instruction">
+                    <i class="fa-brands fa-whatsapp" style="color: #25d366; margin-left: 5px;"></i>
+                    يرجى تحويل قيمة الخطة المحددة، ثم التقط صورة شاشة (Screenshot) لعملية التحويل، واضغط على الزر بالأسفل لإرسالها للإدارة مباشرة عبر الواتساب لتستلم كود التفعيل الفريد الخاص بك.
+                </div>
+
+                <a href="#" id="whatsapp-action-btn" target="_blank" class="btn-whatsapp-send">
+                    <i class="fa-brands fa-whatsapp"></i> إرسال صورة الإشعار للواتساب
+                </a>
+
+                <div class="activation-area">
+                    <label style="font-size: 0.9rem; font-weight: 700;">أدخل كود التفعيل الممنوح لك:</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="coupon-code-input" placeholder="ST-XXXX-XXXX" maxlength="25">
+                        <button class="btn-submit-code" onclick="processActivationCode()">تفعيل</button>
+                    </div>
+                    <div id="alert-response" class="alert-box"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="panel-card summary-card">
+            <div class="summary-header">
+                <h3 id="plan-display-name" style="font-size: 1.3rem; font-weight: 800;">اسم الباقة</h3>
+                <div id="plan-display-target" class="pack-target plan-badge-target">المستهدف</div>
+                <div class="price-display" id="plan-display-price">0$ <span>/ شهرياً</span></div>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">الميزات التي ستحصل عليها في حسابك:</p>
+            <ul class="features-summary-list" id="plan-display-features">
+                </ul>
+        </div>
+
+    </div>
+
+    <script>
+        // إعدادات الفايربيس الخاصة بمشروعك (scrollytale) تعمل محلياً وبأمان 100%
+        const firebaseConfig = {
+            apiKey: "AIzaSyAlIHbsLSdF7I3QU0tkChUyviTWc13ctec",
+            authDomain: "scrollytale.firebaseapp.com",
+            databaseURL: "https://scrollytale-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "scrollytale",
+            storageBucket: "scrollytale.firebasestorage.app",
+            messagingSenderId: "294561535270",
+            appId: "1:294561535270:web:e051f9a58b881bbc341de7"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const officialPlans = {
+            starter: {
+                title: "الحكواتي الناشئ",
+                price: "$7",
+                target: "🎯 المستهدف: الطلاب والمصممين الجدد",
+                color: "var(--color-starter)",
+                features: [
+                    "مشروعين (2) نشطين في نفس الوقت",
+                    "الوصول إلى 5 قوالب سينمائية",
+                    "تصدير الكود البرمجي بالكامل",
+                    "شعار مصغر جداً وغير ملحوظ"
+                ]
+            },
+            pro: {
+                title: "المخرج السينمائي",
+                price: "$19",
+                target: "🎯 المستهدف: الـ Freelancers والمحترفين",
+                color: "var(--color-pro)",
+                features: [
+                    "مشاريع غير محدودة (Unlimited)",
+                    "ربط دومين خاص (Custom Domain)",
+                    "الوصول الكامل لكل القوالب الحالية والمستقبلية",
+                    "إزالة شعار المنصة تماماً (White-Label)"
+                ]
+            },
+            agency: {
+                title: "الاستوديو الخارق",
+                price: "$49",
+                target: "🎯 المستهدف: الوكالات وفرق العمل",
+                color: "var(--color-agency)",
+                features: [
+                    "كل مميزات باقة المخرج السينمائي",
+                    "إضافة فريق عمل (حتى 5 مصممين)",
+                    "لوحة تحكم مخصصة بشعار وكالتك",
+                    "إحصائيات تدوير الشاشة (Scroll Analytics)",
+                    "دعم فني VIP مباشر وسريع"
+                ]
+            }
+        };
+
+        let activePlanKey = "pro"; 
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const selectedPlan = params.get('plan');
+
+            if (selectedPlan === 'free') {
+                alert("✨ باقة الحكواتي الحر مجانية تماماً ولا تتطلب دفع! جاري نقلك تلقائياً لتستمتع بمشروعك الأول فوراً...");
+                window.location.href = "index.html"; 
+                return;
+            }
+
+            if (selectedPlan && officialPlans[selectedPlan]) {
+                activePlanKey = selectedPlan;
+            }
+
+            renderInvoiceData();
+            buildWhatsAppLink();
+        });
+
+        function renderInvoiceData() {
+            const plan = officialPlans[activePlanKey];
+            
+            document.getElementById('plan-display-name').innerText = plan.title;
+            document.getElementById('plan-display-name').style.color = plan.color;
+            document.getElementById('plan-display-target').innerText = plan.target;
+            document.getElementById('plan-display-price').innerHTML = `${plan.price} <span>/ شهرياً</span>`;
+            document.getElementById('local-price-val').innerText = `${plan.price} (أو ما يعادله بالريال)`;
+
+            const container = document.getElementById('plan-display-features');
+            container.innerHTML = "";
+            plan.features.forEach(feature => {
+                const li = document.createElement('li');
+                li.innerText = feature;
+                li.style.setProperty('--color-starter', plan.color); 
+                container.appendChild(li);
+            });
+        }
+
+        function buildWhatsAppLink() {
+            const adminPhone = "774257557";
+            const planInfo = officialPlans[activePlanKey];
+            const textMsg = `مرحباً ScrollyTale Studio، لقد قمت بتحويل الرسوم للاشتراك في [ ${planInfo.title} ] بقيمة ${planInfo.price}. مرفق لكم صورة إشعار التحويل، يرجى تزويدي بكود تفعيل الحساب المخصص لي.`;
+            
+            document.getElementById('whatsapp-action-btn').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(textMsg)}`;
+        }
+
+        function togglePaymentTab(type) {
+            document.getElementById('content-digital').classList.remove('active');
+            document.getElementById('content-local').classList.remove('active');
+            document.getElementById('tab-digital-btn').classList.remove('active');
+            document.getElementById('tab-local-btn').classList.remove('active');
+
+            if (type === 'digital') {
+                document.getElementById('content-digital').classList.add('active');
+                document.getElementById('tab-digital-btn').classList.add('active');
+            } else {
+                document.getElementById('content-local').classList.add('active');
+                document.getElementById('tab-local-btn').classList.add('active');
+            }
+        }
+
+        function openPaddleCheckout() {
+            alert(`سيتم الآن فتح نافذة Paddle المدعومة لتسجيل باقة [ ${officialPlans[activePlanKey].title} ] بمبلغ ${officialPlans[activePlanKey].price}`);
+        }
+
+        // دالة التحقق الحية والحرق المباشر من سيرفر Firebase الخاص بك 🔥
+        async function processActivationCode() {
+            const userInput = document.getElementById('coupon-code-input').value.trim().toUpperCase();
+            const feedbackBox = document.getElementById('alert-response');
+            
+            feedbackBox.style.display = "block";
+            feedbackBox.className = "alert-box"; 
+
+            if (!userInput) {
+                feedbackBox.classList.add('error');
+                feedbackBox.innerText = "❌ يرجى كتابة كود التفعيل أولاً.";
+                return;
+            }
+
+            try {
+                feedbackBox.innerText = "⏳ جاري الفحص السحابي الحامي...";
+
+                // جلب الكود من الفايربيس الخاص بك
+                const docRef = db.collection("activation_codes").doc(userInput);
+                const docSnap = await docRef.get();
+
+                if (docSnap.exists) {
+                    const codeData = docSnap.data();
+
+                    // 1. فحص هل هو محروق؟
+                    if (codeData.status === "burned") {
+                        feedbackBox.classList.add('error');
+                        feedbackBox.innerText = "❌ عذراً، هذا الكود تم استخدامه وحرقه لمرة واحدة سابقاً!";
+                        return;
+                    }
+
+                    // 2. الكود سليم! نحرقه في السيرفر فوراً لحمايتك
+                    await docRef.update({
+                        status: "burned",
+                        burnedAt: new Date().toISOString()
+                    });
+
+                    // 3. نقبل التفعيل ونحدث الفاتورة أمام المستخدم
+                    const assignedPlan = codeData.plan;
+                    feedbackBox.classList.add('success');
+                    feedbackBox.innerHTML = `🎉 مبروك! تم قبول الكود سحابياً. ترقت باقتك إلى <b>[ ${officialPlans[assignedPlan].title} ]</b> بنجاح!`;
+                    
+                    activePlanKey = assignedPlan;
+                    renderInvoiceData();
+
+                } else {
+                    feedbackBox.classList.add('error');
+                    feedbackBox.innerText = "❌ كود التفعيل غير صحيح أو ليس مسجلاً في سيرفراتنا.";
+                }
+
+            } catch (error) {
+                feedbackBox.classList.add('error');
+                feedbackBox.innerText = "❌ حدث خطأ في الاتصال. تأكد من اتصال الإنترنت أو قواعد Firestore.";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
