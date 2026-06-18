@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScrollyTale Studio - لوحة التحكم العالمية</title>
+    <title id="page-title">ScrollyTale Studio - لوحة التحكم العالمية</title>
     <style>
         /* ==========================================================================
            1. التأسيس والمتغيرات الديناميكية (تتغير فوراً من الإعدادات!)
@@ -266,8 +266,11 @@
             .utility-controls {
                 position: absolute;
                 top: 15px;
-                left: 15px;
             }
+            
+            /* ضبط مكان أزرار التحكم في الشاشات الصغيرة للمحاذاة التلقائية */
+            #html-root[dir="rtl"] .utility-controls { left: 15px; right: auto; }
+            #html-root[dir="ltr"] .utility-controls { right: 15px; left: auto; }
             
             #settings-panel {
                 padding: 20px;
@@ -282,80 +285,67 @@
 </head>
 <body>
 
-    <!-- 🌐 شريط التنقل المتكيف عالمياً -->
     <header class="global-navbar">
-        <!-- اللوجو -->
         <div class="nav-logo">Scrolly<span>Tale</span> Studio</div>
 
-        <!-- التبويبات المسرودة -->
         <div class="tabs-wrapper">
             <nav class="tabs-container" id="main-tabs-nav">
-                <button class="tab-btn active" data-target="templates.html">🎨 القوالب</button>
-                <button class="tab-btn" data-target="projects.html">📁 مشاريعك</button>
-                <button class="tab-btn" data-target="inquiries.html">💬 الاستفسارات</button>
-                <button class="tab-btn" data-target="packages.html">💎 الباقات</button>
+                <button class="tab-btn active" data-target="templates.html" id="tab-templates">🎨 القوالب</button>
+                <button class="tab-btn" data-target="projects.html" id="tab-projects">📁 مشاريعك</button>
+                <button class="tab-btn" data-target="inquiries.html" id="tab-inquiries">💬 الاستفسارات</button>
+                <button class="tab-btn" data-target="packages.html" id="tab-packages">💎 الباقات</button>
             </nav>
         </div>
 
-        <!-- التحكم المنعزل (الاعدادات والخروج) -->
         <div class="utility-controls">
             <button class="btn-settings" id="trigger-settings" title="الإعدادات">⚙️</button>
             <button class="btn-logout" id="btn-logout-cloud">خروج</button>
         </div>
     </header>
 
-    <!-- 📺 ساحة العرض المزدوجة المذهلة -->
     <main class="main-content-area">
-        <!-- نافذة الصفحات -->
         <iframe id="main-viewport" src="templates.html" title="Dashboard Viewport"></iframe>
 
-        <!-- لوحة التحكم الداخلية الفاخرة للإعدادات -->
         <div id="settings-panel">
             <div class="settings-grid">
-                <h2 style="font-size: 2rem; margin-bottom: 10px;">⚙️ الإعدادات العالمية</h2>
-                <p style="color: #64748b; margin-bottom: 20px;">قم بتخصيص بيئة العمل الخاصة بك لتناسب أسلوب إبداعك.</p>
+                <h2 style="font-size: 2rem; margin-bottom: 10px;" id="settings-main-title">⚙️ الإعدادات العالمية</h2>
+                <p style="color: #64748b; margin-bottom: 20px;" id="settings-sub-title">قم بتخصيص بيئة العمل الخاصة بك لتناسب أسلوب إبداعك.</p>
 
-                <!-- كرت مظهر الألوان (يعمل حياً!) -->
                 <div class="settings-card">
-                    <h3>🎨 لون الهوية (Neon Theme)</h3>
-                    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 15px;">اختر اللون المضيء للوحة التحكم الخاصة بك:</p>
+                    <h3 id="theme-card-title">🎨 لون الهوية (Neon Theme)</h3>
+                    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 15px;" id="theme-card-desc">اختر اللون المضيء للوحة التحكم الخاصة بك:</p>
                     <div class="options-row">
                         <button class="opt-btn selected" onclick="changeThemeColor('#00f2fe', 'rgba(0, 242, 254, 0.2)', this)">
-                            <span class="color-dot" style="background: #00f2fe;"></span> سايبر سيان
+                            <span class="color-dot" style="background: #00f2fe;"></span> <span class="lang-color1">سايبر سيان</span>
                         </button>
                         <button class="opt-btn" onclick="changeThemeColor('#10b981', 'rgba(16, 185, 129, 0.2)', this)">
-                            <span class="color-dot" style="background: #10b981;"></span> ماتركس أخضر
+                            <span class="color-dot" style="background: #10b981;"></span> <span class="lang-color2">ماتركس أخضر</span>
                         </button>
                         <button class="opt-btn" onclick="changeThemeColor('#a855f7', 'rgba(168, 85, 247, 0.2)', this)">
-                            <span class="color-dot" style="background: #a855f7;"></span> الماجنتا الملكي
+                            <span class="color-dot" style="background: #a855f7;"></span> <span class="lang-color3">الماجنتا الملكي</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- كرت اللغة -->
                 <div class="settings-card">
-                    <h3>🌐 لغة المنصة</h3>
+                    <h3 id="lang-card-title">🌐 لغة المنصة</h3>
                     <div class="options-row">
-                        <button class="opt-btn selected">العربية (RTl)</button>
-                        <button class="opt-btn" onclick="alert('سيتم توفير اللغة الإنجليزية في التحديث القادم بمجرد ربط القوالب!')">English (LTR)</button>
+                        <button class="opt-btn" id="lang-btn-ar" onclick="changeLanguage('ar')">العربية (RTL)</button>
+                        <button class="opt-btn" id="lang-btn-en" onclick="changeLanguage('en')">English (LTR)</button>
                     </div>
                 </div>
 
-                <!-- كرت مظهر الواجهة -->
                 <div class="settings-card">
-                    <h3>👁️ وضع الرؤية والمظهر</h3>
+                    <h3 id="view-card-title">👁️ وضع الرؤية والمظهر</h3>
                     <div class="options-row">
-                        <button class="opt-btn selected">سماوي داكن الفخامة (Deep Dark)</button>
-                        <button class="opt-btn" onclick="alert('مطور الويب الحقيقي لا يستخدم الوضع المضيء ☀️ حفاظاً على عينيه! 😉')">الوضع المضيء (خيار غير مستحب)</button>
+                        <button class="opt-btn selected" id="view-btn-dark">سماوي داكن الفخامة (Deep Dark)</button>
+                        <button class="opt-btn" id="view-btn-light" onclick="alert(currentLang === 'ar' ? 'مطور الويب الحقيقي لا يستخدم الوضع المضيء ☀️ حفاظاً على عينيه! 😉' : 'Real web developers don\'t use light mode ☀️ to save their eyes! 😉')">الوضع المضيء (خيار غير مستحب)</button>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- ==========================================================================
-       5. محرك التشغيل الذكي والربط السحابي
-       ========================================================================== */ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -377,6 +367,49 @@
         const tabButtons = document.querySelectorAll('.tab-btn');
         const btnSettings = document.getElementById('trigger-settings');
 
+        // قاموس الترجمات للوحة التحكم
+        const i18n = {
+            ar: {
+                pageTitle: "ScrollyTale Studio - لوحة التحكم العالمية",
+                tabTemplates: "🎨 القوالب",
+                tabProjects: "📁 مشاريعك",
+                tabInquiries: "💬 الاستفسارات",
+                tabPackages: "💎 الباقات",
+                logoutBtn: "خروج",
+                logoutConfirm: "هل تريد تسجيل الخروج والعودة لبوابة التأمين؟",
+                settingsMainTitle: "⚙️ الإعدادات العالمية",
+                settingsSubTitle: "قم بتخصيص بيئة العمل الخاصة بك لتناسب أسلوب إبداعك.",
+                themeCardTitle: "🎨 لون الهوية (Neon Theme)",
+                themeCardDesc: "اختر اللون المضيء للوحة التحكم الخاصة بك:",
+                color1: "سايبر سيان", color2: "ماتركس أخضر", color3: "الماجنتا الملكي",
+                langCardTitle: "🌐 لغة المنصة",
+                viewCardTitle: "👁️ وضع الرؤية والمظهر",
+                viewBtnDark: "سماوي داكن الفخامة (Deep Dark)",
+                viewBtnLight: "الوضع المضيء (خيار غير مستحب)"
+            },
+            en: {
+                pageTitle: "ScrollyTale Studio - Global Dashboard",
+                tabTemplates: "🎨 Templates",
+                tabProjects: "📁 Your Projects",
+                tabInquiries: "💬 Inquiries",
+                tabPackages: "💎 Plans & Packages",
+                logoutBtn: "Logout",
+                logoutConfirm: "Do you want to sign out and return to the login secure gateway?",
+                settingsMainTitle: "⚙️ Global Settings",
+                settingsSubTitle: "Customize your environment to perfectly fit your creative flow.",
+                themeCardTitle: "🎨 Identity Color (Neon Theme)",
+                themeCardDesc: "Select the glowing color theme for your dashboard:",
+                color1: "Cyber Cyan", color2: "Matrix Green", color3: "Royal Magenta",
+                langCardTitle: "🌐 Platform Language",
+                viewCardTitle: "👁️ Interface Vision Mode",
+                viewBtnDark: "Deep Dark Luxury",
+                viewBtnLight: "Light Mode (Not recommended)"
+            }
+        };
+
+        // لغة النظام الحالية
+        window.currentLang = localStorage.getItem('scrolly_lang') || 'ar';
+
         // [1] حارس البوابة المطور مع مهلة أمان لمنع الطرد الخاطئ عند التحميل السريع
         onAuthStateChanged(auth, (user) => {
             if (!user) {
@@ -392,14 +425,16 @@
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 document.querySelector('.tab-btn.active')?.classList.remove('active');
-                btnSettings.classList.remove('active'); // إلغاء نشاط الإعدادات
-                settingsPanel.classList.remove('active'); // إخفاء لوحة الإعدادات
+                btnSettings.classList.remove('active'); 
+                settingsPanel.classList.remove('active'); 
                 
                 button.classList.add('active');
                 viewport.style.opacity = '0';
 
                 setTimeout(() => {
-                    viewport.src = button.getAttribute('data-target');
+                    // نقوم بتمرير معيار اللغة في الرابط ليتوافق المتصفح الداخلي مع اللغة الحالية
+                    const targetPage = button.getAttribute('data-target');
+                    viewport.src = targetPage + `?lang=${window.currentLang}`;
                     viewport.style.display = 'block';
                     viewport.style.opacity = '1';
                 }, 150);
@@ -408,18 +443,15 @@
 
         // [3] كود زر الإعدادات المعزول (Inline Trigger)
         btnSettings.addEventListener('click', () => {
-            // إلغاء نشاط كل أزرار التبويبات الأخرى
             document.querySelector('.tab-btn.active')?.classList.remove('active');
-            
-            // تفعيل زر الإعدادات وإظهار اللوحة
             btnSettings.classList.add('active');
-            viewport.style.display = 'none'; // إخفاء الـ iframe تماماً
-            settingsPanel.classList.add('active'); // إطلاق لوحة الإعدادات
+            viewport.style.display = 'none'; 
+            settingsPanel.classList.add('active'); 
         });
 
         // [4] تسجيل الخروج الآمن
         document.getElementById('btn-logout-cloud').addEventListener('click', async () => {
-            if(confirm("هل تريد تسجيل الخروج والعودة لبوابة التأمين؟")) {
+            if(confirm(i18n[window.currentLang].logoutConfirm)) {
                 await signOut(auth);
                 window.location.href = "index.html";
             }
@@ -429,11 +461,63 @@
         window.changeThemeColor = function(color, glow, element) {
             document.documentElement.style.setProperty('--neon-active', color);
             document.documentElement.style.setProperty('--neon-glow', glow);
-            
-            // تحديث الكلاس المختار للزر المعني
             element.parentElement.querySelector('.opt-btn.selected').classList.remove('selected');
             element.classList.add('selected');
         }
+
+        // دالة تبديل اللغات الحية للوحة الرئيسية
+        window.changeLanguage = function(lang) {
+            window.currentLang = lang;
+            localStorage.setItem('scrolly_lang', lang);
+            applyDashboardLanguage();
+        }
+
+        function applyDashboardLanguage() {
+            const root = document.getElementById('html-root');
+            const data = i18n[window.currentLang];
+
+            // تحويل اتجاه الهيكل والـ Dir
+            root.setAttribute('lang', window.currentLang);
+            root.setAttribute('dir', window.currentLang === 'ar' ? 'rtl' : 'ltr');
+
+            // ترجمة عناصر الواجهة
+            document.getElementById('page-title').innerText = data.pageTitle;
+            document.getElementById('tab-templates').innerText = data.tabTemplates;
+            document.getElementById('tab-projects').innerText = data.tabProjects;
+            document.getElementById('tab-inquiries').innerText = data.tabInquiries;
+            document.getElementById('tab-packages').innerText = data.tabPackages;
+            document.getElementById('btn-logout-cloud').innerText = data.logoutBtn;
+            
+            // نصوص لوحة الإعدادات
+            document.getElementById('settings-main-title').innerText = data.settingsMainTitle;
+            document.getElementById('settings-sub-title').innerText = data.settingsSubTitle;
+            document.getElementById('theme-card-title').innerText = data.themeCardTitle;
+            document.getElementById('theme-card-desc').innerText = data.themeCardDesc;
+            document.querySelector('.lang-color1').innerText = data.color1;
+            document.querySelector('.lang-color2').innerText = data.color2;
+            document.querySelector('.lang-color3').innerText = data.color3;
+            document.getElementById('lang-card-title').innerText = data.langCardTitle;
+            document.getElementById('view-card-title').innerText = data.viewCardTitle;
+            document.getElementById('view-btn-dark').innerText = data.viewBtnDark;
+            document.getElementById('view-btn-light').innerText = data.viewBtnLight;
+
+            // تحديث زر اللغة المختار بصرياً
+            document.getElementById('lang-btn-ar').classList.remove('selected');
+            document.getElementById('lang-btn-en').classList.remove('selected');
+            document.getElementById(`lang-btn-${window.currentLang}`).classList.add('selected');
+
+            // تحديث رابط الـ iframe النشط حالياً ليعكس اللغة الجديدة فوراً
+            const currentTab = document.querySelector('.tab-btn.active');
+            if (currentTab) {
+                const targetPage = currentTab.getAttribute('data-target');
+                viewport.src = targetPage + `?lang=${window.currentLang}`;
+            }
+        }
+
+        // تشغيل الترجمة فور انتهاء تحميل العناصر
+        window.addEventListener('DOMContentLoaded', () => {
+            applyDashboardLanguage();
+        });
     </script>
 </body>
 </html>
