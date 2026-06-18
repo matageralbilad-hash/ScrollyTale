@@ -231,49 +231,99 @@
         }
 
         /* ==========================================================================
-           4. الهيكلة الخاصة بالجوالات والتابلت (Responsive Engine)
+           4. الهيكلة الخاصة بالجوالات والتابلت (Responsive Engine) - تم التحديث والإصلاح بالكامل 🚀
            ========================================================================== */
         @media (max-width: 900px) {
             .global-navbar {
                 height: auto;
                 flex-direction: column;
-                padding: 15px;
-                gap: 15px;
+                padding: 12px;
+                gap: 12px;
+                align-items: stretch;
             }
 
+            /* سطر علوي يحتوي على الشعار وأزرار التحكم معاً لتوفير المساحة ومنع التداخل */
+            .global-navbar {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                align-items: center;
+            }
+
+            .nav-logo {
+                font-size: 1.2rem;
+                grid-column: 1;
+            }
+
+            .utility-controls {
+                position: static !important; /* إلغاء التموضع المطلق المسبب للمشاكل */
+                grid-column: 2;
+                gap: 8px;
+            }
+
+            .btn-settings {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                font-size: 1rem;
+            }
+
+            .btn-logout {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+                border-radius: 8px;
+            }
+
+            /* حاوية التبويبات تأخذ السطر السفلي بالكامل بشكل منفصل */
             .tabs-wrapper {
+                grid-column: 1 / span 2;
                 width: 100%;
-                justify-content: center;
+                justify-content: flex-start;
+                margin-top: 4px;
             }
 
-            /* تحويل التبويبات لشريط سحب أفقي ناعم على الجوال */
+            /* تحويل التبويبات لشريط سحب أفقي ناعم جداً ومستقر */
             .tabs-container {
                 width: 100%;
                 overflow-x: auto;
+                white-space: nowrap;
+                display: flex;
+                flex-wrap: nowrap; /* منع نزول التبويبات لسطر جديد */
+                gap: 4px;
+                padding: 4px;
                 scrollbar-width: none; /* إخفاء شريط التمرير للـ Firefox */
                 -webkit-overflow-scrolling: touch;
-                padding: 4px;
             }
+            
             .tabs-container::-webkit-scrollbar {
                 display: none; /* إخفاء شريط التمرير للـ Chrome والـ Safari */
             }
 
             .tab-btn {
-                padding: 10px 16px;
-                font-size: 0.88rem;
+                padding: 8px 14px;
+                font-size: 0.85rem;
+                flex: 0 0 auto; /* منع انكماش الأزرار لكي تظهر كاملة عند السحب */
+                border-radius: 8px;
             }
 
-            .utility-controls {
-                position: absolute;
-                top: 15px;
-            }
-            
-            /* ضبط مكان أزرار التحكم في الشاشات الصغيرة للمحاذاة التلقائية */
-            #html-root[dir="rtl"] .utility-controls { left: 15px; right: auto; }
-            #html-root[dir="ltr"] .utility-controls { right: 15px; left: auto; }
-            
             #settings-panel {
-                padding: 20px;
+                padding: 20px 15px;
+            }
+
+            .settings-card {
+                padding: 16px;
+                border-radius: 14px;
+            }
+
+            .settings-grid h2 {
+                font-size: 1.5rem !important;
+            }
+
+            .opt-btn {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+                border-radius: 10px;
+                flex: 1 1 calc(50% - 10px); /* توزيع مرن للأزرار داخل الإعدادات */
+                text-align: center;
             }
         }
 
