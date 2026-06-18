@@ -74,7 +74,10 @@
 
         .features-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
         .features-list li { font-size: 0.88rem; color: #cbd5e1; display: flex; align-items: center; gap: 8px; }
-        .features-list li::before { content: '✦'; color: var(--color-starter); }
+        
+        /* ضبط محاذاة الأيقونات بناء على اتجاه الصفحة */
+        html[dir="rtl"] .features-list li::before { content: '✦'; color: var(--color-starter); }
+        html[dir="ltr"] .features-list li::before { content: '✦'; color: var(--color-starter); }
         .package-card.popular .features-list li::before { color: var(--color-pro); }
 
         .btn-purchase {
@@ -89,7 +92,6 @@
         .package-card[data-pack="pro"] .btn-purchase:hover { background: #12d192; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
         .package-card[data-pack="agency"] .btn-purchase:hover { background: var(--color-agency); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); border-color: var(--color-agency); }
 
-        /* 🌟 ستايل زر خطتك الحالية المقفل والمميز */
         .btn-purchase.current-plan-btn {
             background: rgba(255, 255, 255, 0.08) !important;
             color: #cbd5e1 !important;
@@ -100,14 +102,8 @@
             transform: none !important;
         }
 
-        /* 🌟 ستايل الهواتف الذكية المعدل */
         @media (max-width: 900px) {
-            /* تعديل التوزيع ليكون كرت واحد (باقة واحدة) في السطر لسهولة القراءة */
-            .packages-grid { 
-                grid-template-columns: repeat(2, 1fr); 
-                gap: 20px; /* زيادة الفراغ بين الكروت الرأسية لتنفس التصميم */
-            }
-            
+            .packages-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
             .package-card { padding: 20px 18px; border-radius: 14px; }
             .pack-title { font-size: 1.2rem; }
             .pack-price { font-size: 1.8rem; margin-bottom: 8px; }
@@ -118,90 +114,26 @@
             .btn-purchase { font-size: 0.9rem; padding: 12px; border-radius: 8px; }
             .badge-popular { font-size: 0.7rem; padding: 4px 12px; top: -11px; }
         }
+
+        @media (max-width: 600px) {
+            .packages-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
     <header class="header-section">
-        <h1>ترقية الإمكانيات الإبداعية</h1>
-        <p>اختر الخطة المثالية لرحلتك السينمائية داخل عالم السرد البصري.</p>
+        <h1 id="main-title">ترقية الإمكانيات الإبداعية</h1>
+        <p id="main-desc">اختر الخطة المثالية لرحلتك السينمائية داخل عالم السرد البصري.</p>
     </header>
 
-    <main class="packages-grid">
-
-        <div class="package-card" data-pack="free">
-            <div>
-                <h2 class="pack-title">باقة الحكواتي الحر</h2>
-                <div class="pack-price" style="color: var(--color-free);">0$ <span>/ للأبد</span></div>
-                <div class="pack-target">🎯 المستهدف: الهواة والمستكشفين</div>
-                <p class="pack-desc">تذوق سحر التحريك السينمائي وابدأ خطواتك الأولى بدون أي تكاليف مادية.</p>
-                <ul class="features-list">
-                    <li>مشروع واحد (1) نشط بالكامل</li>
-                    <li>قالبان سينمائيان (2) للعمل</li>
-                    <li>تصدير الكود النظيف للموقع</li>
-                    <li style="color: #ef4444;">❌ شعار المنصة إلزامي بالأسفل</li>
-                </ul>
-            </div>
-            <a href="checkout.html?plan=free" class="btn-purchase">ابدأ التجربة مجاناً</a>
-        </div>
-
-        <div class="package-card" data-pack="starter">
-            <div>
-                <h2 class="pack-title">الحكواتي الناشئ</h2>
-                <div class="pack-price" style="color: var(--color-starter);">7$ <span>/ شهرياً</span></div>
-                <div class="pack-target">🎯 المستهدف: الطلاب والمصممين الجدد</div>
-                <p class="pack-desc">مثالية لبناء بورتفوليو شخصي مميز وجذب عملائك الأوائل بأسلوب فريد.</p>
-                <ul class="features-list">
-                    <li>مشروعين (2) نشطين في نفس الوقت</li>
-                    <li>الوصول إلى 5 قوالب سينمائية</li>
-                    <li>تصدير الكود البرمجي بالكامل</li>
-                    <li style="color: #eab308;">⚠️ شعار المنصة موجود (لكن صغير جداً)</li>
-                </ul>
-            </div>
-            <a href="checkout.html?plan=starter" class="btn-purchase">احصل على الباقة</a>
-        </div>
-
-        <div class="package-card popular" data-pack="pro">
-            <div class="badge-popular">🔥 الأكثر طلباً ومبيعاً</div>
-            <div>
-                <h2 class="pack-title">المخرج السينمائي</h2>
-                <div class="pack-price" style="color: var(--color-pro);">19$ <span>/ شهرياً</span></div>
-                <div class="pack-target">🎯 المستهدف: الـ Freelancers والمحترفين</div>
-                <p class="pack-desc">الحصان الرابح لكل مصمم ومطور يريد كسر الجمود وبناء مشاريع تجارية بلا قيود.</p>
-                <ul class="features-list">
-                    <li>مشاريع غير محدودة (Unlimited)</li>
-                    <li>ربط دومين خاص (Custom Domain)</li>
-                    <li>الوصول الكامل لكل القوالب الحالية والمستقبلية</li>
-                    <li>إزالة شعار المنصة تماماً (White-Label)</li>
-                </ul>
-            </div>
-            <a href="checkout.html?plan=pro" class="btn-purchase">احصل على الباقة</a>
-        </div>
-
-        <div class="package-card" data-pack="agency">
-            <div>
-                <h2 class="pack-title">الاستوديو الخارق</h2>
-                <div class="pack-price" style="color: var(--color-agency);">49$ <span>/ شهرياً</span></div>
-                <div class="pack-target">🎯 المستهدف: الوكالات وفرق العمل</div>
-                <p class="pack-desc">القوة القصوى لشركات التسويق والبرمجة التي تدير مشاريع عملاء ضخمة ومتعددة.</p>
-                <ul class="features-list">
-                    <li>كل مميزات باقة المخرج السينمائي</li>
-                    <li>إضافة فريق عمل (حتى 5 مصممين)</li>
-                    <li>لوحة تحكم مخصصة بشعار وكالتك</li>
-                    <li>إحصائيات تدوير الشاشة (Scroll Analytics)</li>
-                    <li>دعم فني VIP مباشر وسريع</li>
-                </ul>
-            </div>
-            <a href="checkout.html?plan=agency" class="btn-purchase">احصل على الباقة</a>
-        </div>
-
-    </main>
+    <!-- تم تحويل بناء الكروت بالكامل ليكون ديناميكياً بناءً على ملف اللغة -->
+    <main class="packages-grid" id="packages-container"></main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-        // نفس إعدادات قاعدة بياناتك السحابية الثابتة
         const firebaseConfig = {
             apiKey: "AIzaSyAlIHbsLSdF7I3QU0tkChUyviTWc13ctec",
             authDomain: "scrollytale.firebaseapp.com",
@@ -214,55 +146,210 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // مراقبة حالة الحساب والتعرف على خطته الفريدة
+        // [1] محرك اللغات الديناميكي i18n لصفحة الباقات
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentLang = urlParams.get('lang') || 'ar';
+
+        const i18n = {
+            ar: {
+                title: "باقات ScrollyTale Studio",
+                mainTitle: "ترقية الإمكانيات الإبداعية",
+                mainDesc: "اختر الخطة المثالية لرحلتك السينمائية داخل عالم السرد البصري.",
+                popularBadge: "🔥 الأكثر طلباً ومبيعاً",
+                currentPlanText: "✓ خطتك الحالية",
+                alertExpired: "انتهت صلاحية باقتك الحالية (30 يوماً)، تم إعادتك للباقة المجانية.",
+                plans: {
+                    free: {
+                        title: "باقة الحكواتي الحر",
+                        price: "0$", period: "/ للأبد",
+                        target: "🎯 المستهدف: الهواة والمستكشفين",
+                        desc: "تذوق سحر التحريك السينمائي وابدأ خطواتك الأولى بدون أي تكاليف مادية.",
+                        btn: "ابدأ التجربة مجاناً",
+                        features: [
+                            "مشروع واحد (1) نشط بالكامل",
+                            "قالبان سينمائيان (2) للعمل",
+                            "تصدير الكود النظيف للموقع",
+                            "<span style='color: #ef4444;'>❌ شعار المنصة إلزامي بالأسفل</span>"
+                        ]
+                    },
+                    starter: {
+                        title: "الحكواتي الناشئ",
+                        price: "7$", period: "/ شهرياً",
+                        target: "🎯 المستهدف: الطلاب والمصممين الجدد",
+                        desc: "مثالية لبناء بورتفوليو شخصي مميز وجذب عملائك الأوائل بأسلوب فريد.",
+                        btn: "احصل على الباقة",
+                        features: [
+                            "مشروعين (2) نشطين في نفس الوقت",
+                            "الوصول إلى 5 قوالب سينمائية",
+                            "تصدير الكود البرمجي بالكامل",
+                            "<span style='color: #eab308;'>⚠️ شعار المنصة موجود (لكن صغير جداً)</span>"
+                        ]
+                    },
+                    pro: {
+                        title: "المخرج السينمائي",
+                        price: "19$", period: "/ شهرياً",
+                        target: "🎯 المستهدف: الـ Freelancers والمحترفين",
+                        desc: "الحصان الرابح لكل مصمم ومطور يريد كسر الجمود وبناء مشاريع تجارية بلا قيود.",
+                        btn: "احصل على الباقة",
+                        features: [
+                            "مشاريع غير محدودة (Unlimited)",
+                            "ربط دومين خاص (Custom Domain)",
+                            "الوصول الكامل لكل القوالب الحالية والمستقبلية",
+                            "إزالة شعار المنصة تماماً (White-Label)"
+                        ]
+                    },
+                    agency: {
+                        title: "الاستوديو الخارق",
+                        price: "49$", period: "/ شهرياً",
+                        target: "🎯 المستهدف: الوكالات وفرق العمل",
+                        desc: "القوة القصوى لشركات التسويق والبرمجة التي تدير مشاريع عملاء ضخمة ومتعددة.",
+                        btn: "احصل على الباقة",
+                        features: [
+                            "كل مميزات باقة المخرج السينمائي",
+                            "إضافة فريق عمل (حتى 5 مصممين)",
+                            "لوحة تحكم مخصصة بشعار وكالتك",
+                            "إحصائيات تدوير الشاشة (Scroll Analytics)",
+                            "دعم فني VIP مباشر وسريع"
+                        ]
+                    }
+                }
+            },
+            en: {
+                title: "ScrollyTale Studio Plans",
+                mainTitle: "Upgrade Your Creative Potential",
+                mainDesc: "Choose the perfect plan for your cinematic journey into visual storytelling.",
+                popularBadge: "🔥 Most Popular & Best Seller",
+                currentPlanText: "✓ Your Current Plan",
+                alertExpired: "Your current plan has expired (30 days). You have been reverted to the Free plan.",
+                plans: {
+                    free: {
+                        title: "Free Storyteller",
+                        price: "$0", period: "/ Forever",
+                        target: "🎯 Target: Hobbyists & Explorers",
+                        desc: "Taste the magic of cinematic animation and take your first steps with zero costs.",
+                        btn: "Start Free Trial",
+                        features: [
+                            "1 Fully Active Project",
+                            "2 Cinematic Templates",
+                            "Clean Code Export",
+                            "<span style='color: #ef4444;'>❌ Platform Watermark Required</span>"
+                        ]
+                    },
+                    starter: {
+                        title: "Starter Storyteller",
+                        price: "$7", period: "/ Monthly",
+                        target: "🎯 Target: Students & New Designers",
+                        desc: "Perfect for building a stunning personal portfolio and attracting your first clients.",
+                        btn: "Get Started",
+                        features: [
+                            "2 Active Projects Simultanously",
+                            "Access to 5 Cinematic Templates",
+                            "Full Source Code Export",
+                            "<span style='color: #eab308;'>⚠️ Mini Platform Watermark Included</span>"
+                        ]
+                    },
+                    pro: {
+                        title: "Cinematic Director",
+                        price: "$19", period: "/ Monthly",
+                        target: "🎯 Target: Freelancers & Professionals",
+                        desc: "The ultimate choice for designers & developers to build unlimited commercial projects.",
+                        btn: "Get Pro Pack",
+                        features: [
+                            "Unlimited Projects",
+                            "Custom Domain Integration",
+                            "Full Access to Current & Future Templates",
+                            "Complete Watermark Removal (White-Label)"
+                        ]
+                    },
+                    agency: {
+                        title: "Super Studio",
+                        price: "$49", period: "/ Monthly",
+                        target: "🎯 Target: Agencies & Teams",
+                        desc: "Maximum power for marketing and dev agencies managing large, multi-client projects.",
+                        btn: "Get Agency Pack",
+                        features: [
+                            "All Cinematic Director Features",
+                            "Team Collaboration (Up to 5 Designers)",
+                            "Custom Dashboard with Your Logo",
+                            "Advanced Scroll Analytics",
+                            "VIP Direct Priority Support"
+                        ]
+                    }
+                }
+            }
+        };
+
+        // [2] تطبيق اللغة الحالية وضبط الواجهة الأساسية
+        const langData = i18n[currentLang];
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+        document.title = langData.title;
+        document.getElementById('main-title').innerText = langData.mainTitle;
+        document.getElementById('main-desc').innerText = langData.mainDesc;
+
+        // [3] بناء شبكة الباقات برمجياً لدعم اللغتين بدون تكرار الكود
+        const gridContainer = document.getElementById('packages-container');
+        
+        Object.keys(langData.plans).forEach(key => {
+            const plan = langData.plans[key];
+            const isPopular = key === 'pro';
+            
+            const cardHTML = `
+                <div class="package-card ${isPopular ? 'popular' : ''}" data-pack="${key}">
+                    ${isPopular ? `<div class="badge-popular">${langData.popularBadge}</div>` : ''}
+                    <div>
+                        <h2 class="pack-title">${plan.title}</h2>
+                        <div class="pack-price" style="color: var(--color-${key});">${plan.price} <span>${plan.period}</span></div>
+                        <div class="pack-target">${plan.target}</div>
+                        <p class="pack-desc">${plan.desc}</p>
+                        <ul class="features-list">
+                            ${plan.features.map(f => `<li>${f}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <a href="checkout.html?plan=${key}&lang=${currentLang}" class="btn-purchase">${plan.btn}</a>
+                </div>
+            `;
+            gridContainer.insertAdjacentHTML('beforeend', cardHTML);
+        });
+
+        // [4] مراقبة حالة الحساب والمزامنة مع الخطط المشتراة
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // استخدام الـ uid الخاص بالمستخدم لضمان جلب خطته هو فقط ومزامنتها
                 const storageKey = `scrolly_plan_${user.uid}`;
                 let savedData = JSON.parse(localStorage.getItem(storageKey));
-
-                let currentPlan = 'free'; // الافتراضي
+                let currentPlan = 'free';
 
                 if (savedData) {
                     const currentTime = Date.now();
-                    
-                    // ⏱️ الفحص: هل انتهت فترة الـ 30 يوماً (الشهر)؟
                     if (currentTime > savedData.expiryDate) {
-                        alert("انتهت صلاحية باقتك الحالية (30 يوماً)، تم إعادتك للباقة المجانية.");
-                        localStorage.removeItem(storageKey); // حذف الباقة المنتهية
+                        alert(langData.alertExpired);
+                        localStorage.removeItem(storageKey);
                         currentPlan = 'free';
                     } else {
-                        currentPlan = savedData.planName; // الباقة لا تزال صالحة وشغالة
+                        currentPlan = savedData.planName;
                     }
                 }
-
-                // تحديث الواجهة وتغيير الزر للباقة النشطة
                 updateUIWithActivePlan(currentPlan);
-
             } else {
-                // إذا لم يسجل دخوله اصلاً، تظهر الباقة المجانية كخطة افتراضية
                 updateUIWithActivePlan('free');
             }
         });
 
-        // دالة تحويل الزر ديناميكياً لـ "خطتك الحالية"
+        // [5] دالة تحديث شكل الباقة النشطة (قفلها وتغيير النص)
         function updateUIWithActivePlan(plan) {
-            // إعادة ضبط جميع الأزرار أولاً لشكلها الطبيعي
             document.querySelectorAll('.btn-purchase').forEach(btn => {
                 btn.classList.remove('current-plan-btn');
-                if (btn.innerText === `✓ خطتك الحالية`) {
-                    btn.innerText = "احصل على الباقة";
-                }
+                const pKey = btn.closest('.package-card').getAttribute('data-pack');
+                btn.innerText = langData.plans[pKey].btn;
             });
 
-            // العثور على باقة المستخدم المحددة والتحكم بها
             const activeCard = document.querySelector(`.package-card[data-pack="${plan}"]`);
             if (activeCard) {
                 const purchaseBtn = activeCard.querySelector('.btn-purchase');
                 if (purchaseBtn) {
-                    purchaseBtn.innerHTML = `✓ خطتك الحالية`;
-                    purchaseBtn.removeAttribute('href'); // حظر تحويله لصفحة الدفع مجدداً
-                    purchaseBtn.classList.add('current-plan-btn'); // قفل الزر
+                    purchaseBtn.innerHTML = langData.currentPlanText;
+                    purchaseBtn.removeAttribute('href');
+                    purchaseBtn.classList.add('current-plan-btn');
                 }
             }
         }
