@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة ضخ أكواد التفعيل - ScrollyTale</title>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         body {
             background: #09090b;
@@ -66,10 +64,10 @@
 <body>
 
     <div class="container">
-        <h1>🚀 مصنع ضخ الأكواد السحابي</h1>
-        <p>هذه الأداة ستقوم بإنشاء جدول <b>activation_codes</b> في الفايربيس الخاص بك وضخ 100 كود تفعيل جاهز وموزع على الباقات (Starter, Pro, Agency).</p>
+        <h1>🚀 مصنع ضخ الأكواد السحابي (المطور V2)</h1>
+        <p>هذه الأداة تستخدم أحدث تقنيات Firebase SDK v10 لضخ 100 كود تفعيل مباشرة داخل قاعدة بياناتك.</p>
         
-        <button id="btn-action" class="btn-start" onclick="startSeedingNow()">ابدأ عملية الضخ الآن</button>
+        <button id="btn-action" class="btn-start">ابدأ عملية الضخ الآن</button>
 
         <div id="progress-container" class="progress-box">
             ⏳ جاري الرفع: <span id="current-count">0</span> / 100
@@ -80,8 +78,11 @@
         <div class="console-log" id="console-output">>> بانتظار أمر البدء...</div>
     </div>
 
-    <script>
-        // إعدادات مشروعك الحقيقية لـ scrollytale
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // الإعدادات الرسمية لمشروعك
         const firebaseConfig = {
             apiKey: "AIzaSyAlIHbsLSdF7I3QU0tkChUyviTWc13ctec",
             authDomain: "scrollytale.firebaseapp.com",
@@ -92,11 +93,11 @@
             appId: "1:294561535270:web:e051f9a58b881bbc341de7"
         };
 
-        // تشغيل الفايربيس
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // تشغيل الفايربيس الحديث
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        // قائمة الـ 100 كود المعتمدة والمقسمة على الباقات
+        // قائمة الـ 100 كود الجاهزة
         const codesToUpload = {
           "ST-A3F9-D8C2": "starter", "ST-B7E1-A4D9": "starter", "ST-C8D2-F5E3": "starter", "ST-E4F6-B2C1": "starter", "ST-F9A1-D3C8": "starter", "ST-9B2C-E4F7": "starter", "ST-A1D8-C3F2": "starter", "ST-B5E4-A9D1": "starter", "ST-C2F6-E3B8": "starter", "ST-D4A9-C1F5": "starter", "ST-E7B2-D8C4": "starter", "ST-F1F3-A5B9": "starter", "ST-8C2D-E4A7": "starter", "ST-9F5B-C1D8": "starter", "ST-A4E3-F2B6": "starter", "ST-B8D1-C9A5": "starter", "ST-C5F7-E2B4": "starter", "ST-D1A8-C3F9": "starter", "ST-E9B4-D2C6": "starter", "ST-F6F2-A1B7": "starter", "ST-7C3D-E5A8": "starter", "ST-8F6B-C2D9": "starter", "ST-A5E4-F3B7": "starter", "ST-B9D2-C1A6": "starter", "ST-C6F8-E3B5": "starter", "ST-D2A9-C4F1": "starter", "ST-E1B5-D3C7": "starter", "ST-F7F3-A2B8": "starter", "ST-6C4D-E6A9": "starter", "ST-7F7B-C3D1": "starter", "ST-A6E5-F4B8": "starter", "ST-B1D3-C2A7": "starter", "ST-C7F9-E4B6": "starter", "ST-D3A1-C5F2": "starter", "ST-E2B6-D4C8": "starter", "ST-F8F4-A3B9": "starter", "ST-5C5D-E7A1": "starter", "ST-6F8B-C4D2": "starter", "ST-A7E6-F5B9": "starter", "ST-B2D4-C3A8": "starter",
           "ST-PRO-A1B2": "pro", "ST-PRO-C3D4": "pro", "ST-PRO-E5F6": "pro", "ST-PRO-7G8H": "pro", "ST-PRO-9I0J": "pro", "ST-PRO-K1L2": "pro", "ST-PRO-M3N4": "pro", "ST-PRO-O5P6": "pro", "ST-PRO-Q7R8": "pro", "ST-PRO-S9T0": "pro", "ST-PRO-U1V2": "pro", "ST-PRO-W3X4": "pro", "ST-PRO-Y5Z6": "pro", "ST-PRO-A7C9": "pro", "ST-PRO-B8D2": "pro", "ST-PRO-E3F5": "pro", "ST-PRO-G6H8": "pro", "ST-PRO-J1K3": "pro", "ST-PRO-L4M6": "pro", "ST-PRO-N7P9": "pro", "ST-PRO-Q2R4": "pro", "ST-PRO-S5T7": "pro", "ST-PRO-U8V0": "pro", "ST-PRO-W1X3": "pro", "ST-PRO-Y4Z6": "pro", "ST-PRO-A9C2": "pro", "ST-PRO-B3D5": "pro", "ST-PRO-E6F8": "pro", "ST-PRO-G9H1": "pro", "ST-PRO-J4K6": "pro", "ST-PRO-L7M9": "pro", "ST-PRO-N2P4": "pro", "ST-PRO-Q5R7": "pro", "ST-PRO-S8T0": "pro", "ST-PRO-U3V5": "pro", "ST-PRO-W6X8": "pro", "ST-PRO-Y9Z1": "pro", "ST-PRO-A4C6": "pro", "ST-PRO-B7D9": "pro", "ST-PRO-E2F4": "pro",
@@ -112,40 +113,43 @@
 
             btn.disabled = true;
             progressContainer.style.display = "block";
-            statusText.innerText = "⏳ يرجى عدم إغلاق المتصفح، يتم الآن الاتصال بـ Firestore...";
-            consoleOutput.innerHTML = "Starting process...<br>";
+            statusText.className = "";
+            statusText.innerText = "⏳ جاري الاتصال المباشر بالسيرفر وضخ الأكواد...";
+            consoleOutput.innerHTML = "Initializing connection to Firestore...<br>";
 
             let counter = 0;
             const entries = Object.entries(codesToUpload);
 
             for (const [code, planName] of entries) {
                 try {
-                    // الرفع كود تلو الآخر مع تحديد الـ ID ليكون هو نفس الكود
-                    await db.collection("activation_codes").doc(code).set({
+                    // استخدام دالة setDoc الحديثة
+                    await setDoc(doc(db, "activation_codes", code), {
                         plan: planName,
                         status: "active"
                     });
                     
                     counter++;
                     currentCountEl.innerText = counter;
-                    consoleOutput.innerHTML += `✅ Uploaded: ${code} (${planName})<br>`;
-                    consoleOutput.scrollTop = consoleOutput.scrollHeight; // النزول لآخر السطور تلقائياً
+                    consoleOutput.innerHTML += `✅ Success: ${code} -> [${planName}]<br>`;
+                    consoleOutput.scrollTop = consoleOutput.scrollHeight;
                     
                 } catch (error) {
-                    console.error("Error embedding code:", error);
+                    console.error("Detailed Error:", error);
                     statusText.className = "error-msg";
-                    statusText.innerText = "❌ فشل الرفع! اقرأ تفاصيل الخطأ في الصندوق الأسود بالأسفل.";
-                    consoleOutput.innerHTML += `<span style="color: #ef4444;">❌ Error: ${error.message}</span><br>`;
+                    statusText.innerText = "❌ توقف الضخ! حدث خطأ في الصلاحيات أو الإعدادات.";
+                    consoleOutput.innerHTML += `<span style="color: #f87171;">❌ Error Details: ${error.message}</span><br>`;
                     btn.disabled = false;
-                    return; // إيقاف العملية فوراً عند حدوث الخطأ لعلاجه
+                    return;
                 }
             }
 
-            // إذا اكتمل الرفع بدون أي خطأ
             statusText.className = "success-msg";
-            statusText.innerText = "🎉 مبروك! تم ضخ الـ 100 كود بنجاح داخل الـ Firebase الخاص بك وهي جاهزة للاستخدام الآن.";
+            statusText.innerText = "🎉 رائع جداً! تم رفع الـ 100 كود كاملة بنجاح إلى قاعدة بيانات Firestore الخاصة بك.";
             consoleOutput.innerHTML += "<br>>> Process finished successfully! 100% completed.";
         }
+
+        // ربط الحدث بالزر ليعمل داخل الـ module
+        document.getElementById('btn-action').addEventListener('click', startSeedingNow);
     </script>
 </body>
 </html>
