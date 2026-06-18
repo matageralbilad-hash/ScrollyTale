@@ -77,6 +77,7 @@
         .features-list li::before { content: '✦'; color: var(--color-starter); }
         .package-card.popular .features-list li::before { color: var(--color-pro); }
 
+        /* الأزرار الافتراضية */
         .btn-purchase {
             width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
             color: #fff; font-size: 0.95rem; font-weight: 700; border-radius: 12px; cursor: pointer;
@@ -88,6 +89,21 @@
         .package-card[data-pack="pro"] .btn-purchase { background: var(--color-pro); color: #000; font-weight: 800; border: none;}
         .package-card[data-pack="pro"] .btn-purchase:hover { background: #12d192; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
         .package-card[data-pack="agency"] .btn-purchase:hover { background: var(--color-agency); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); border-color: var(--color-agency); }
+
+        /* 🌟 ستايل زر "خطتك الحالية" عند تفعيله */
+        .btn-purchase.current-plan-btn {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #cbd5e1 !important;
+            border: 1px dashed rgba(255, 255, 255, 0.3) !important;
+            cursor: default !important;
+            pointer-events: none; /* لمنع الضغط عليه */
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        .btn-purchase.current-plan-btn i {
+            margin-left: 6px;
+            color: #10b981;
+        }
 
         @media (max-width: 900px) {
             .packages-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -112,6 +128,7 @@
 
     <main class="packages-grid">
 
+        <!-- الباقة المجانية -->
         <div class="package-card" data-pack="free">
             <div>
                 <h2 class="pack-title">باقة الحكواتي الحر</h2>
@@ -129,6 +146,7 @@
             <a href="checkout.html?plan=free" class="btn-purchase">ابدأ التجربة مجاناً</a>
         </div>
 
+        <!-- باقة Starter -->
         <div class="package-card" data-pack="starter">
             <div>
                 <h2 class="pack-title">الحكواتي الناشئ</h2>
@@ -146,6 +164,7 @@
             <a href="checkout.html?plan=starter" class="btn-purchase">احصل على الباقة</a>
         </div>
 
+        <!-- باقة Pro -->
         <div class="package-card popular" data-pack="pro">
             <div class="badge-popular">🔥 الأكثر طلباً ومبيعاً</div>
             <div>
@@ -164,6 +183,7 @@
             <a href="checkout.html?plan=pro" class="btn-purchase">احصل على الباقة</a>
         </div>
 
+        <!-- باقة Agency -->
         <div class="package-card" data-pack="agency">
             <div>
                 <h2 class="pack-title">الاستوديو الخارق</h2>
@@ -183,6 +203,32 @@
         </div>
 
     </main>
+
+    <!-- 🛠️ سكربت فحص وتحديث حالة الباقة الحالية تلقائياً -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // 1. تحديد خطة المستخدم الحالية 
+            // افتراضياً جعلناها 'free'، يمكنك جلبها من Firebase أو جعل السيرفر يكتبها هنا
+            // لتجربتها في المتصفح اكتب في الـ Console: localStorage.setItem('userActualPlan', 'pro') ثم حدّث الصفحة
+            const currentUserPlan = localStorage.getItem('userActualPlan') || 'free';
+
+            // 2. البحث عن الكارت الذي يطابق خطة المستخدم الحالية
+            const activeCard = document.querySelector(`.package-card[data-pack="${currentUserPlan}"]`);
+
+            if (activeCard) {
+                // العثور على الزر داخل هذا الكارت بالتحديد
+                const purchaseBtn = activeCard.querySelector('.btn-purchase');
+                
+                if (purchaseBtn) {
+                    // 3. تعديل النص، إزالة الرابط، وإضافة كلاس التصميم المقفل
+                    purchaseBtn.innerHTML = `✓ خطتك الحالية`;
+                    purchaseBtn.removeAttribute('href'); // إلغاء إمكانية الانتقال لصفحة الدفع
+                    purchaseBtn.classList.add('current-plan-btn'); // تطبيق ستايل المقفل
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>
