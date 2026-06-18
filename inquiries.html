@@ -253,10 +253,10 @@
     <main class="inquiries-container">
 
         <section class="main-card">
-            <h2 class="card-title"><span>💬</span> مراسلة الدعم المباشر</h2>
+            <h2 class="card-title" id="form-card-title"><span>💬</span> مراسلة الدعم المباشر</h2>
             <form id="whatsappForm">
                 <div class="form-group">
-                    <label for="category">تصنيف المراسلة</label>
+                    <label id="lbl-category" for="category">تصنيف المراسلة</label>
                     <select id="category" class="form-control" required>
                         <option value="⚙️ مشكلة وعطل تقني">⚙️ مشكلة وعطل تقني</option>
                         <option value="💳 مالي واشتراكات">💳 استفسار مالي أو اشتراكات</option>
@@ -266,140 +266,181 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="subject">عنوان الرسالة</label>
+                    <label id="lbl-subject" for="subject">عنوان الرسالة</label>
                     <input type="text" id="subject" class="form-control" placeholder="اكتب خلاصة الموضوع..." required>
                 </div>
 
                 <div class="form-group">
-                    <label for="message">تفاصيل الشكوى أو الطلب</label>
+                    <label id="lbl-message" for="message">تفاصيل الشكوى أو الطلب</label>
                     <textarea id="message" class="form-control" rows="5" placeholder="اشرح لنا المشكلة بالتفصيل هنا..." required></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.324 5.328 0 11.822 0c3.148.012 6.107 1.242 8.33 3.465 2.224 2.223 3.451 5.184 3.447 8.334-.004 6.497-5.329 11.82-11.824 11.82-2.004-.001-3.971-.51-5.713-1.479L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.791-4.382 9.794-9.786.002-2.617-1.015-5.079-2.862-6.93C16.305 2.039 13.846 1.021 11.231 1.02c-5.404 0-9.796 4.384-9.799 9.79-.001 1.52.41 3.003 1.189 4.3l-.996 3.639 3.722-.975zm13.125-7.734c-.214-.107-1.264-.624-1.46-.695-.195-.071-.337-.107-.479.108-.141.214-.549.695-.672.837-.123.142-.246.16-.46.054-.214-.107-.905-.333-1.724-1.064-.637-.568-1.067-1.27-1.192-1.484-.125-.214-.013-.329.094-.435.097-.095.214-.249.321-.373.107-.124.142-.214.214-.356.071-.143.035-.267-.018-.373-.053-.107-.479-1.156-.656-1.581-.173-.414-.347-.359-.479-.365-.124-.006-.266-.007-.408-.007-.141 0-.373.053-.568.266-.195.214-.746.729-.746 1.777 0 1.048.763 2.06 1.869 2.204.107.014 3.692 5.64 8.944 7.91 1.25.54 2.225.862 2.986 1.103 1.255.399 2.401.343 3.304.208.107-.016 1.264-.516 1.442-1.015.177-.5.177-.927.124-.107l-.356-.214z"/></svg>
-                    إرسال عبر واتساب الدعم
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.324 5.328 0 11.822 0c3.148.012 6.107 1.242 8.33 3.465 2.224 2.223 3.451 5.184 3.447 8.334-.004 6.497-5.329 11.82-11.824 11.82-2.004-.001-3.971-.51-5.713-1.479L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.403.002 9.791-4.382 9.794-9.786.002-2.617-1.015-5.079-2.862-6.93C16.305 2.039 13.846 1.021 11.231 1.02c-5.404 0-9.796 4.384-9.799 9.79-.001 1.52.41 3.003 1.189 4.3 l-.996 3.639 3.722-.975zm13.125-7.734c-.214-.107-1.264-.624-1.46-.695-.195-.071-.337-.107-.479.108-.141.214-.549.695-.672.837-.123.142-.246.16-.46.054-.214-.107-.905-.333-1.724-1.064-.637-.568-1.067-1.27-1.192-1.484-.125-.214-.013-.329.094-.435.097-.095.214-.249.321-.373.107-.124.142-.214.214-.356.071-.143.035-.267-.018-.373-.053-.107-.479-1.156-.656-1.581-.173-.414-.347-.359-.479-.365-.124-.006-.266-.007-.408-.007-.141 0-.373.053-.568.266-.195.214-.746.729-.746 1.777 0 1.048.763 2.06 1.869 2.204.107.014 3.692 5.64 8.944 7.91 1.25.54 2.225.862 2.986 1.103 1.255.399 2.401.343 3.304.208.107-.016 1.264-.516 1.442-1.015.177-.5.177-.927.124-.107l-.356-.214z"/></svg>
+                    <span id="btn-submit-text">إرسال عبر واتساب الدعم</span>
                 </button>
             </form>
         </section>
 
         <section class="main-card">
-            <h2 class="card-title"><span>❓</span> الأسئلة الشائعة والإجابات</h2>
-            
-            <div class="faq-wrapper">
-                
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>ما هو ScrollyTale Studio وكيف يستفيد منه مشروعي؟</span>
-                        <span class="faq-icon">▼</span>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            هو استوديو متكامل يتيح لك بناء صفحات ويب قائمة على السرد السينمائي والتحريك المتقدم المتوافق مع حركة تدوير الشاشة (Scroll). يساعدك على عرض منتجاتك أو سيرتك الذاتية بأسلوب يخطف الأبصار ويزيد المبيعات.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>هل يمكنني الترقية أو إلغاء الاشتراك في الباقات بأي وقت؟</span>
-                        <span class="faq-icon">▼</span>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            نعم بكل تأكيد! يمكنك الترقية من باقة إلى باقة أخرى أعلى فوراً، وسيتم احتساب فارق الأيام المتبقية فقط في حسابك. كما يمكنك إلغاء الاشتراك في أي وقت دون أي شروط معقدة.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>هل تظهر حقوق أو شعار المنصة في الباقات المدفوعة؟</span>
-                        <span class="faq-icon">▼</span>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            في الباقة المجانية يظهر الشعار بشكل إلزامي. في الباقة الناشئة (7$) يظهر بشكل مصغر جداً. أما في باقة المخرج السينمائي (19$) وباقة الوكالات (49$) فيتم إزالة أي أثر لشعار المنصة تماماً لتظهر المشاريع باسمك الشخصي أو اسم شركتك (White-Label).
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>كيف يمكنني تحميل الأكواد البرمجية للموقع بعد تصميمه؟</span>
-                        <span class="faq-icon">▼</span>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            بمجرد الانتهاء من تصميم وتجهيز القالب، ستجد زر "تصدير الكود" داخل لوحة التحكم، وبضغطة واحدة سيقوم النظام بتوليد ملف مضغوط يحتوي على أكواد نظيفة بالكامل (HTML, CSS, Vanilla JavaScript) جاهزة للرفع على أي استضافة خاصة بك.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question">
-                        <span>ما هي وسائل الدفع المدعومة عند الرغبة في الترقية؟</span>
-                        <span class="faq-icon">▼</span>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-content">
-                            في التحديث القادم سنقوم بربط بوابات دفع عالمية ومحلية مرنة لتسهيل المعاملات لجميع المطورين والمبدعين في كافة الأماكن بسلاسة قصوى.
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            <h2 class="card-title" id="faq-card-title"><span>❓</span> الأسئلة الشائعة والإجابات</h2>
+            <div class="faq-wrapper" id="faq-container-wrapper"></div>
         </section>
 
     </main>
-
     <script>
-        // [1] محرك تشغيل الأكورديون للأسئلة الشائعة
-        document.querySelectorAll('.faq-question').forEach(button => {
-            button.addEventListener('click', () => {
-                const currentItem = button.parentElement;
-                const isActive = currentItem.classList.contains('active');
+        // [0] محرك استكشاف وتغيير اللغة الديناميكي (i18n)
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentLang = urlParams.get('lang') || 'ar';
+
+        const i18n = {
+            ar: {
+                mainTitle: "الدعم الفني والأسئلة الشائعة",
+                subTitle: "تصفح الإجابات الفورية السريعة، أو تواصل معنا مباشرة عبر الواتساب لحل مشكلتك.",
+                formTitle: "مراسلة الدعم المباشر",
+                lblCategory: "تصنيف المراسلة",
+                lblSubject: "عنوان الرسالة",
+                placeholderSubject: "اكتب خلاصة الموضوع...",
+                lblMessage: "تفاصيل الشكوى أو الطلب",
+                placeholderMessage: "اشرح لنا المشكلة بالتفصيل هنا...",
+                btnSubmit: "إرسال عبر واتساب الدعم",
+                faqTitle: "الأسئلة الشائعة والإجابات",
+                whatsappHeader: "*إستفسار جديد - ScrollyTale Studio* 🚀",
+                whatsappCategory: "*📁 التصنيف:*",
+                whatsappSubject: "*📌 العنوان:*",
+                whatsappDetails: "*📝 التفاصيل والرسالة:*",
+                whatsappFooter: "_أُرسلت من لوحة تحكم المستخدم_",
+                opt1: "⚙️ مشكلة وعطل تقني",
+                opt2: "💳 استفسار مالي أو اشتراكات",
+                opt3: "💡 اقتراح وتطوير قوالب",
+                opt4: "🤝 طلب تجاري خاص",
                 
-                // إغلاق أي سؤال آخر مفتوح حالياً لتوفير مساحة رؤية نظيفة
-                document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+                faqs: [
+                    { q: "ما هو ScrollyTale Studio وكيف يستفيد منه مشروعي؟", a: "هو استوديو متكامل يتيح لك بناء صفحات ويب قائمة على السرد السينمائي والتحريك المتقدم المتوافق مع حركة تدوير الشاشة (Scroll). يساعدك على عرض منتجاتك أو سيرتك الذاتية بأسلوب يخطف الأبصار ويزيد المبيعات." },
+                    { q: "هل يمكنني الترقية أو إلغاء الاشتراك في الباقات بأي وقت؟", a: "نعم بكل تأكيد! يمكنك الترقية من باقة إلى باقة أخرى أعلى فوراً، وسيتم احتساب فارق الأيام المتبقية فقط في حسابك. كما يمكنك إلغاء الاشتراك في أي وقت دون أي شروط معقدة." },
+                    { q: "هل تظهر حقوق أو شعار المنصة في الباقات المدفوعة؟", a: "في الباقة المجانية يظهر الشعار بشكل إلزامي. في الباقة الناشئة (7$) يظهر بشكل مصغر جداً. أما في باقة المخرج السينمائي (19$) وباقة الوكالات (49$) فيتم إزالة أي أثر لشعار المنصة تماماً لتظهر المشاريع باسمك الشخصي أو اسم شركتك (White-Label)." },
+                    { q: "كيف يمكنني تحميل الأكواد البرمجية للموقع بعد تصميمه؟", a: "بمجرد الانتهاء من تصميم وتجهيز القالب، ستجد زر \"تصدير الكود\" داخل لوحة التحكم، وبضغطة واحدة سيقوم النظام بتوليد ملف مضغوط يحتوي على أكواد نظيفة بالكامل (HTML, CSS, Vanilla JavaScript) جاهزة للرفع على أي استضافة خاصة بك." },
+                    { q: "ما هي وسائل الدفع المدعومة عند الرغبة في الترقية؟", a: "في التحديث القادم سنقوم بربط بوابات دفع عالمية ومحلية مرنة لتسهيل المعاملات لجميع المطورين والمبدعين في كافة الأماكن بسلاسة قصوى." }
+                ]
+            },
+            en: {
+                mainTitle: "Technical Support & FAQs",
+                subTitle: "Browse instant answers below, or reach out to us directly via WhatsApp to resolve your issue.",
+                formTitle: "Message Live Support",
+                lblCategory: "Inquiry Category",
+                lblSubject: "Message Subject",
+                placeholderSubject: "Write a summary of the topic...",
+                lblMessage: "Complaint or Request Details",
+                placeholderMessage: "Explain your problem or request in detail here...",
+                btnSubmit: "Send via Support WhatsApp",
+                faqTitle: "Frequently Asked Questions",
+                whatsappHeader: "*New Inquiry - ScrollyTale Studio* 🚀",
+                whatsappCategory: "*📁 Category:*",
+                whatsappSubject: "*📌 Subject:*",
+                whatsappDetails: "*📝 Details & Message:*",
+                whatsappFooter: "_Sent from user dashboard_",
+                opt1: "⚙️ Technical Issue & Bug",
+                opt2: "💳 Financial or Subscription Inquiry",
+                opt3: "💡 Template Suggestion & Development",
+                opt4: "🤝 Special Commercial Request",
                 
-                // إذا لم يكن السؤال الحالي مفتوحاً، قم بفتحه
-                if (!isActive) {
-                    currentItem.classList.add('active');
-                }
+                faqs: [
+                    { q: "What is ScrollyTale Studio and how does it benefit my project?", a: "It is an all-in-one studio that allows you to build cinematic storytelling websites with advanced scroll-driven animations. It helps showcase your products or portfolio in a breathtaking way that boosts sales." },
+                    { q: "Can I upgrade or cancel my subscription at any time?", a: "Yes, absolutely! You can upgrade to a higher tier instantly, and the system will only charge you the prorated difference. You can also cancel your subscription at any time without any complex conditions." },
+                    { q: "Does the platform logo show on paid plans?", a: "On the Free plan, the watermark is mandatory. On the Starter plan ($7), it appears minimized. For the Director plan ($19) and Agency plan ($49), all platform branding is completely removed so your projects appear under your own name or brand (White-Label)." },
+                    { q: "How can I download the source code of my website after designing?", a: "Once your design is ready, click the 'Export Code' button inside the dashboard. With a single click, the system generates a zip file containing clean, structured code (HTML, CSS, Vanilla JavaScript) ready to host anywhere." },
+                    { q: "What are the supported payment methods for upgrading?", a: "In the upcoming update, we will integrate flexible international and local payment gateways to ease transactions for creators and developers worldwide." }
+                ]
+            }
+        };
+
+        function applyLanguage() {
+            const data = i18n[currentLang];
+            
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+
+            // ترجمة نصوص الهيدر والنموذج
+            document.querySelector('.header-section h1').innerText = data.mainTitle;
+            document.querySelector('.header-section p').innerText = data.subTitle;
+            document.getElementById('form-card-title').innerHTML = `<span>💬</span> ${data.formTitle}`;
+            document.getElementById('lbl-category').innerText = data.lblCategory;
+            document.getElementById('lbl-subject').innerText = data.lblSubject;
+            document.getElementById('subject').placeholder = data.placeholderSubject;
+            document.getElementById('lbl-message').innerText = data.lblMessage;
+            document.getElementById('message').placeholder = data.placeholderMessage;
+            document.getElementById('btn-submit-text').innerText = data.btnSubmit;
+            document.getElementById('faq-card-title').innerHTML = `<span>❓</span> ${data.faqTitle}`;
+
+            // ترجمة الخيارات (Options) داخل الـ Select
+            const options = document.getElementById('category').options;
+            options[0].text = data.opt1; options[0].value = data.opt1;
+            options[1].text = data.opt2; options[1].value = data.opt2;
+            options[2].text = data.opt3; options[2].value = data.opt3;
+            options[3].text = data.opt4; options[3].value = data.opt4;
+
+            // بناء الأسئلة الشائعة ديناميكياً
+            const faqWrapper = document.getElementById('faq-container-wrapper');
+            faqWrapper.innerHTML = ''; 
+
+            data.faqs.forEach(faq => {
+                const faqItem = document.createElement('div');
+                faqItem.className = 'faq-item';
+                
+                faqItem.innerHTML = `
+                    <button class="faq-question" style="text-align: ${currentLang === 'ar' ? 'right' : 'left'}">
+                        <span>${faq.q}</span>
+                        <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">${faq.a}</div>
+                    </div>
+                `;
+                faqWrapper.appendChild(faqItem);
             });
-        });
 
-        // [2] محرك إرسال البيانات وتوليد رابط الواتساب الذكي
+            bindAccordionEvents();
+        }
+
+        function bindAccordionEvents() {
+            document.querySelectorAll('.faq-question').forEach(button => {
+                button.onclick = function() {
+                    const currentItem = button.parentElement;
+                    const isActive = currentItem.classList.contains('active');
+                    document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+                    if (!isActive) { currentItem.classList.add('active'); }
+                };
+            });
+        }
+
+        // تشغيل الترجمة فور الجاهزية
+        window.addEventListener('DOMContentLoaded', applyLanguage);
+
+        // [2] محرك إرسال البيانات وتوليد رابط الواتساب (تم إصلاح خطأ currentLang هنا)
         document.getElementById('whatsappForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // منع الصفحة من التحديث التقليدي
+            e.preventDefault(); 
 
-            // جلب البيانات من المدخلات
             const category = document.getElementById('category').value;
             const subject = document.getElementById('subject').value;
             const message = document.getElementById('message').value;
 
-            // رقم الهاتف المقصود مع المفتاح الدولي بدون (+) أو (00) لتوافق الروابط
             const phoneNumber = "967774257557"; 
+            const data = i18n[currentLang]; // تم التعديل هنا لإزالة window وباتت تعمل بشكل صحيح
 
-            // تنسيق الرسالة بشكل سينمائي مرتب ومقروء للدعم الفني
+            // توليد الرسالة المنسقة
             const whatsAppText = 
-`*إستفسار جديد - ScrollyTale Studio* 🚀
+`${data.whatsappHeader}
 -----------------------------------
-*📁 التصنيف:* ${category}
-*📌 العنوان:* ${subject}
+${data.whatsappCategory} ${category}
+${data.whatsappSubject} ${subject}
 
-*📝 التفاصيل والرسالة:*
+${data.whatsappDetails}
 ${message}
 -----------------------------------
-_أُرسلت من لوحة تحكم المستخدم_`;
+${data.whatsappFooter}`;
 
-            // تشفير النص ليكون متوافقاً مع روابط الويب
             const encodedText = encodeURIComponent(whatsAppText);
-
-            // إنشاء الرابط العالمي للواتساب لفتح التطبيق أو المتصفح فوراً
             const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-
-            // فتح المحادثة في نافذة جديدة بذكاء وأمان
             window.open(whatsappURL, '_blank');
         });
     </script>
