@@ -3,310 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>باقات الاشتراك | ScrollyTale Studio</title>
+    <title>باقات ScrollyTale Studio</title>
     <style>
         :root {
-            --bg-dark: #07090e;
-            --card-bg: #11141d;
-            --text-light: #f3f4f6;
-            --text-muted: #9ca3af;
+            --bg-page: #020205;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
+            
             --color-free: #94a3b8;
-            --color-starter: #38bdf8;
-            --color-pro: #a855f7;
-            --color-agency: #f43f5e;
-            --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --color-starter: #00f2fe;
+            --color-pro: #10b981;
+            --color-agency: #a855f7;
+            
+            --text-bright: #ffffff;
+            --text-muted: #64748b;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: var(--font-main);
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background-color: var(--bg-page);
+            color: var(--text-bright);
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 30px 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 50px;
+        .header-section { text-align: center; margin-bottom: 40px; }
+        .header-section h1 {
+            font-size: 2.2rem; font-weight: 800; margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, #64748b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+        .header-section p { color: var(--text-muted); font-size: 1.1rem; }
 
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to left, #fff, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        .packages-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            width: 100%;
+        .packages-grid {
+            display: grid; max-width: 1200px; margin: 0 auto;
+            grid-template-columns: repeat(4, 1fr); gap: 20px; align-items: stretch;
         }
 
         .package-card {
-            background-color: var(--card-bg);
-            border: 1px solid #1f293d;
-            border-radius: 16px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 20px; padding: 24px; display: flex; flex-direction: column;
+            justify-content: space-between; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
         }
-
         .package-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px); border-color: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.04); box-shadow: 0 15px 30px rgba(0,0,0,0.5);
         }
 
-        .package-card.active-plan {
-            border-width: 2px;
+        .package-card.popular {
+            border-color: var(--color-pro);
+            background: linear-gradient(180deg, rgba(16, 185, 129, 0.03) 0%, rgba(255,255,255,0.01) 100%);
         }
 
-        .badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: #1e1b4b;
-            color: #a78bfa;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: none;
+        .badge-popular {
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--color-pro); color: #000; padding: 4px 14px;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 800; white-space: nowrap;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
 
-        .package-card.active-plan .badge {
-            display: block;
-        }
+        .pack-title { font-size: 1.3rem; font-weight: 800; color: var(--text-bright); margin-bottom: 6px; }
+        .pack-price { font-size: 2rem; font-weight: 900; margin-bottom: 12px; display: flex; align-items: baseline; gap: 4px; }
+        .pack-price span { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); }
+        .pack-target { font-size: 0.85rem; font-weight: 700; background: rgba(255,255,255,0.06); padding: 6px 10px; border-radius: 8px; display: inline-block; margin-bottom: 15px; width: fit-content; }
+        .pack-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 20px; }
 
-        .package-title {
-            font-size: 1.5rem;
-            margin: 0 0 10px 0;
-        }
+        .features-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
+        .features-list li { font-size: 0.88rem; color: #cbd5e1; display: flex; align-items: center; gap: 8px; }
+        .features-list li::before { content: '✦'; color: var(--color-starter); }
+        .package-card.popular .features-list li::before { color: var(--color-pro); }
 
-        .package-price {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 20px;
+        .btn-purchase {
+            width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; font-size: 0.95rem; font-weight: 700; border-radius: 12px; cursor: pointer;
+            text-decoration: none; text-align: center; transition: all 0.25s ease;
         }
+        .btn-purchase:hover { background: #fff; color: #000; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
 
-        .package-price span {
-            font-size: 1rem;
-            color: var(--text-muted);
-        }
+        .package-card[data-pack="starter"] .btn-purchase:hover { background: var(--color-starter); box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); border-color: var(--color-starter); }
+        .package-card[data-pack="pro"] .btn-purchase { background: var(--color-pro); color: #000; font-weight: 800; border: none;}
+        .package-card[data-pack="pro"] .btn-purchase:hover { background: #12d192; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+        .package-card[data-pack="agency"] .btn-purchase:hover { background: var(--color-agency); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); border-color: var(--color-agency); }
 
-        .features-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 30px 0;
-            flex-grow: 1;
-        }
-
-        .features-list li {
-            margin-bottom: 12px;
-            color: #d1d5db;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .features-list li::before {
-            content: "✓";
-            font-weight: bold;
-        }
-
-        .action-btn {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s ease, background-color 0.2s ease;
-            text-align: center;
-            text-decoration: none;
-            box-sizing: border-box;
-            display: block;
-        }
-
-        .action-btn:hover {
-            opacity: 0.9;
-        }
-
-        .action-btn.current {
-            background-color: #1e293b !important;
-            color: #94a3b8 !important;
-            cursor: default;
+        /* 🌟 ستايل زر خطتك الحالية المقفل والمميز */
+        .btn-purchase.current-plan-btn {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #cbd5e1 !important;
+            border: 1px dashed rgba(255, 255, 255, 0.3) !important;
+            cursor: default !important;
             pointer-events: none;
+            box-shadow: none !important;
+            transform: none !important;
         }
 
-        /* ألوان مخصصة لكل باقة */
-        .plan-free { border-top: 5px solid var(--color-free); }
-        .plan-free .package-title { color: var(--color-free); }
-        .plan-free .action-btn { background-color: var(--color-free); color: #000; }
-        .plan-free .features-list li::before { color: var(--color-free); }
-
-        .plan-starter { border-top: 5px solid var(--color-starter); }
-        .plan-starter .package-title { color: var(--color-starter); }
-        .plan-starter .action-btn { background-color: var(--color-starter); color: #000; }
-        .plan-starter .features-list li::before { color: var(--color-starter); }
-
-        .plan-pro { border-top: 5px solid var(--color-pro); }
-        .plan-pro .package-title { color: var(--color-pro); }
-        .plan-pro .action-btn { background-color: var(--color-pro); color: #fff; }
-        .plan-pro .features-list li::before { color: var(--color-pro); }
-
-        .plan-agency { border-top: 5px solid var(--color-agency); }
-        .plan-agency .package-title { color: var(--color-agency); }
-        .plan-agency .action-btn { background-color: var(--color-agency); color: #fff; }
-        .plan-agency .features-list li::before { color: var(--color-agency); }
+        /* 🌟 ستايل الهواتف الذكية المعدل */
+        @media (max-width: 900px) {
+            /* تعديل التوزيع ليكون كرت واحد (باقة واحدة) في السطر لسهولة القراءة */
+            .packages-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 20px; /* زيادة الفراغ بين الكروت الرأسية لتنفس التصميم */
+            }
+            
+            .package-card { padding: 20px 18px; border-radius: 14px; }
+            .pack-title { font-size: 1.2rem; }
+            .pack-price { font-size: 1.8rem; margin-bottom: 8px; }
+            .pack-target { font-size: 0.8rem; padding: 4px 8px; margin-bottom: 10px; }
+            .pack-desc { font-size: 0.85rem; margin-bottom: 12px; }
+            .features-list { gap: 8px; margin-bottom: 20px; padding-top: 10px; }
+            .features-list li { font-size: 0.85rem; }
+            .btn-purchase { font-size: 0.9rem; padding: 12px; border-radius: 8px; }
+            .badge-popular { font-size: 0.7rem; padding: 4px 12px; top: -11px; }
+        }
     </style>
-
-    <!-- استدعاء سكريبتات Firebase (النسخة المتوافقة v9) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
-    <header>
-        <h1>اختر خطتك الإبداعية</h1>
-        <p>انطلق في عالم السرد البصري والتحريك مع الباقة المناسبة لطموحك</p>
+    <header class="header-section">
+        <h1>ترقية الإمكانيات الإبداعية</h1>
+        <p>اختر الخطة المثالية لرحلتك السينمائية داخل عالم السرد البصري.</p>
     </header>
 
-    <div class="packages-container">
-        <!-- باقة الحكواتي الحر -->
-        <div class="package-card plan-free" id="card-free">
-            <span class="badge">خطتك الحالية</span>
-            <h2 class="package-title">الحكواتي الحر</h2>
-            <div class="package-price">$0 <span>/ شهرياً</span></div>
-            <ul class="features-list">
-                <li>مشروع واحد نشط (1 Active Project)</li>
-                <li>تصدير بصيغة فوتوشوب أو صور متتابعة</li>
-                <li>الوصول إلى 3 قوالب أساسية فقط</li>
-                <li>شعار المنصة يظهر في أسفل الصفحة</li>
-            </ul>
-            <a href="checkout.html?plan=free" class="action-btn" id="btn-free">ابدأ مجاناً</a>
+    <main class="packages-grid">
+
+        <div class="package-card" data-pack="free">
+            <div>
+                <h2 class="pack-title">باقة الحكواتي الحر</h2>
+                <div class="pack-price" style="color: var(--color-free);">0$ <span>/ للأبد</span></div>
+                <div class="pack-target">🎯 المستهدف: الهواة والمستكشفين</div>
+                <p class="pack-desc">تذوق سحر التحريك السينمائي وابدأ خطواتك الأولى بدون أي تكاليف مادية.</p>
+                <ul class="features-list">
+                    <li>مشروع واحد (1) نشط بالكامل</li>
+                    <li>قالبان سينمائيان (2) للعمل</li>
+                    <li>تصدير الكود النظيف للموقع</li>
+                    <li style="color: #ef4444;">❌ شعار المنصة إلزامي بالأسفل</li>
+                </ul>
+            </div>
+            <a href="checkout.html?plan=free" class="btn-purchase">ابدأ التجربة مجاناً</a>
         </div>
 
-        <!-- باقة الحكواتي الناشئ -->
-        <div class="package-card plan-starter" id="card-starter">
-            <span class="badge">خطتك الحالية</span>
-            <h2 class="package-title">الحكواتي الناشئ</h2>
-            <div class="package-price">$7 <span>/ شهرياً</span></div>
-            <ul class="features-list">
-                <li>مشروعين (2) نشطين في نفس الوقت</li>
-                <li>الوصول إلى 5 قوالب سينمائية</li>
-                <li>تصدير الكود البرمجي بالكامل</li>
-                <li>شعار المنصة موجود (لكن صغير جداً)</li>
-            </ul>
-            <a href="checkout.html?plan=starter" class="action-btn" id="btn-starter">اشترك الآن</a>
+        <div class="package-card" data-pack="starter">
+            <div>
+                <h2 class="pack-title">الحكواتي الناشئ</h2>
+                <div class="pack-price" style="color: var(--color-starter);">7$ <span>/ شهرياً</span></div>
+                <div class="pack-target">🎯 المستهدف: الطلاب والمصممين الجدد</div>
+                <p class="pack-desc">مثالية لبناء بورتفوليو شخصي مميز وجذب عملائك الأوائل بأسلوب فريد.</p>
+                <ul class="features-list">
+                    <li>مشروعين (2) نشطين في نفس الوقت</li>
+                    <li>الوصول إلى 5 قوالب سينمائية</li>
+                    <li>تصدير الكود البرمجي بالكامل</li>
+                    <li style="color: #eab308;">⚠️ شعار المنصة موجود (لكن صغير جداً)</li>
+                </ul>
+            </div>
+            <a href="checkout.html?plan=starter" class="btn-purchase">احصل على الباقة</a>
         </div>
 
-        <!-- باقة المخرج السينمائي -->
-        <div class="package-card plan-pro" id="card-pro">
-            <span class="badge">خطتك الحالية</span>
-            <h2 class="package-title">المخرج السينمائي</h2>
-            <div class="package-price">$19 <span>/ شهرياً</span></div>
-            <ul class="features-list">
-                <li>مشاريع غير محدودة (Unlimited)</li>
-                <li>ربط دومين خاص (Custom Domain)</li>
-                <li>الوصول الكامل لكل القوالب الحالية والمستقبلية</li>
-                <li>إزالة شعار المنصة تماماً (White-Label)</li>
-            </ul>
-            <a href="checkout.html?plan=pro" class="action-btn" id="btn-pro">اشترك الآن</a>
+        <div class="package-card popular" data-pack="pro">
+            <div class="badge-popular">🔥 الأكثر طلباً ومبيعاً</div>
+            <div>
+                <h2 class="pack-title">المخرج السينمائي</h2>
+                <div class="pack-price" style="color: var(--color-pro);">19$ <span>/ شهرياً</span></div>
+                <div class="pack-target">🎯 المستهدف: الـ Freelancers والمحترفين</div>
+                <p class="pack-desc">الحصان الرابح لكل مصمم ومطور يريد كسر الجمود وبناء مشاريع تجارية بلا قيود.</p>
+                <ul class="features-list">
+                    <li>مشاريع غير محدودة (Unlimited)</li>
+                    <li>ربط دومين خاص (Custom Domain)</li>
+                    <li>الوصول الكامل لكل القوالب الحالية والمستقبلية</li>
+                    <li>إزالة شعار المنصة تماماً (White-Label)</li>
+                </ul>
+            </div>
+            <a href="checkout.html?plan=pro" class="btn-purchase">احصل على الباقة</a>
         </div>
 
-        <!-- باقة الاستوديو الخارق -->
-        <div class="package-card plan-agency" id="card-agency">
-            <span class="badge">خطتك الحالية</span>
-            <h2 class="package-title">الاستوديو الخارق</h2>
-            <div class="package-price">$49 <span>/ شهرياً</span></div>
-            <ul class="features-list">
-                <li>كل مميزات باقة المخرج السينمائي</li>
-                <li>إضافة فريق عمل (حتى 5 مصممين)</li>
-                <li>لوحة تحكم مخصصة بشعار وكالتك</li>
-                <li>إحصائيات تدوير الشاشة (Scroll Analytics)</li>
-                <li>دعم فني VIP مباشر وسريع</li>
-            </ul>
-            <a href="checkout.html?plan=agency" class="action-btn" id="btn-agency">اشترك الآن</a>
+        <div class="package-card" data-pack="agency">
+            <div>
+                <h2 class="pack-title">الاستوديو الخارق</h2>
+                <div class="pack-price" style="color: var(--color-agency);">49$ <span>/ شهرياً</span></div>
+                <div class="pack-target">🎯 المستهدف: الوكالات وفرق العمل</div>
+                <p class="pack-desc">القوة القصوى لشركات التسويق والبرمجة التي تدير مشاريع عملاء ضخمة ومتعددة.</p>
+                <ul class="features-list">
+                    <li>كل مميزات باقة المخرج السينمائي</li>
+                    <li>إضافة فريق عمل (حتى 5 مصممين)</li>
+                    <li>لوحة تحكم مخصصة بشعار وكالتك</li>
+                    <li>إحصائيات تدوير الشاشة (Scroll Analytics)</li>
+                    <li>دعم فني VIP مباشر وسريع</li>
+                </ul>
+            </div>
+            <a href="checkout.html?plan=agency" class="btn-purchase">احصل على الباقة</a>
         </div>
-    </div>
 
-    <script>
-        // تكوين الفايربيس (تأكد من مطابقتها لكل الملفات)
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        // نفس إعدادات قاعدة بياناتك السحابية الثابتة
         const firebaseConfig = {
             apiKey: "AIzaSyAlIHbsLSdF7I3QU0tkChUyviTWc13ctec",
             authDomain: "scrollytale.firebaseapp.com",
-            databaseURL: "https://scrollytale-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "scrollytale",
             storageBucket: "scrollytale.firebasestorage.app",
             messagingSenderId: "294561535270",
             appId: "1:294561535270:web:e051f9a58b881bbc341de7"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        // مراقبة حالة المستخدم وتطبيق الباقة النشطة حياً
-        auth.onAuthStateChanged((user) => {
-            let activePlan = "free"; // الافتراضي
-
+        // مراقبة حالة الحساب والتعرف على خطته الفريدة
+        onAuthStateChanged(auth, (user) => {
             if (user) {
+                // استخدام الـ uid الخاص بالمستخدم لضمان جلب خطته هو فقط ومزامنتها
                 const storageKey = `scrolly_plan_${user.uid}`;
-                const localData = localStorage.getItem(storageKey);
+                let savedData = JSON.parse(localStorage.getItem(storageKey));
 
-                if (localData) {
-                    try {
-                        const parsed = JSON.parse(localData);
-                        // التحقق من صلاحية الخطة (لم تنتهِ بعد)
-                        if (parsed.expiryDate && Date.now() < parsed.expiryDate) {
-                            activePlan = parsed.planName;
-                        } else {
-                            localStorage.removeItem(storageKey); // حذفها إذا انتهت الـ 30 يوم
-                        }
-                    } catch (e) {
-                        console.error("خطأ في قراءة بيانات الباقة محلياً", e);
+                let currentPlan = 'free'; // الافتراضي
+
+                if (savedData) {
+                    const currentTime = Date.now();
+                    
+                    // ⏱️ الفحص: هل انتهت فترة الـ 30 يوماً (الشهر)؟
+                    if (currentTime > savedData.expiryDate) {
+                        alert("انتهت صلاحية باقتك الحالية (30 يوماً)، تم إعادتك للباقة المجانية.");
+                        localStorage.removeItem(storageKey); // حذف الباقة المنتهية
+                        currentPlan = 'free';
+                    } else {
+                        currentPlan = savedData.planName; // الباقة لا تزال صالحة وشغالة
                     }
                 }
-            }
 
-            updateUIWithActivePlan(activePlan);
+                // تحديث الواجهة وتغيير الزر للباقة النشطة
+                updateUIWithActivePlan(currentPlan);
+
+            } else {
+                // إذا لم يسجل دخوله اصلاً، تظهر الباقة المجانية كخطة افتراضية
+                updateUIWithActivePlan('free');
+            }
         });
 
-        function updateUIWithActivePlan(planName) {
-            // إعادة ضبط جميع الكروت أولاً
-            const plans = ["free", "starter", "pro", "agency"];
-            plans.forEach(p => {
-                const card = document.getElementById(`card-${p}`);
-                const btn = document.getElementById(`btn-${p}`);
-                if (card) card.classList.remove("active-plan");
-                if (btn) {
-                    btn.classList.remove("current");
-                    btn.innerText = p === "free" ? "ابدأ مجاناً" : "اشترك الآن";
+        // دالة تحويل الزر ديناميكياً لـ "خطتك الحالية"
+        function updateUIWithActivePlan(plan) {
+            // إعادة ضبط جميع الأزرار أولاً لشكلها الطبيعي
+            document.querySelectorAll('.btn-purchase').forEach(btn => {
+                btn.classList.remove('current-plan-btn');
+                if (btn.innerText === `✓ خطتك الحالية`) {
+                    btn.innerText = "احصل على الباقة";
                 }
             });
 
-            // تمييز الكرت النشط وقفل الزر الخاص به
-            const activeCard = document.getElementById(`card-${planName}`);
-            const activeBtn = document.getElementById(`btn-${planName}`);
-
-            if (activeCard) activeCard.classList.add("active-plan");
-            if (activeBtn) {
-                activeBtn.classList.add("current");
-                activeBtn.innerText = "✓ خطتك الحالية";
+            // العثور على باقة المستخدم المحددة والتحكم بها
+            const activeCard = document.querySelector(`.package-card[data-pack="${plan}"]`);
+            if (activeCard) {
+                const purchaseBtn = activeCard.querySelector('.btn-purchase');
+                if (purchaseBtn) {
+                    purchaseBtn.innerHTML = `✓ خطتك الحالية`;
+                    purchaseBtn.removeAttribute('href'); // حظر تحويله لصفحة الدفع مجدداً
+                    purchaseBtn.classList.add('current-plan-btn'); // قفل الزر
+                }
             }
         }
     </script>
