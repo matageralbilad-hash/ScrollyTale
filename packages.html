@@ -77,7 +77,6 @@
         .features-list li::before { content: '✦'; color: var(--color-starter); }
         .package-card.popular .features-list li::before { color: var(--color-pro); }
 
-        /* الأزرار الافتراضية */
         .btn-purchase {
             width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
             color: #fff; font-size: 0.95rem; font-weight: 700; border-radius: 12px; cursor: pointer;
@@ -90,19 +89,15 @@
         .package-card[data-pack="pro"] .btn-purchase:hover { background: #12d192; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
         .package-card[data-pack="agency"] .btn-purchase:hover { background: var(--color-agency); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); border-color: var(--color-agency); }
 
-        /* 🌟 ستايل زر "خطتك الحالية" عند تفعيله */
+        /* 🌟 ستايل زر خطتك الحالية المقفل والمميز */
         .btn-purchase.current-plan-btn {
             background: rgba(255, 255, 255, 0.08) !important;
             color: #cbd5e1 !important;
             border: 1px dashed rgba(255, 255, 255, 0.3) !important;
             cursor: default !important;
-            pointer-events: none; /* لمنع الضغط عليه */
+            pointer-events: none;
             box-shadow: none !important;
             transform: none !important;
-        }
-        .btn-purchase.current-plan-btn i {
-            margin-left: 6px;
-            color: #10b981;
         }
 
         @media (max-width: 900px) {
@@ -128,14 +123,12 @@
 
     <main class="packages-grid">
 
-        <!-- الباقة المجانية -->
         <div class="package-card" data-pack="free">
             <div>
                 <h2 class="pack-title">باقة الحكواتي الحر</h2>
                 <div class="pack-price" style="color: var(--color-free);">0$ <span>/ للأبد</span></div>
                 <div class="pack-target">🎯 المستهدف: الهواة والمستكشفين</div>
                 <p class="pack-desc">تذوق سحر التحريك السينمائي وابدأ خطواتك الأولى بدون أي تكاليف مادية.</p>
-                
                 <ul class="features-list">
                     <li>مشروع واحد (1) نشط بالكامل</li>
                     <li>قالبان سينمائيان (2) للعمل</li>
@@ -146,14 +139,12 @@
             <a href="checkout.html?plan=free" class="btn-purchase">ابدأ التجربة مجاناً</a>
         </div>
 
-        <!-- باقة Starter -->
         <div class="package-card" data-pack="starter">
             <div>
                 <h2 class="pack-title">الحكواتي الناشئ</h2>
                 <div class="pack-price" style="color: var(--color-starter);">7$ <span>/ شهرياً</span></div>
                 <div class="pack-target">🎯 المستهدف: الطلاب والمصممين الجدد</div>
                 <p class="pack-desc">مثالية لبناء بورتفوليو شخصي مميز وجذب عملائك الأوائل بأسلوب فريد.</p>
-                
                 <ul class="features-list">
                     <li>مشروعين (2) نشطين في نفس الوقت</li>
                     <li>الوصول إلى 5 قوالب سينمائية</li>
@@ -164,7 +155,6 @@
             <a href="checkout.html?plan=starter" class="btn-purchase">احصل على الباقة</a>
         </div>
 
-        <!-- باقة Pro -->
         <div class="package-card popular" data-pack="pro">
             <div class="badge-popular">🔥 الأكثر طلباً ومبيعاً</div>
             <div>
@@ -172,7 +162,6 @@
                 <div class="pack-price" style="color: var(--color-pro);">19$ <span>/ شهرياً</span></div>
                 <div class="pack-target">🎯 المستهدف: الـ Freelancers والمحترفين</div>
                 <p class="pack-desc">الحصان الرابح لكل مصمم ومطور يريد كسر الجمود وبناء مشاريع تجارية بلا قيود.</p>
-                
                 <ul class="features-list">
                     <li>مشاريع غير محدودة (Unlimited)</li>
                     <li>ربط دومين خاص (Custom Domain)</li>
@@ -183,14 +172,12 @@
             <a href="checkout.html?plan=pro" class="btn-purchase">احصل على الباقة</a>
         </div>
 
-        <!-- باقة Agency -->
         <div class="package-card" data-pack="agency">
             <div>
                 <h2 class="pack-title">الاستوديو الخارق</h2>
                 <div class="pack-price" style="color: var(--color-agency);">49$ <span>/ شهرياً</span></div>
                 <div class="pack-target">🎯 المستهدف: الوكالات وفرق العمل</div>
                 <p class="pack-desc">القوة القصوى لشركات التسويق والبرمجة التي تدير مشاريع عملاء ضخمة ومتعددة.</p>
-                
                 <ul class="features-list">
                     <li>كل مميزات باقة المخرج السينمائي</li>
                     <li>إضافة فريق عمل (حتى 5 مصممين)</li>
@@ -204,31 +191,75 @@
 
     </main>
 
-    <!-- 🛠️ سكربت فحص وتحديث حالة الباقة الحالية تلقائياً -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            
-            // 1. تحديد خطة المستخدم الحالية 
-            // افتراضياً جعلناها 'free'، يمكنك جلبها من Firebase أو جعل السيرفر يكتبها هنا
-            // لتجربتها في المتصفح اكتب في الـ Console: localStorage.setItem('userActualPlan', 'pro') ثم حدّث الصفحة
-            const currentUserPlan = localStorage.getItem('userActualPlan') || 'free';
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-            // 2. البحث عن الكارت الذي يطابق خطة المستخدم الحالية
-            const activeCard = document.querySelector(`.package-card[data-pack="${currentUserPlan}"]`);
+        // نفس إعدادات قاعدة بياناتك السحابية الثابتة
+        const firebaseConfig = {
+            apiKey: "AIzaSyAlIHbsLSdF7I3QU0tkChUyviTWc13ctec",
+            authDomain: "scrollytale.firebaseapp.com",
+            projectId: "scrollytale",
+            storageBucket: "scrollytale.firebasestorage.app",
+            messagingSenderId: "294561535270",
+            appId: "1:294561535270:web:e051f9a58b881bbc341de7"
+        };
 
-            if (activeCard) {
-                // العثور على الزر داخل هذا الكارت بالتحديد
-                const purchaseBtn = activeCard.querySelector('.btn-purchase');
-                
-                if (purchaseBtn) {
-                    // 3. تعديل النص، إزالة الرابط، وإضافة كلاس التصميم المقفل
-                    purchaseBtn.innerHTML = `✓ خطتك الحالية`;
-                    purchaseBtn.removeAttribute('href'); // إلغاء إمكانية الانتقال لصفحة الدفع
-                    purchaseBtn.classList.add('current-plan-btn'); // تطبيق ستايل المقفل
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // مراقبة حالة الحساب والتعرف على خطته الفريدة
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // استخدام الـ uid الخاص بالمستخدم لضمان جلب خطته هو فقط ومزامنتها
+                const storageKey = `scrolly_plan_${user.uid}`;
+                let savedData = JSON.parse(localStorage.getItem(storageKey));
+
+                let currentPlan = 'free'; // الافتراضي
+
+                if (savedData) {
+                    const currentTime = Date.now();
+                    
+                    // ⏱️ الفحص: هل انتهت فترة الـ 30 يوماً (الشهر)؟
+                    if (currentTime > savedData.expiryDate) {
+                        alert("انتهت صلاحية باقتك الحالية (30 يوماً)، تم إعادتك للباقة المجانية.");
+                        localStorage.removeItem(storageKey); // حذف الباقة المنتهية
+                        currentPlan = 'free';
+                    } else {
+                        currentPlan = savedData.planName; // الباقة لا تزال صالحة وشغالة
+                    }
                 }
+
+                // تحديث الواجهة وتغيير الزر للباقة النشطة
+                updateUIWithActivePlan(currentPlan);
+
+            } else {
+                // إذا لم يسجل دخوله اصلاً، تظهر الباقة المجانية كخطة افتراضية
+                updateUIWithActivePlan('free');
             }
         });
-    </script>
 
+        // دالة تحويل الزر ديناميكياً لـ "خطتك الحالية"
+        function updateUIWithActivePlan(plan) {
+            // إعادة ضبط جميع الأزرار أولاً لشكلها الطبيعي
+            document.querySelectorAll('.btn-purchase').forEach(btn => {
+                btn.classList.remove('current-plan-btn');
+                if (btn.innerText === `✓ خطتك الحالية`) {
+                    btn.innerText = "احصل على الباقة";
+                }
+            });
+
+            // العثور على باقة المستخدم المحددة والتحكم بها
+            const activeCard = document.querySelector(`.package-card[data-pack="${plan}"]`);
+            if (activeCard) {
+                const purchaseBtn = activeCard.querySelector('.btn-purchase');
+                if (purchaseBtn) {
+                    purchaseBtn.innerHTML = `✓ خطتك الحالية`;
+                    purchaseBtn.removeAttribute('href'); // حظر تحويله لصفحة الدفع مجدداً
+                    purchaseBtn.classList.add('current-plan-btn'); // قفل الزر
+                }
+            }
+        }
+    </script>
 </body>
 </html>
