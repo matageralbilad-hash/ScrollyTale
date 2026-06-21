@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollyTale | سحر تحويل التمرير إلى قصص سينمائية</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/scrollreveal"></script>
+
+    <style>
+        :root {
+            --bg-base: #05070c;
+            --surface: #0b0e17;
+            --border: #1e2638;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --neon-turquoise: #00f2fe;
+            --neon-purple: #9b51e0;
+            --neon-pink: #f43f5e;
+            --gradient-magic: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #9b51e0 100%);
+            --accent-green: #10b981;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-base);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0; padding: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .cinema-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+            background: radial-gradient(circle at 50% 50%, #111424 0%, #05070c 100%);
+        }
+        
+        .cinema-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 70% 70%, rgba(155, 81, 224, 0.08) 0%, transparent 40%);
+            animation: cinemaPulse 12s infinite alternate ease-in-out;
+        }
+
+        @keyframes cinemaPulse {
+            0% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.1) rotate(5deg); }
+            100% { opacity: 0.3; transform: scale(0.95); }
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(5, 7, 12, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            box-sizing: border-box;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.6rem; font-weight: 900;
+            background: var(--gradient-magic);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .nav-container {
+            display: flex; align-items: center; gap: 20px;
+        }
+
+        nav { display: flex; align-items: center; gap: 25px; }
+        nav a {
+            color: var(--text-muted); text-decoration: none;
+            font-weight: 500; transition: color 0.3s; font-size: 0.95rem;
+        }
+        nav a:hover {
+            color: var(--neon-turquoise); text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .header-actions {
+            display: flex; align-items: center; gap: 15px;
+        }
+
+        .lang-switcher {
+            background: var(--surface); border: 1px solid var(--border);
+            color: var(--text-main); padding: 6px 12px; border-radius: 8px;
+            cursor: pointer; font-weight: bold; outline: none; transition: all 0.3s;
+        }
+        .lang-switcher:hover { border-color: var(--neon-purple); }
+
+        /* زر تسجيل الدخول المشع الجديد بجانب العناوين */
+        .btn-login-nav {
+            background: transparent;
+            color: var(--neon-turquoise);
+            border: 1px solid var(--neon-turquoise);
+            padding: 7px 18px; border-radius: 8px;
+            font-weight: 700; font-size: 0.9rem; text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.1);
+        }
+        .btn-login-nav:hover {
+            background: var(--gradient-magic);
+            color: #000; border-color: transparent;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding: 100px 20px 40px 20px; box-sizing: border-box; position: relative;
+        }
+
+        .hero h1 { font-size: 4rem; margin: 0 0 20px 0; line-height: 1.2; font-weight: 900; }
+        .hero h1 span {
+            background: linear-gradient(90deg, var(--neon-turquoise), var(--neon-purple), var(--neon-pink));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: textDance 6s infinite linear; background-size: 200% auto; display: inline-block;
+        }
+
+        @keyframes textDance {
+            0% { background-position: 0% center; transform: translateY(0); }
+            50% { transform: translateY(-5px); background-position: 100% center; }
+            100% { background-position: 0% center; transform: translateY(0); }
+        }
+
+        .hero p { font-size: 1.3rem; color: var(--text-muted); max-width: 700px; margin-bottom: 35px; line-height: 1.6; }
+
+        .btn-cta {
+            background: var(--gradient-magic); color: #000; font-weight: 800;
+            padding: 16px 40px; border-radius: 50px; text-decoration: none; font-size: 1.15rem;
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.4); transition: all 0.4s ease;
+            display: flex; align-items: center; gap: 12px; animation: pulseButton 2s infinite;
+        }
+        .btn-cta:hover { transform: scale(1.08) translateY(-3px); box-shadow: 0 0 35px rgba(155, 81, 224, 0.7); color: #fff; }
+
+        @keyframes pulseButton {
+            0% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 242, 254, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 242, 254, 0); }
+        }
+
+        section { padding: 90px 8%; max-width: 1200px; margin: 0 auto; box-sizing: border-box; }
+        .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 50px; position: relative; font-weight: 800; }
+        .section-title::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: var(--gradient-magic); border-radius: 2px; }
+
+        .grid-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+        .card-info { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 35px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
+        .card-info:hover { transform: translateY(-10px) scale(1.03); border-color: var(--neon-turquoise); box-shadow: 0 15px 30px rgba(0, 242, 254, 0.15); }
+        .card-info i { font-size: 2.5rem; background: var(--gradient-magic); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+        .card-info h3 { margin: 0 0 15px 0; font-size: 1.4rem; }
+        .card-info p { color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; align-items: stretch; }
+        .price-card { background-color: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 30px 25px; display: flex; flex-direction: column; position: relative; transition: all 0.4s ease; }
+        .price-card.popular { border: 2px solid var(--neon-purple); box-shadow: 0 0 25px rgba(155, 81, 224, 0.25); transform: scale(1.03); }
+        .badge-popular { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink)); color: #fff; padding: 5px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 4px 10px rgba(155, 81, 224, 0.5); }
+        
+        .price-cost { font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; color: #fff; }
+        .price-cost span { font-size: 1rem; color: var(--text-muted); }
+        .price-target { background: rgba(255,255,255,0.04); padding: 8px 12px; border-radius: 8px; font-size: 0.88rem; color: var(--neon-turquoise); margin-bottom: 20px; font-weight: 600; }
+        .price-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; min-height: 45px; }
+        .price-features { list-style: none; padding: 0; margin: 0 0 30px 0; flex-grow: 1; }
+        .price-features li { font-size: 0.92rem; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; }
+        .price-features li i.fa-check { color: var(--accent-green); }
+        .price-features li i.fa-xmark { color: var(--neon-pink); }
+        .price-features li i.fa-warning { color: #f59e0b; }
+
+        .btn-plan { background: transparent; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 10px; text-align: center; text-decoration: none; font-weight: 700; transition: all 0.3s; }
+        .price-card.popular .btn-plan { background: var(--gradient-magic); color: #000; border: none; }
+        .btn-plan:hover { transform: translateY(-3px); border-color: var(--neon-turquoise); }
+
+        .about-box { background: linear-gradient(180deg, var(--surface) 0%, rgba(11,14,23,0.6) 100%); border: 1px solid var(--border); border-radius: 24px; padding: 40px; text-align: center; }
+        .about-company-name { font-size: 2rem; font-weight: 800; background: linear-gradient(90deg, var(--neon-turquoise), var(--neon-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+        
+        .contact-pill { display: inline-flex; align-items: center; gap: 10px; background: #1e293b; border: 1px solid #334155; padding: 10px 24px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: bold; margin-top: 20px; transition: all 0.3s; }
+        .contact-pill:hover { background: #25d366; color: #000; transform: scale(1.05); }
+
+        footer { text-align: center; padding: 40px; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.9rem; }
+
+        @media (max-width: 992px) {
+            nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="smart-loader" class="loading-screen">
+        <div style="width: 50px; height: 50px; border: 3px solid var(--border); border-top-color: var(--neon-turquoise); border-radius: 50%; animation: spin 1s infinite linear;"></div>
+        <p style="margin-top: 20px; color: var(--text-muted);" id="loader-text">جاري فحص تصريح الدخول السينمائي...</p>
+    </div>
+    
+    <script>
+        (function() {
+            const visitorKey = "scrollytale_last_movie_view";
+            const lastView = localStorage.getItem(visitorKey);
+            const now = Date.now();
+            const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+
+            if (lastView && (now - parseInt(lastView) < sevenDaysInMs)) {
+                window.location.replace("auth.html");
+            } else {
+                localStorage.setItem(visitorKey, now.toString());
+                window.addEventListener('DOMContentLoaded', () => {
+                    setTimeout(() => {
+                        const loader = document.getElementById('smart-loader');
+                        if (loader) loader.style.display = 'none';
+                    }, 600);
+                });
+            }
+        })();
+    </script>
+
+    <div class="cinema-bg"></div>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-clapperboard"></i> ScrollyTale</div>
+        <div class="nav-container">
+            <nav>
+                <a href="#what-is-it" data-tr="nav1">ما هو ScrollyTale؟</a>
+                <a href="#how-to" data-tr="nav2">كيفية الاستخدام</a>
+                <a href="#pricing" data-tr="nav3">الأسعار والباقات</a>
+                <a href="#about-us" data-tr="nav4">حول الشركة</a>
+            </nav>
+        </div>
+        <div class="header-actions">
+            <select class="lang-switcher" onchange="switchLanguage(this.value)">
+                <option value="ar">العربية (AR)</option>
+                <option value="en">English (EN)</option>
+                <option value="fr">Français (FR)</option>
+            </select>
+            <a href="auth.html" class="btn-login-nav" data-tr="nav_login">تسجيل الدخول</a>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h1><span data-tr="hero1">حرّك بكرة الماوس، واصنع فيلماً ويب عالمياً!</span></h1>
+        <p data-tr="hero2">المنصة الذكية الأولى التي تمنحك القوة المطلقة لتحويل السطور البرمجية الجامدة والنصوص العادية إلى تجارب ويب تفاعلية سينمائية خارقة تبهر كل زائر بمجرد التدوير والشاشات.</p>
+        <a href="auth.html" class="btn-cta">
+            <i class="fa-solid fa-play"></i>
+            <span data-tr="hero3">ابدأ رحلة الإخراج مجاناً</span>
+        </a>
+    </div>
+
+    <section id="what-is-it">
+        <h2 class="section-title" data-tr="title1">ما هو ScrollyTale؟</h2>
+        <div class="grid-info">
+            <div class="card-info">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <h3 data-tr="w1_h">صناعة الويب القصصي</h3>
+                <p data-tr="w1_p">نحن لا نبني مواقع إنترنت تقليدية، بل نصنع روايات سينمائية متحركة تتبع حركة إصبعك وتدوير الشاشة لتروي قصة منتجك وعملك بشكل يرسخ في الأذهان.</p>
+            </div>
+            <div class="card-info">
+                <i class="fa-solid fa-bolt-lightning"></i>
+                <h3 data-tr="w2_h">أداء حركي متقدم جداً</h3>
+                <p data-tr="w2_p">بفضل البنية البرمجية المتطورة، تتمايل النصوص، وتقفز الصور، وتخفت الأضواء وتشتد بسلاسة مذهلة ومعدل إطارات خارق ومثالي لكافة الأجهزة المحمولة.</p>
+            </div>
+            <div class="card-info">
+                <i class="fa-solid fa-code"></i>
+                <h3 data-tr="w3_h">تصدير نظيف بالكامل</h3>
+                <p data-tr="w3_p">بنهاية إخراجك الإبداعي للمشروع والقالب، يمكنك كبس زر واحدة للحصول على الكود البرمجي الصافي والمستقل تماماً لرفعه على أي استضافة دومين خاصة بك.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-to">
+        <h2 class="section-title" data-tr="title2">كيف يعمل ScrollyTale؟</h2>
+        <div class="grid-info">
+            <div class="card-info">
+                <i class="fa-solid fa-layer-group"></i>
+                <h3 data-tr="h1_h">1. اختر القالب السينمائي</h3>
+                <p data-tr="h1_p">ادخل إلى مكتبة المخرج واختر القالب التفاعلي الأقرب لرؤيتك الفنية، حيث تم تصميم وتوزيع الأبعاد بعناية فائقة لتلائم السرد القصصي السحابي.</p>
+            </div>
+            <div class="card-info">
+                <i class="fa-solid fa-pen-nib"></i>
+                <h3 data-tr="h2_h">2. صبّ محتواك وإبداعك</h3>
+                <p data-tr="h2_p">اكتب عناوينك، ارفع صورك، وعيّن اتجاهات التحريك والنصوص الراقصة والقفزات. كل عنصر هنا يمتلك مساراً زمنياً حراً يتحكم به الزائر بمجرد التمرير.</p>
+            </div>
+            <div class="card-info">
+                <i class="fa-solid fa-rocket"></i>
+                <h3 data-tr="h3_h">3. التفعيل والربط السحابي</h3>
+                <p data-tr="h3_p">استمتع بميزات ربط الدومين الخاص كلياً أو فعّل كودك الرقمي المحلي للانطلاق عبر بوابات الاستضافة ورفع مشروعك حياً للعالم دون قيود.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <h2 class="section-title" data-tr="title3">خطط الاشتراك وباقات الإبداع</h2>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <h3>باقة الحكواتي الحر</h3>
+                <div class="price-cost">0$ <span>/ <span data-tr="p_forever">للأبد</span></span></div>
+                <div class="price-target">🎯 المستهدف: الهواة والمستكشفين</div>
+                <div class="price-desc">تذوق سحر التحريك السينمائي وابدأ خطواتك الأولى بدون أي تكاليف مادية.</div>
+                <ul class="price-features">
+                    <li><i class="fa-solid fa-check"></i> <span>مشروع واحد (1) نشط بالكامل</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>قالبان سينمائيان (2) للعمل</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>تصدير الكود النظيف للموقع</span></li>
+                    <li><i class="fa-solid fa-xmark"></i> <span style="color:var(--neon-pink);">شعار المنصة إلزامي بالأسفل</span></li>
+                </ul>
+                <a href="auth.html" class="btn-plan">خطتك الحالية</a>
+            </div>
+
+            <div class="price-card">
+                <h3>الحكواتي الناشئ</h3>
+                <div class="price-cost">7$ <span>/ <span data-tr="p_month">شهرياً</span></span></div>
+                <div class="price-target">🎯 المستهدف: الطلاب والمصممين الجدد</div>
+                <div class="price-desc">مثالية لبناء بورتفوليو شخصي مميز وجذب عملائك الأوائل بأسلوب فريد.</div>
+                <ul class="price-features">
+                    <li><i class="fa-solid fa-check"></i> <span>مشروعين (2) نشطين في نفس الوقت</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>الوصول إلى 5 قوالب سينمائية</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>تصدير الكود البرمجي بالكامل</span></li>
+                    <li><i class="fa-solid fa-warning"></i> <span>شعار المنصة موجود (صغير جداً)</span></li>
+                </ul>
+                <a href="auth.html" class="btn-plan" data-tr="p_get">احصل على الباقة</a>
+            </div>
+
+            <div class="price-card popular">
+                <div class="badge-popular" data-tr="p_pop">🔥 الأكثر طلباً ومبيعاً</div>
+                <h3>المخرج السينمائي</h3>
+                <div class="price-cost">19$ <span>/ <span data-tr="p_month">شهرياً</span></span></div>
+                <div class="price-target">🎯 المستهدف: الـ Freelancers والمحترفين</div>
+                <div class="price-desc">الحصان الرابح لكل مصمم ومطور يريد كسر الجمود وبناء مشاريع تجارية بلا قيود.</div>
+                <ul class="price-features">
+                    <li><i class="fa-solid fa-check"></i> <span>مشاريع غير محدودة (Unlimited)</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>ربط دومين خاص (Custom Domain)</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>الوصول الكامل لكل القوالب</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span style="color:var(--accent-green); font-weight:bold;">إزالة شعار المنصة تماماً</span></li>
+                </ul>
+                <a href="auth.html" class="btn-plan" data-tr="p_get">احصل على الباقة</a>
+            </div>
+
+            <div class="price-card">
+                <h3>الاستوديو الخارق</h3>
+                <div class="price-cost">49$ <span>/ <span data-tr="p_month">شهرياً</span></span></div>
+                <div class="price-target">🎯 المستهدف: الوكالات وفرق العمل</div>
+                <div class="price-desc">القوة القصوى لشركات التسويق والبرمجة التي تدير مشاريع عملاء ضخمة ومتعددة.</div>
+                <ul class="price-features">
+                    <li><i class="fa-solid fa-check"></i> <span>كل مميزات باقة المخرج السينمائي</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>إضافة فريق عمل (حتى 5 مصممين)</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>لوحة تحكم مخصصة بشعار وكالتك</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>إحصائيات تدوير الشاشة (Scroll Analytics)</span></li>
+                    <li><i class="fa-solid fa-check"></i> <span>دعم فني VIP مباشر وسريع</span></li>
+                </ul>
+                <a href="auth.html" class="btn-plan" data-tr="p_get">احصل على الباقة</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about-us">
+        <h2 class="section-title" data-tr="title4">حول المشروع والشركة المطورة</h2>
+        <div class="about-box">
+            <div class="about-company-name">Good Code | شركة قود كود</div>
+            <p style="font-size: 1.15rem; max-width: 800px; margin: 0 auto 25px auto; line-height: 1.7;" data-tr="about_p">
+                تمت هندسة وتطوير تطبيق <b>ScrollyTale</b> بكفاءة برمجية متناهية وصناعة عالمية بمقاييس حديثة تحت إشراف وإدارة وتطوير المطور الفذ <b>علي السقاف</b> في مدينة <b>سيئون</b> الغناء. نتوجه بكامل الشكر والتقدير لطاقم عمل شركة "قود كود" على إخراج هذا العمل التقني الاستثنائي الفريد الذي يكسر جمود الويب العربي ويضعه في مصاف المنصات العالمية.
+            </p>
+            <div style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 10px;" data-tr="about_call">للتواصل المباشر مع إدارة وفريق تطوير التطبيق:</div>
+            <a href="https://wa.me/967774257557" target="_blank" class="contact-pill">
+                <i class="fa-brands fa-whatsapp" style="font-size: 1.4rem;"></i>
+                <span>774257557 (سيئون - اليمن)</span>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 ScrollyTale Studio & Good Code. All Rights Reserved. Crafted with Neon Energy in Seiyun.</p>
+    </footer>
+
+    <script>
+        const translations = {
+            ar: {
+                nav1: "ما هو ScrollyTale؟", nav2: "كيفية الاستخدام", nav3: "الأسعار والباقات", nav4: "حول الشركة", nav_login: "تسجيل الدخول",
+                hero1: "حرّك بكرة الماوس، واصنع فيلماً ويب عالمياً!",
+                hero2: "المنصة الذكية الأولى التي تمنحك القوة المطلقة لتحويل السطور البرمجية الجامدة والنصوص العادية إلى تجارب ويب تفاعلية سينمائية خارقة تبهر كل زائر بمجرد التدوير والشاشات.",
+                hero3: "ابدأ رحلة الإخراج مجاناً", title1: "ما هو ScrollyTale؟",
+                w1_h: "صناعة الويب القصصي", w1_p: "نحن لا نبني مواقع إنترنت تقليدية، بل نصنع روايات سينمائية متحركة تتبع حركة إصبعك وتدوير الشاشة لتروي قصة منتجك وعملك بشكل يرسخ في الأذهان.",
+                w2_h: "أداء حركي متقدم جداً", w2_p: "بفضل البنية البرمجية المتطورة، تتمايل النصوص، وتقفز الصور، وتخفت الأضواء وتشتد بسلاسة مذهلة ومعدل إطارات خارق ومثالي لكافة الأجهزة المحمولة.",
+                w3_h: "تصدير نظيف بالكامل", w3_p: "بنهاية إخراجك الإبداعي للمشروع والقالب، يمكنك كبس زر واحدة للحصول على الكود البرمجي الصافي والمستقل تماماً لرفعه على أي استضافة دومين خاصة بك.",
+                title2: "كيف يعمل ScrollyTale؟",
+                h1_h: "1. اختر القالب السينمائي", h1_p: "ادخل إلى مكتبة المخرج واختر القالب التفاعلي الأقرب لرؤيتك الفنية، حيث تم تصميم وتوزيع الأبعاد بعناية فائقة لتلائم السرد القصصي السحابي.",
+                h2_h: "2. صبّ محتواك وإبداعك", h2_p: "اكتب عناوينك، ارفع صورك، وعيّن اتجاهات التحريك والنصوص الراقصة والقفزات. كل عنصر هنا يمتلك مساراً زمنياً حراً يتحكم به الزائر بمجرد التمرير.",
+                h3_h: "3. التفعيل والربط السحابي", h3_p: "استمتع بميزات ربط الدومين الخاص كلياً أو فعّل كودك الرقمي المحلي للانطلاق عبر بوابات الاستضافة ورفع مشروعك حياً للعالم دون قيود.",
+                title3: "خطط الاشتراك وباقات الإبداع", p_forever: "للأبد", p_month: "شهرياً", p_pop: "🔥 الأكثر طلباً ومبيعاً", p_get: "احصل على الباقة", title4: "حول المشروع والشركة المطورة", about_call: "للتواصل المباشر مع إدارة وفريق تطوير التطبيق:",
+                about_p: "تمت هندسة وتطوير تطبيق ScrollyTale بكفاءة برمجية متناهية وصناعة عالمية بمقاييس حديثة تحت إشراف وإدارة وتطوير المطور الفذ علي السقاف في مدينة سيئون الغناء. نتوجه بكامل الشكر والتقدير لطاقم عمل شركة 'قود كود' على إخراج هذا العمل التقني الاستثنائي الفريد الذي يكسر جمود الويب العربي ويضعه في مصاف المنصات العالمية."
+            },
+            en: {
+                nav1: "What is ScrollyTale?", nav2: "How it Works", nav3: "Pricing Plans", nav4: "About Us", nav_login: "Login",
+                hero1: "Scroll the Wheel, Direct a Global Web Movie!",
+                hero2: "The premier smart platform granting you the ultimate power to transform rigid code into ultra-cinematic web experiences that amaze every visitor upon scrolling.",
+                hero3: "Start Directing for Free", title1: "What is ScrollyTale?",
+                w1_h: "Cinematic Storytelling", w1_p: "We don't build typical web pages; we engineer interactive visual stories that move flawlessly as your visitors navigate your content.",
+                w2_h: "Advanced Performance", w2_p: "With our optimized responsive core, text leaps, imagery flows, and ambient lightning shifts seamlessly at ultra-high framerates.",
+                w3_h: "100% Clean Export", w3_p: "Easily export production-ready, clean front-end code with a single click, perfectly ready to host on Vercel or your private domain.",
+                title2: "How ScrollyTale Works?",
+                h1_h: "1. Select a Cinematic Template", h1_p: "Browse our premium library and choose a canvas tailored for immersive scroll-driven narratives.",
+                h2_h: "2. Build & Style Content", h2_p: "Inject headings, upload photos, and assign stunning neon physics and dynamic choreography effortlessly.",
+                h3_h: "3. Deploy & Go Live", h3_p: "Map your unique custom domains or instantly activate your local digital code to publish globally.",
+                title3: "Flexible Premium Subscription Plans", p_forever: "Forever", p_month: "mo", p_pop: "🔥 Most Popular Selection", p_get: "Get Plan Now", title4: "About the Project & Engineering Team", about_call: "Direct Channel to Executive Management:",
+                about_p: "ScrollyTale was meticulously engineered under the technical stewardship and development of Ali Al-Saqqaf in the historic city of Seiyun. We extend our immense gratitude to the entire team at 'Good Code' for delivering a masterpiece that breaks web conventions."
+            },
+            fr: {
+                nav1: "Qu'est-ce que ScrollyTale?", nav2: "Comment ça marche", nav3: "Tarifs & Forfaits", nav4: "À Propos", nav_login: "Connexion",
+                hero1: "Faites défiler la souris, réalisez un film web!",
+                hero2: "La première plateforme intelligente qui vous donne le pouvoir de transformer du code rigide en expériences web cinématographiques à couper le souffle.",
+                hero3: "Commencer gratuitement", title1: "Qu'est-ce que ScrollyTale?",
+                w1_h: "Narration Web interactive", w1_p: "Nous ne créons pas de sites traditionnels; nous façonnons des récits animés qui réagissent magnifiquement au défilement de l'écran.",
+                w2_h: "Performance Ultime", w2_p: "Grâce à notre architecture de pointe, les textes dansent et les images sautent avec une fluidité absolue sur tous les appareils.",
+                w3_h: "Exportation 100% Propre", w3_p: "Exportez du code propre et optimisé en un clic, prêt à être déployé instantanément sur Vercel ou votre propre domaine.",
+                title2: "Comment fonctionne ScrollyTale?",
+                h1_h: "1. Choisissez un modèle", h1_p: "Explorez notre catalogue et sélectionnez un canevas adapté au flux de votre histoire interactive.",
+                h2_h: "2. Insérez votre Contenu", h2_p: "Écrivez vos textes, importez vos médias et configurez des animations néon éblouissantes très facilement.",
+                h3_h: "3. Activation Clé en Main", h3_p: "Liez votre propre nom de domaine ou activez instantanément vos codes locaux pour lancer votre site.",
+                title3: "Forfaits d'abonnement flexibles", p_forever: "À vie", p_month: "mois", p_pop: "🔥 Le Plus Populaire", p_get: "Choisir ce forfait", title4: "À propos du projet et du développement", about_call: "Contact direct avec la direction générale:",
+                about_p: "ScrollyTale a été conçu et développé avec brio sous la direction de Ali Al-Saqqaf dans la ville de Seiyun. Un grand merci à l'équipe de 'Good Code' pour cette réalisation technologique révolutionnaire."
+            }
+        };
+
+        function switchLanguage(lang) {
+            const html = document.documentElement;
+            html.lang = lang;
+            html.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+            document.querySelectorAll('[data-tr]').forEach(el => {
+                const key = el.getAttribute('data-tr');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+        }
+
+        const revealConfig = { duration: 1200, distance: '60px', verticalFactor: 0.2, reset: true };
+        ScrollReveal().reveal('.hero h1', { ...revealConfig, origin: 'top', delay: 200 });
+        ScrollReveal().reveal('.hero p', { ...revealConfig, origin: 'bottom', delay: 400 });
+        ScrollReveal().reveal('.hero .btn-cta', { ...revealConfig, scale: 0.8, delay: 600 });
+        ScrollReveal().reveal('.section-title', { ...revealConfig, origin: 'right' });
+        ScrollReveal().reveal('.card-info', { ...revealConfig, origin: 'bottom', interval: 200 });
+        ScrollReveal().reveal('.price-card', { ...revealConfig, origin: 'top', interval: 150 });
+        ScrollReveal().reveal('.about-box', { ...revealConfig, scale: 0.9, duration: 1500 });
+    </script>
+</body>
+</html>

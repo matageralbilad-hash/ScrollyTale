@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollyTale Studio - الانطلاقة المتمردة</title>
+    <style>
+        /* ==========================================================================
+           1. بيئة العمل السينمائية المظلمة
+           ========================================================================== */
+        :root {
+            --bg-env: #02040a;
+            --neon-emerald: #00f2fe;
+            --neon-purple: #9b51e0;
+            --glass-card: rgba(10, 15, 30, 0.7);
+            --text-light: #f3f4f6;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-env);
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        /* شبكة أرضية ثلاثية الأبعاد متحركة */
+        .cyber-grid {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+            background-image: linear-gradient(rgba(0, 242, 254, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 242, 254, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center;
+            transform: rotateX(60deg);
+            transform-origin: top;
+            animation: gridScroll 20s linear infinite;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        @keyframes gridScroll {
+            from { background-position: 0 0; }
+            to { background-position: 0 100%; }
+        }
+
+        /* ==========================================================================
+           2. هيكل الأنميشن المجنون (الرجل المسدوح والقفزة)
+           ========================================================================== */
+        .stage-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* تصميم كائن الرجل باستخدام الـ CSS المتقدم */
+        .shadow-man {
+            position: absolute;
+            width: 80px;
+            height: 160px;
+            bottom: 10%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: bottom center;
+            /* الحالة البدائية: مسدوح تماماً في الأرض ونائم */
+            transform: translateY(200px) rotate(-90deg) scale(0.8);
+            opacity: 0;
+            animation: wakeUpAndJump 3s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation-delay: 0.5s;
+        }
+
+        /* تفاصيل جسم الرجل النيون */
+        .man-head {
+            width: 35px; height: 35px;
+            background: var(--neon-emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--neon-emerald);
+        }
+        .man-body {
+            width: 12px; height: 65px;
+            background: #ffffff;
+            margin-top: 5px;
+            border-radius: 6px;
+            box-shadow: 0 0 15px #fff;
+            position: relative;
+        }
+        .man-arm {
+            position: absolute;
+            width: 8px; height: 50px;
+            background: var(--neon-purple);
+            box-shadow: 0 0 15px var(--neon-purple);
+            border-radius: 4px;
+            top: 5px;
+            transform-origin: top center;
+        }
+        .man-arm.left { left: -12px; transform: rotate(20deg); }
+        .man-arm.right { 
+            right: -12px; transform: rotate(-20deg);
+        }
+        .man-legs {
+            display: flex; gap: 14px;
+        }
+        .man-leg {
+            width: 10px; height: 60px;
+            background: #ffffff;
+            box-shadow: 0 0 10px #fff;
+            border-radius: 4px;
+        }
+
+        /* أنميشن الكوريوجرافي للقفزة والضربة السحرية */
+        @keyframes wakeUpAndJump {
+            0% { transform: translateY(200px) rotate(-90deg) scale(0.8); opacity: 0.3; }
+            30% { transform: translateY(150px) rotate(-90deg) scale(0.9); opacity: 1; }
+            50% { /* القفزة البهلوانية الصادمة للأعلى والدوران */
+                transform: translateY(-250px) rotate(270deg) scale(1.2); 
+            }
+            65% { /* الهبوط بقوة على قدميه والاستعداد للضربة */
+                transform: translateY(80px) rotate(360deg) scale(1);
+            }
+            75% { /* مد اليد بقوة نحو الشاشة (الحركة التفاعلية المفجرة) */
+                transform: translateY(80px) rotate(360deg) scale(1.1);
+            }
+            100% { /* الاختفاء مع الانفجار لترك المجال للكارت */
+                transform: translateY(80px) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* تأثير الذراع اليمنى عند توجيه الضربة */
+        .shadow-man {
+            --anim-arm-delay: 2.4s;
+        }
+        @keyframes punchGesture {
+            0% { transform: rotate(-20deg); }
+            100% { transform: rotate(-160deg) translateY(-10px); width: 12px; background: #fff; }
+        }
+
+        /* تفعيل حركة اليد بالتزامن مع توقيت القفزة */
+        .shadow-man-active .man-arm.right {
+            animation: punchGesture 0.4s 2.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* ==========================================================================
+           3. كرت تسجيل الدخول الزجاجي الفاخر (يظهر بعد الانفجار)
+           ========================================================================== */
+        .login-card {
+            background: var(--glass-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            padding: 40px;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.2);
+            opacity: 0;
+            transform: scale(0.5) rotateX(-30deg);
+            pointer-events: none;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* الكلاس الذي يتم تفعيله بالجافاسكريبت فور انتهاء قفزة الرجل */
+        .login-card.reveal-boom {
+            opacity: 1;
+            transform: scale(1) rotateX(0deg);
+            pointer-events: auto;
+        }
+
+        .login-card h2 {
+            color: #fff; font-size: 1.8rem; margin-bottom: 5px; font-weight: 800;
+        }
+        .login-card p {
+            color: #9ca3af; font-size: 0.9rem; margin-bottom: 25px;
+        }
+
+        /* مدخلات البريد الإلكتروني وكلمة السر */
+        .input-box {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+        .input-box label {
+            display: block; font-size: 0.85rem; color: var(--neon-emerald); margin-bottom: 6px; font-weight: 600;
+        }
+        .input-box input {
+            width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; color: #fff; font-size: 0.95rem; box-sizing: border-box;
+            transition: all 0.3s;
+        }
+        .input-box input:focus {
+            outline: none; border-color: var(--neon-emerald); box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+        }
+
+        /* أزرار العمليات والمصادقة */
+        .btn-submit {
+            width: 100%; padding: 15px; background: linear-gradient(135deg, var(--neon-emerald), #00b8ff);
+            border: none; border-radius: 12px; color: #02040a; font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: all 0.3s; margin-bottom: 15px;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 242, 254, 0.4); }
+
+        .divider {
+            display: flex; align-items: center; color: #6b7280; font-size: 0.8rem; margin: 20px 0;
+        }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); margin: 0 10px; }
+
+        /* الأزرار السحابية المتجاوبة */
+        .social-row { display: flex; gap: 15px; }
+        .btn-social {
+            flex: 1; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: all 0.3s;
+        }
+        .btn-google { background: #fff; color: #000; border: none; }
+        .btn-google:hover { background: #e5e7eb; transform: translateY(-2px); }
+        .btn-github { background: #1f2937; color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-github:hover { background: #111827; border-color: var(--neon-purple); transform: translateY(-2px); }
+
+        .toggle-auth {
+            margin-top: 20px; font-size: 0.85rem; color: #9ca3af; cursor: pointer; display: inline-block;
+        }
+        .toggle-auth span { color: var(--neon-emerald); font-weight: bold; text-decoration: underline; }
+
+        .status-tracker {
+            color: #00f2fe; font-size: 0.9rem; margin-top: 15px; display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الشبكة المستقبلية التفاعلية -->
+    <div class="cyber-grid"></div>
+
+    <div class="stage-container">
+        
+        <!-- [الرجل المسدوح] هيكل الأنميشن الذي سيقفز ويضرب بيده الشاشة -->
+        <div class="shadow-man shadow-man-active" id="actor-man">
+            <div class="man-head"></div>
+            <div class="man-body">
+                <div class="man-arm left"></div>
+                <div class="man-arm right"></div>
+            </div>
+            <div class="man-legs">
+                <div class="man-leg"></div>
+                <div class="man-leg"></div>
+            </div>
+        </div>
+
+        <!-- [كرت الدخول المتقدم] يظهر فوراً بعد حركة اليد التفاعلية للرجل -->
+        <div class="login-card" id="auth-card">
+            <h2 id="form-title">تسجيل الدخول إلى ScrollyTale</h2>
+            <p id="form-subtitle">أدخل بياناتك السحابية للوصول لمحرك البناء الفوري.</p>
+
+            <!-- حقول الإدخال الاحترافية -->
+            <div class="input-box">
+                <label>البريد الإلكتروني</label>
+                <input type="email" id="email-field" placeholder="name@example.com">
+            </div>
+
+            <div class="input-box">
+                <label>كلمة السر</label>
+                <input type="password" id="password-field" placeholder="••••••••">
+            </div>
+
+            <button class="btn-submit" id="btn-submit-main">دخول آمن للمنصة 🚀</button>
+
+            <div class="divider">أو المتابعة عبر الحسابات السحابية</div>
+
+            <div class="social-row">
+                <button class="btn-social btn-google" id="btn-google">
+                    <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/logo_googleg_color_24dp.png" alt="Google" width="18">
+                    Google
+                </button>
+                <button class="btn-social btn-github" id="btn-github">
+                    <svg height="18" width="18" viewBox="0 0 16 16" fill="#fff"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                    GitHub
+                </button>
+            </div>
+
+            <div class="toggle-auth" id="toggle-mode">ليس لديك حساب؟ <span>إنشاء حساب جديد</span></div>
+            <div id="status-logger" class="status-tracker"></div>
+        </div>
+
+    </div>
+
+    <!-- ==========================================================================
+       4. جافاسكريبت المطورين ونظام تفعيل الـ Firebase المكتمل
+       ========================================================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            GithubAuthProvider,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        // إعدادات المحرك السحابي الفعلي الخاص بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyAlIHbsLSdF7I3QU0tkChUyviTWc13ctec",
+            authDomain: "scrollytale.firebaseapp.com",
+            projectId: "scrollytale",
+            storageBucket: "scrollytale.firebasestorage.app",
+            messagingSenderId: "294561535270",
+            appId: "1:294561535270:web:e051f9a58b881bbc341de7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        const googleProvider = new GoogleAuthProvider();
+        const githubProvider = new GithubAuthProvider();
+
+        const authCard = document.getElementById('auth-card');
+        const statusLogger = document.getElementById('status-logger');
+        
+        let isLoginMode = true; // وضع التشغيل التلقائي: تسجيل دخول
+
+        // ⏱️ مزامنة وقت انتهاء قفزة الرجل وظهور انفجار الكرت البصري (ثانيتين ونصف)
+        setTimeout(() => {
+            authCard.classList.add('reveal-boom');
+        }, 2700);
+
+        // [منطق التبديل] بين تسجيل دخول وإنشاء حساب جديد
+        const toggleModeBtn = document.getElementById('toggle-mode');
+        const formTitle = document.getElementById('form-title');
+        const btnSubmitMain = document.getElementById('btn-submit-main');
+
+        toggleModeBtn.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if(!isLoginMode) {
+                formTitle.textContent = "إنشاء حساب جديد";
+                btnSubmitMain.textContent = "تجهيز الحساب السحابي 🚀";
+                toggleModeBtn.innerHTML = "لديك حساب بالفعل؟ <span>تسجيل الدخول</span>";
+            } else {
+                formTitle.textContent = "تسجيل الدخول إلى ScrollyTale";
+                btnSubmitMain.textContent = "دخول آمن للمنصة 🚀";
+                toggleModeBtn.innerHTML = "ليس لديك حساب؟ <span>إنشاء حساب جديد</span>";
+            }
+        });
+
+        // [1] منطق البريد الإلكتروني وكلمة السر (إنشاء أو تسجيل دخول حقيقي)
+        btnSubmitMain.addEventListener('click', async () => {
+            const email = document.getElementById('email-field').value;
+            const password = document.getElementById('password-field').value;
+
+            if(!email || !password) {
+                alert("برجاء ملء الحقول أولاً الكابتن!");
+                return;
+            }
+
+            statusLogger.style.display = "block";
+            statusLogger.style.color = "#00f2fe";
+            statusLogger.textContent = "جاري مراجعة قواعد البيانات السحابية...";
+
+            try {
+                if(isLoginMode) {
+                    // تسجيل الدخول بالبريد
+                    const res = await signInWithEmailAndPassword(auth, email, password);
+                    statusLogger.textContent = `مرحباً بعودتك! جاري نقلك...`;
+                } else {
+                    // إنشاء حساب جديد بالبريد
+                    const res = await createUserWithEmailAndPassword(auth, email, password);
+                    statusLogger.textContent = `تم إنشاء حسابك بنجاح! جاري التوجيه...`;
+                }
+                
+                setTimeout(() => { window.location.href = "intro.html"; }, 1200);
+
+            } catch (error) {
+                statusLogger.style.color = "#ef4444";
+                statusLogger.textContent = `خطأ: ${error.message}`;
+            }
+        });
+
+        // [2] مصادقة جوجل الفورية مع التوجيه
+        document.getElementById('btn-google').addEventListener('click', async () => {
+            statusLogger.style.display = "block";
+            statusLogger.textContent = "جاري تفعيل الاتصال مع بنية Google...";
+            try {
+                await signInWithPopup(auth, googleProvider);
+                statusLogger.textContent = "تم التحقق بنجاح! جاري التوجيه...";
+                setTimeout(() => { window.location.href = "intro.html"; }, 1000);
+            } catch (error) {
+                statusLogger.style.color = "#ef4444";
+                statusLogger.textContent = `خطأ جوجل: ${error.message}`;
+            }
+        });
+
+        // [3] مصادقة غيت هاب الفورية
+        document.getElementById('btn-github').addEventListener('click', async () => {
+            statusLogger.style.display = "block";
+            statusLogger.textContent = "جاري تفعيل الاتصال مع بنية GitHub...";
+            try {
+                await signInWithPopup(auth, githubProvider);
+                statusLogger.textContent = "تم التحقق بنجاح! جاري التوجيه...";
+                setTimeout(() => { window.location.href = "intro.html"; }, 1000);
+            } catch (error) {
+                statusLogger.style.color = "#ef4444";
+                statusLogger.textContent = `خطأ غيت هاب: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
