@@ -5,143 +5,375 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>استوديو القوالب - ScrollyTale Studio</title>
     <style>
+        /* --- الهوية البصرية الفاخرة والنظام اللوني (Neon Turquoise Purple) --- */
         :root {
-            --bg-page: #020205;
-            --card-bg: rgba(255, 255, 255, 0.02);
-            --card-border: rgba(255, 255, 255, 0.05);
-            --neon-purple: #a855f7;
+            --bg-dark: #030308;
+            --bg-gradient: radial-gradient(circle at 50% 10%, #13092b 0%, #030308 70%);
             --neon-cyan: #00f2fe;
-            --text-bright: #ffffff;
-            --text-muted: #64748b;
+            --neon-purple: #bc34fa;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --text-glow: 0 0 10px rgba(0, 242, 254, 0.5), 0 0 20px rgba(188, 52, 250, 0.3);
+            --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* تصفير الإعدادات وضبط الانسيابية */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
-            background-color: var(--bg-page);
-            color: var(--text-bright);
-            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: #ffffff;
+            font-family: var(--font-main);
             min-height: 100vh;
             overflow-x: hidden;
-            padding-bottom: 60px;
+            padding-bottom: 80px;
         }
 
-        /* شريط البحث العلوي الفخم */
+        /* --- تأثير الأنيميشن عند تحميل الصفحة --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- شريط البحث العلوي الزجاجي الفاخر --- */
         .search-header {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(2, 2, 5, 0.85);
-            backdrop-filter: blur(20px);
-            padding: 20px; border-bottom: 1px solid var(--card-border);
-            text-align: center;
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+            background: rgba(3, 3, 8, 0.75);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 25px 20px; 
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
         }
+
         .search-wrapper {
-            position: relative; max-width: 600px; margin: 0 auto;
+            position: relative; 
+            max-width: 650px; 
+            margin: 0 auto;
         }
+
         .search-input {
-            width: 100%; padding: 14px 50px 14px 20px;
+            width: 100%; 
+            padding: 16px 55px 16px 25px;
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--card-border); border-radius: 30px;
-            color: #fff; font-size: 1rem; transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 50px;
+            color: #ffffff; 
+            font-size: 1.05rem;
+            font-family: var(--font-main);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
-        html[dir="ltr"] .search-input { padding: 14px 20px 14px 50px; }
+        /* تعديل الحشوة في حالة اللغة الإنجليزية ليكون الأيقونة صحيحة */
+        html[dir="ltr"] .search-input { padding: 16px 25px 16px 55px; }
         
         .search-input:focus {
-            outline: none; border-color: var(--neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
-            background: rgba(255, 255, 255, 0.06);
+            outline: none; 
+            border-color: var(--neon-cyan);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.25), inset 0 2px 4px rgba(0,0,0,0.3);
+            transform: scale(1.01);
         }
+
         .search-icon {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            right: 20px; color: var(--text-muted); font-size: 1.2rem; pointer-events: none;
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%);
+            right: 22px; 
+            color: rgba(255,255,255,0.4); 
+            font-size: 1.3rem; 
+            pointer-events: none;
         }
-        html[dir="ltr"] .search-icon { left: 20px; right: auto; }
+        html[dir="ltr"] .search-icon { left: 22px; right: auto; }
 
-        /* الأقسام والتمرير لأسفل */
+        /* تفتيح أيقونة البحث عند التركيز */
+        .search-input:focus + .search-icon {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        /* --- الحاوية الرئيسية للأقسام وقوالب العرض --- */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px 25px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
         .category-section {
-            max-width: 1200px; margin: 40px auto; padding: 0 20px;
+            margin: 60px 0;
         }
-        
-        /* بنر القسم مع الصورة الخلفية */
+
+        /* --- بنر القسم (تداخل النصوص وتفاعل الخلفيات المظلمة) --- */
         .category-banner {
-            position: relative; width: 100%; height: 180px;
-            border-radius: 20px; overflow: hidden; margin-bottom: 25px;
-            display: flex; align-items: center; padding: 4px 30px;
-            border: 1px solid var(--card-border);
+            position: relative; 
+            width: 100%; 
+            height: 200px;
+            border-radius: 24px; 
+            overflow: hidden; 
+            margin-bottom: 35px;
+            display: flex; 
+            align-items: center; 
+            padding: 0 40px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
+
+        /* تأثير الحركة المخفية للصور الخلفية للبنر */
         .category-banner img {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: 1; opacity: 0.4; filter: brightness(0.6);
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            object-fit: cover; 
+            z-index: 1; 
+            opacity: 0.35; 
+            filter: brightness(0.4) contrast(1.2) grayscale(20%);
+            transform: scale(1.02);
         }
+
+        /* حركة تمدد خلفية البنر عند مرور الماوس على القسم */
+        .category-section:hover .category-banner img {
+            transform: scale(1.08);
+            opacity: 0.5;
+            filter: brightness(0.5) contrast(1.3);
+        }
+
+        /* التلاعب الجمالي بالعناوين وتدرج الألوان النيون الناري */
         .category-banner h2 {
-            position: relative; z-index: 2; font-size: 2rem; font-weight: 800;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            background: linear-gradient(135deg, #fff, var(--text-muted));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            position: relative; 
+            z-index: 2; 
+            font-size: 2.5rem; 
+            font-weight: 900;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--neon-cyan) 70%, var(--neon-purple));
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 20px rgba(0,0,0,0.9);
         }
 
-        /* شبكة عرض كروت القوالب */
+        .category-banner::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
+            z-index: 3;
+        }
+
+        /* --- شبكة عرض الكروت (قوية التجاوب الذكي) --- */
         .templates-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+            display: grid; 
+            /* التوزيع التلقائي الذكي لحل مشكلة عدم التجاوب */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 30px;
         }
 
-        /* كرت القالب الفريد */
+        /* --- كرت القالب الاحترافي الفاخر (Glassmorphism & Neon Drop) --- */
         .template-card {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: 16px; overflow: hidden; cursor: pointer;
-            position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border);
+            border-radius: 20px; 
+            overflow: hidden; 
+            cursor: pointer;
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
         }
+
+        /* الحركة المتداخلة الفخمة عند مرور الماوس على الكرت */
         .template-card:hover {
-            transform: translateY(-5px); border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(0, 242, 254, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(188, 52, 250, 0.2);
         }
+
+        /* حاوية الصورة وتأثيرات اللمعان */
         .template-thumb {
-            width: 100%; height: 150px; background: #0b0b10; position: relative;
+            width: 100%; 
+            height: 190px; 
+            background: #08080f; 
+            position: relative;
+            overflow: hidden;
         }
+
         .template-thumb img {
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: opacity 0.3s;
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            opacity: 0.75; 
+            filter: grayscale(10%);
         }
-        .template-card:hover .template-thumb img { opacity: 1; }
-        
-        .template-info { padding: 15px; }
-        .template-title { font-size: 0.95rem; font-weight: 700; color: #e2e8f0; line-height: 1.4; }
 
-        /* شارات الأقفال والمستويات للباقات */
+        /* حركة الزووم والانسيابية للصورة الداخلية */
+        .template-card:hover .template-thumb img {
+            opacity: 1;
+            transform: scale(1.12) rotate(1deg);
+            filter: grayscale(0);
+        }
+
+        /* تأثير الخط اللامع العابر فوق الصورة (Shine Animation) */
+        .template-thumb::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: skewX(-25deg);
+            z-index: 2;
+        }
+
+        .template-card:hover .template-thumb::before {
+            animation: shineEffect 0.8s ease-in-out;
+        }
+
+        @keyframes shineEffect {
+            100% { left: 150%; }
+        }
+
+        /* --- شارات الكروت وباقات الأقفال الزاهية --- */
         .lock-badge {
-            position: absolute; top: 12px; left: 12px;
-            background: rgba(2, 2, 5, 0.85); border: 1px solid #ef4444;
-            color: #ef4444; padding: 4px 8px; border-radius: 8px;
-            font-size: 0.75rem; font-weight: 700; backdrop-filter: blur(5px);
-            display: flex; align-items: center; gap: 4px; z-index: 5;
+            position: absolute; 
+            top: 15px; 
+            left: 15px;
+            background: rgba(3, 3, 8, 0.85); 
+            border: 1px solid #ff4a4a;
+            color: #ff4a4a; 
+            padding: 6px 14px; 
+            border-radius: 30px;
+            font-size: 0.8rem; 
+            font-weight: 700; 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(255, 74, 74, 0.3);
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            z-index: 5;
         }
-        html[dir="ltr"] .lock-badge { right: 12px; left: auto; }
+        html[dir="ltr"] .lock-badge { right: 15px; left: auto; }
 
-        /* المودال التحذيري عند تخطي حد الاستهلاك */
+        /* حركات التلاعب بالنصوص وعنوان الكرت الفرعي */
+        .template-info { 
+            padding: 20px; 
+            background: linear-gradient(to top, rgba(5,5,10,0.9) 0%, rgba(5,5,10,0.4) 100%);
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .template-title { 
+            font-size: 1.05rem; 
+            font-weight: 700; 
+            color: #e2e8f0; 
+            line-height: 1.5;
+        }
+
+        .template-card:hover .template-title {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+        }
+
+        /* --- المودال التحذيري المتناسق الفخم عند تخطي حدود الاستهلاك --- */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000; visibility: hidden; opacity: 0; transition: all 0.3s;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(2, 2, 5, 0.85); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            z-index: 1000; 
+            visibility: hidden; 
+            opacity: 0;
         }
-        .modal-card {
-            background: #09090e; border: 1px solid #ef4444; padding: 30px;
-            border-radius: 24px; text-align: center; max-width: 400px; width: 90%;
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
-        }
-        .modal-card h3 { font-size: 1.4rem; color: #fff; margin-bottom: 12px; }
-        .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
-        .modal-btn {
-            padding: 12px 24px; background: var(--neon-purple); border: none;
-            color: #fff; font-weight: 700; border-radius: 12px; cursor: pointer;
-            text-decoration: none; display: inline-block; transition: background 0.2s;
-        }
-        .modal-btn:hover { background: #9333ea; }
 
-        /* الشاشات الصغيرة Mobile-First */
+        .modal-card {
+            background: #09090f; 
+            border: 1px solid rgba(255, 74, 74, 0.3); 
+            padding: 40px 30px;
+            border-radius: 28px; 
+            text-align: center; 
+            max-width: 450px; 
+            width: 90%;
+            box-shadow: 0 0 40px rgba(255, 74, 74, 0.15), 0 20px 50px rgba(0,0,0,0.8);
+            transform: scale(0.8);
+        }
+
+        .modal-overlay[style*="visible"] .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-card h3 { 
+            font-size: 1.6rem; 
+            color: #ffffff; 
+            margin-bottom: 15px; 
+            font-weight: 800;
+        }
+
+        .modal-card p { 
+            color: #94a3b8; 
+            font-size: 0.95rem; 
+            margin-bottom: 30px; 
+            line-height: 1.6; 
+        }
+
+        .modal-btn {
+            padding: 14px 32px; 
+            background: linear-gradient(135deg, var(--neon-purple), #9333ea); 
+            border: none;
+            color: #ffffff; 
+            font-weight: 700; 
+            border-radius: 50px; 
+            cursor: pointer;
+            text-decoration: none; 
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(188, 52, 250, 0.3);
+        }
+
+        .modal-btn:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(188, 52, 250, 0.5);
+            background: linear-gradient(135deg, #c042ff, var(--neon-purple));
+        }
+
+        /* --- التجاوب الكامل والشاشات الصغيرة (Mobile Optimization) --- */
         @media (max-width: 768px) {
-            .templates-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .category-banner { height: 120px; }
-            .category-banner h2 { font-size: 1.4rem; }
-            .template-thumb { height: 110px; }
+            .search-header { padding: 15px; }
+            .search-input { padding: 12px 45px 12px 20px; font-size: 0.95rem; }
+            html[dir="ltr"] .search-input { padding: 12px 20px 12px 45px; }
+            
+            .category-section { margin: 35px 0; }
+            .category-banner { height: 130px; padding: 0 20px; border-radius: 16px; margin-bottom: 20px; }
+            .category-banner h2 { font-size: 1.5rem; }
+            
+            .templates-grid { gap: 15px; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); }
+            .template-card { border-radius: 14px; }
+            .template-thumb { height: 115px; }
+            .template-info { padding: 12px; }
+            .template-title { font-size: 0.85rem; line-height: 1.3; }
+            .lock-badge { top: 8px; left: 8px; padding: 4px 8px; font-size: 0.65rem; border-radius: 8px; }
+            html[dir="ltr"] .lock-badge { right: 8px; left: auto; }
+            
+            .modal-card { padding: 30px 20px; }
         }
     </style>
 </head>
