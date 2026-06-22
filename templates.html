@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استوديو القوالب - ScrollyTale Studio</title>
+    <style>
+        :root {
+            --bg-page: #020205;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --neon-purple: #a855f7;
+            --neon-cyan: #00f2fe;
+            --text-bright: #ffffff;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-bright);
+            font-family: system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        /* شريط البحث العلوي الفخم */
+        .search-header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(2, 2, 5, 0.85);
+            backdrop-filter: blur(20px);
+            padding: 20px; border-bottom: 1px solid var(--card-border);
+            text-align: center;
+        }
+        .search-wrapper {
+            position: relative; max-width: 600px; margin: 0 auto;
+        }
+        .search-input {
+            width: 100%; padding: 14px 50px 14px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border); border-radius: 30px;
+            color: #fff; font-size: 1rem; transition: all 0.3s ease;
+        }
+        html[dir="ltr"] .search-input { padding: 14px 20px 14px 50px; }
+        
+        .search-input:focus {
+            outline: none; border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .search-icon {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            right: 20px; color: var(--text-muted); font-size: 1.2rem; pointer-events: none;
+        }
+        html[dir="ltr"] .search-icon { left: 20px; right: auto; }
+
+        /* الأقسام والتمرير لأسفل */
+        .category-section {
+            max-width: 1200px; margin: 40px auto; padding: 0 20px;
+        }
+        
+        /* بنر القسم مع الصورة الخلفية */
+        .category-banner {
+            position: relative; width: 100%; height: 180px;
+            border-radius: 20px; overflow: hidden; margin-bottom: 25px;
+            display: flex; align-items: center; padding: 4px 30px;
+            border: 1px solid var(--card-border);
+        }
+        .category-banner img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: 1; opacity: 0.4; filter: brightness(0.6);
+        }
+        .category-banner h2 {
+            position: relative; z-index: 2; font-size: 2rem; font-weight: 800;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            background: linear-gradient(135deg, #fff, var(--text-muted));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* شبكة عرض كروت القوالب */
+        .templates-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+        }
+
+        /* كرت القالب الفريد */
+        .template-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; overflow: hidden; cursor: pointer;
+            position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .template-card:hover {
+            transform: translateY(-5px); border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+        }
+        .template-thumb {
+            width: 100%; height: 150px; background: #0b0b10; position: relative;
+        }
+        .template-thumb img {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: opacity 0.3s;
+        }
+        .template-card:hover .template-thumb img { opacity: 1; }
+        
+        .template-info { padding: 15px; }
+        .template-title { font-size: 0.95rem; font-weight: 700; color: #e2e8f0; line-height: 1.4; }
+
+        /* شارات الأقفال والمستويات للباقات */
+        .lock-badge {
+            position: absolute; top: 12px; left: 12px;
+            background: rgba(2, 2, 5, 0.85); border: 1px solid #ef4444;
+            color: #ef4444; padding: 4px 8px; border-radius: 8px;
+            font-size: 0.75rem; font-weight: 700; backdrop-filter: blur(5px);
+            display: flex; align-items: center; gap: 4px; z-index: 5;
+        }
+        html[dir="ltr"] .lock-badge { right: 12px; left: auto; }
+
+        /* المودال التحذيري عند تخطي حد الاستهلاك */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; visibility: hidden; opacity: 0; transition: all 0.3s;
+        }
+        .modal-card {
+            background: #09090e; border: 1px solid #ef4444; padding: 30px;
+            border-radius: 24px; text-align: center; max-width: 400px; width: 90%;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+        }
+        .modal-card h3 { font-size: 1.4rem; color: #fff; margin-bottom: 12px; }
+        .modal-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5; }
+        .modal-btn {
+            padding: 12px 24px; background: var(--neon-purple); border: none;
+            color: #fff; font-weight: 700; border-radius: 12px; cursor: pointer;
+            text-decoration: none; display: inline-block; transition: background 0.2s;
+        }
+        .modal-btn:hover { background: #9333ea; }
+
+        /* الشاشات الصغيرة Mobile-First */
+        @media (max-width: 768px) {
+            .templates-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .category-banner { height: 120px; }
+            .category-banner h2 { font-size: 1.4rem; }
+            .template-thumb { height: 110px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="search-header">
+        <div class="search-wrapper">
+            <input type="text" id="search-input" class="search-input" placeholder="ابحث عن قالبك الذكي هنا...">
+            <span class="search-icon">🔍</span>
+        </div>
+    </header>
+
+    <main id="sections-container"></main>
+
+    <div id="upgrade-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 id="modal-title">خطتك الحالية لا تغطي هذا القالب</h3>
+            <p id="modal-desc">لقد استهلكت القوالب المتاحة لباقاتك لهذا الشهر. قم بالترقية الآن للوصول غير المحدود.</p>
+            <a href="plans.html" id="modal-link" class="modal-btn">ترقية باقتي الآن</a>
+        </div>
+    </div>
+
+    <script type="module" src="templates-logic.js"></script>
+</body>
+</html>
