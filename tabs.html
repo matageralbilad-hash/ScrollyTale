@@ -6,12 +6,12 @@
     <title id="page-title">ScrollyTale Studio - لوحة التحكم العالمية</title>
     <style>
         /* ==========================================================================
-           1. التأسيس والمتغيرات الديناميكية (تتغير فوراً من الإعدادات!)
+           1. التأسيس والمتغيرات الديناميكية
            ========================================================================== */
         :root {
             --bg-dashboard: #03030a;
             --glass-nav: rgba(8, 8, 20, 0.75);
-            --neon-active: #00f2fe; /* اللون الافتراضي */
+            --neon-active: #00f2fe; 
             --neon-glow: rgba(0, 242, 254, 0.2);
             --text-muted: #64748b;
             --text-bright: #ffffff;
@@ -81,6 +81,8 @@
         .tab-btn {
             background: transparent;
             border: none;
+            /* تم التعديل هنا: إضافة إطار سفلي شفاف لمنع اهتزاز الأزرار عند التنقل */
+            border-bottom: 2px solid transparent; 
             color: var(--text-muted);
             padding: 10px 22px;
             font-size: 0.95rem;
@@ -98,17 +100,17 @@
             color: var(--text-bright);
             background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
             box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 0 15px var(--neon-glow);
-            border-bottom: 2px solid var(--neon-active);
+            /* تغيير اللون فقط لتجنب الـ Layout Shift */
+            border-bottom-color: var(--neon-active); 
         }
 
-        /* قسم الأدوات المعزول (إعدادات + خروج) */
+        /* قسم الأدوات المعزول */
         .utility-controls {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        /* زر الإعدادات الفخم المنفصل */
         .btn-settings {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.05);
@@ -147,7 +149,7 @@
         }
 
         /* ==========================================================================
-           3. حاوية المحتوى المزدوجة (Iframe للروابط / Div للإعدادات)
+           3. حاوية المحتوى المزدوجة
            ========================================================================== */
         .main-content-area {
             flex: 1;
@@ -161,7 +163,6 @@
             transition: opacity 0.2s ease;
         }
 
-        /* لوحة الإعدادات المدمجة الخرافية (Inline Panel) */
         #settings-panel {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -169,7 +170,7 @@
             z-index: 50;
             padding: 40px;
             overflow-y: auto;
-            display: none; /* مخفية افتراضياً */
+            display: none; 
         }
         #settings-panel.active {
             display: block;
@@ -201,7 +202,6 @@
             gap: 10px;
         }
 
-        /* أزرار اختيار الألوان واللغات */
         .options-row {
             display: flex;
             gap: 15px;
@@ -225,25 +225,19 @@
             box-shadow: 0 0 10px var(--neon-glow);
         }
 
-        /* دوائر مخصصة للألوان السحرية */
         .color-dot {
             width: 24px; height: 24px; border-radius: 50%; display: inline-block;
         }
 
         /* ==========================================================================
-           4. الهيكلة الخاصة بالجوالات والتابلت (Responsive Engine) - تم التحديث والإصلاح بالكامل 🚀
+           4. الهيكلة الخاصة بالجوالات والتابلت (Responsive Engine)
            ========================================================================== */
         @media (max-width: 900px) {
+            /* تم دمج وتصفية التكرار هنا ليصبح الهيدر معتمداً بالكامل على نظام الـ Grid النظيف */
             .global-navbar {
                 height: auto;
-                flex-direction: column;
                 padding: 12px;
                 gap: 12px;
-                align-items: stretch;
-            }
-
-            /* سطر علوي يحتوي على الشعار وأزرار التحكم معاً لتوفير المساحة ومنع التداخل */
-            .global-navbar {
                 display: grid;
                 grid-template-columns: 1fr auto;
                 align-items: center;
@@ -255,14 +249,13 @@
             }
 
             .utility-controls {
-                position: static !important; /* إلغاء التموضع المطلق المسبب للمشاكل */
+                position: static !important; 
                 grid-column: 2;
                 gap: 8px;
             }
 
             .btn-settings {
-                width: 36px;
-                height: 36px;
+                width: 36px; height: 36px;
                 border-radius: 10px;
                 font-size: 1rem;
             }
@@ -273,7 +266,6 @@
                 border-radius: 8px;
             }
 
-            /* حاوية التبويبات تأخذ السطر السفلي بالكامل بشكل منفصل */
             .tabs-wrapper {
                 grid-column: 1 / span 2;
                 width: 100%;
@@ -281,27 +273,26 @@
                 margin-top: 4px;
             }
 
-            /* تحويل التبويبات لشريط سحب أفقي ناعم جداً ومستقر */
             .tabs-container {
                 width: 100%;
                 overflow-x: auto;
                 white-space: nowrap;
                 display: flex;
-                flex-wrap: nowrap; /* منع نزول التبويبات لسطر جديد */
+                flex-wrap: nowrap; 
                 gap: 4px;
                 padding: 4px;
-                scrollbar-width: none; /* إخفاء شريط التمرير للـ Firefox */
+                scrollbar-width: none; 
                 -webkit-overflow-scrolling: touch;
             }
             
             .tabs-container::-webkit-scrollbar {
-                display: none; /* إخفاء شريط التمرير للـ Chrome والـ Safari */
+                display: none; 
             }
 
             .tab-btn {
                 padding: 8px 14px;
                 font-size: 0.85rem;
-                flex: 0 0 auto; /* منع انكماش الأزرار لكي تظهر كاملة عند السحب */
+                flex: 0 0 auto; 
                 border-radius: 8px;
             }
 
@@ -322,7 +313,7 @@
                 padding: 10px 16px;
                 font-size: 0.85rem;
                 border-radius: 10px;
-                flex: 1 1 calc(50% - 10px); /* توزيع مرن للأزرار داخل الإعدادات */
+                flex: 1 1 calc(50% - 10px); 
                 text-align: center;
             }
         }
@@ -417,7 +408,6 @@
         const tabButtons = document.querySelectorAll('.tab-btn');
         const btnSettings = document.getElementById('trigger-settings');
 
-        // قاموس الترجمات للوحة التحكم
         const i18n = {
             ar: {
                 pageTitle: "ScrollyTale Studio - لوحة التحكم العالمية",
@@ -457,21 +447,18 @@
             }
         };
 
-        // لغة النظام الحالية
         window.currentLang = localStorage.getItem('scrolly_lang') || 'ar';
 
-        // [1] حارس البوابة الآمن والمستقر (بدون مهلات زمنية تسبب ثغرات)
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-                // إذا لم يكن هناك مستخدم مسجل، يتم طرده فوراً وبشكل حاسم إلى صفحة تسجيل الدخول
-                window.location.href = "index.html";
-            } else {
-                // المستخدم مسجل دخول بشكل صحيح وجاهز للعمل
-                console.log("مرحباً بك مجدداً:", user.email);
+                setTimeout(() => {
+                    if (!auth.currentUser) {
+                        window.location.href = "index.html";
+                    }
+                }, 1000);
             }
         });
 
-        // [2] التنقل بين الأزرار الرئيسية وإغلاق الإعدادات تلقائياً عند فتح صفحة أخرى
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 document.querySelector('.tab-btn.active')?.classList.remove('active');
@@ -490,7 +477,6 @@
             });
         });
 
-        // [3] كود زر الإعدادات المعزول (Inline Trigger)
         btnSettings.addEventListener('click', () => {
             document.querySelector('.tab-btn.active')?.classList.remove('active');
             btnSettings.classList.add('active');
@@ -498,20 +484,13 @@
             settingsPanel.classList.add('active'); 
         });
 
-        // [4] تسجيل الخروج الآمن
         document.getElementById('btn-logout-cloud').addEventListener('click', async () => {
             if(confirm(i18n[window.currentLang].logoutConfirm)) {
-                try {
-                    // نكتفي بعمل signOut فقط! 
-                    await signOut(auth);
-                    // بمجرد نجاح الخروج، حارس البوابة (onAuthStateChanged) في الأعلى سيتعرف على تغيير الحالة وينقله تلقائياً فوراً.
-                } catch (error) {
-                    console.error("خطأ أثناء تسجيل الخروج:", error);
-                }
+                await signOut(auth);
+                window.location.href = "index.html";
             }
         });
 
-        // جعل دالة تغيير الألوان متاحة عالمياً للاستخدام في الـ onclick
         window.changeThemeColor = function(color, glow, element) {
             document.documentElement.style.setProperty('--neon-active', color);
             document.documentElement.style.setProperty('--neon-glow', glow);
@@ -519,7 +498,6 @@
             element.classList.add('selected');
         }
 
-        // دالة تبديل اللغات الحية للوحة الرئيسية
         window.changeLanguage = function(lang) {
             window.currentLang = lang;
             localStorage.setItem('scrolly_lang', lang);
@@ -530,11 +508,9 @@
             const root = document.getElementById('html-root');
             const data = i18n[window.currentLang];
 
-            // تحويل اتجاه الهيكل والـ Dir
             root.setAttribute('lang', window.currentLang);
             root.setAttribute('dir', window.currentLang === 'ar' ? 'rtl' : 'ltr');
 
-            // ترجمة عناصر الواجهة
             document.getElementById('page-title').innerText = data.pageTitle;
             document.getElementById('tab-templates').innerText = data.tabTemplates;
             document.getElementById('tab-projects').innerText = data.tabProjects;
@@ -542,7 +518,6 @@
             document.getElementById('tab-packages').innerText = data.tabPackages;
             document.getElementById('btn-logout-cloud').innerText = data.logoutBtn;
             
-            // نصوص لوحة الإعدادات
             document.getElementById('settings-main-title').innerText = data.settingsMainTitle;
             document.getElementById('settings-sub-title').innerText = data.settingsSubTitle;
             document.getElementById('theme-card-title').innerText = data.themeCardTitle;
@@ -555,12 +530,10 @@
             document.getElementById('view-btn-dark').innerText = data.viewBtnDark;
             document.getElementById('view-btn-light').innerText = data.viewBtnLight;
 
-            // تحديث زر اللغة المختار بصرياً
             document.getElementById('lang-btn-ar').classList.remove('selected');
             document.getElementById('lang-btn-en').classList.remove('selected');
             document.getElementById(`lang-btn-${window.currentLang}`).classList.add('selected');
 
-            // تحديث رابط الـ iframe النشط حالياً ليعكس اللغة الجديدة فوراً
             const currentTab = document.querySelector('.tab-btn.active');
             if (currentTab) {
                 const targetPage = currentTab.getAttribute('data-target');
@@ -568,10 +541,8 @@
             }
         }
 
-        // تشغيل الترجمة فور انتهاء تحميل العناصر
-        window.addEventListener('DOMContentLoaded', () => {
-            applyDashboardLanguage();
-        });
+        /* تم التعديل هنا: تشغيل الدالة فوراً ومباشرة لأن سكريبت الموديول ينتظر الـ DOM تلقائياً وبشكل آمن */
+        applyDashboardLanguage();
     </script>
 </body>
 </html>
