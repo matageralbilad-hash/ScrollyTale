@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScrollyTale | سحر تحويل التمرير إلى قصص سينمائية</title>
+    <title>ScrollyTale | برنامج السرد القصصي</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/scrollreveal"></script>
@@ -31,6 +31,11 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         body {
@@ -67,7 +72,7 @@
         header {
             position: fixed;
             top: 0; left: 0; width: 100%;
-            background: rgba(5, 7, 12, 0.8);
+            background: rgba(5, 7, 12, 0.9);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             z-index: 1000;
@@ -110,7 +115,6 @@
         }
         .lang-switcher:hover { border-color: var(--neon-purple); }
 
-        /* زر تسجيل الدخول المشع الجديد بجانب العناوين */
         .btn-login-nav {
             background: transparent;
             color: var(--neon-turquoise);
@@ -130,10 +134,10 @@
         .hero {
             min-height: 100vh; display: flex; flex-direction: column;
             justify-content: center; align-items: center; text-align: center;
-            padding: 100px 20px 40px 20px; box-sizing: border-box; position: relative;
+            padding: 120px 24px 40px 24px; box-sizing: border-box; position: relative;
         }
 
-        .hero h1 { font-size: 4rem; margin: 0 0 20px 0; line-height: 1.2; font-weight: 900; }
+        .hero h1 { font-size: 4rem; margin: 0 0 20px 0; line-height: 1.2; font-weight: 900; max-width: 900px; }
         .hero h1 span {
             background: linear-gradient(90deg, var(--neon-turquoise), var(--neon-purple), var(--neon-pink));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -175,38 +179,83 @@
 
         .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; align-items: stretch; }
         .price-card { background-color: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 30px 25px; display: flex; flex-direction: column; position: relative; transition: all 0.4s ease; }
-        .price-card.popular { border: 2px solid var(--neon-purple); box-shadow: 0 0 25px rgba(155, 81, 224, 0.25); transform: scale(1.03); }
-        .badge-popular { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink)); color: #fff; padding: 5px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 4px 10px rgba(155, 81, 224, 0.5); }
+        .price-card.popular { border: 2px solid var(--neon-purple); box-shadow: 0 0 25px rgba(155, 81, 224, 0.25); }
+        
+        /* ضبط حجم المخرج المشهور على الشاشات الكبيرة والموبايل */
+        @media (min-width: 993px) {
+            .price-card.popular { transform: scale(1.03); }
+        }
+
+        .badge-popular { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink)); color: #fff; padding: 5px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 4px 10px rgba(155, 81, 224, 0.5); white-space: nowrap; }
         
         .price-cost { font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; color: #fff; }
         .price-cost span { font-size: 1rem; color: var(--text-muted); }
         .price-target { background: rgba(255,255,255,0.04); padding: 8px 12px; border-radius: 8px; font-size: 0.88rem; color: var(--neon-turquoise); margin-bottom: 20px; font-weight: 600; }
         .price-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; min-height: 45px; }
         .price-features { list-style: none; padding: 0; margin: 0 0 30px 0; flex-grow: 1; }
-        .price-features li { font-size: 0.92rem; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; }
+        .price-features li { font-size: 0.92rem; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; text-align: right; }
         .price-features li i.fa-check { color: var(--accent-green); }
         .price-features li i.fa-xmark { color: var(--neon-pink); }
         .price-features li i.fa-warning { color: #f59e0b; }
 
-        .btn-plan { background: transparent; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 10px; text-align: center; text-decoration: none; font-weight: 700; transition: all 0.3s; }
+        .btn-plan { background: transparent; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 10px; text-align: center; text-decoration: none; font-weight: 700; transition: all 0.3s; cursor: pointer; }
         .price-card.popular .btn-plan { background: var(--gradient-magic); color: #000; border: none; }
         .btn-plan:hover { transform: translateY(-3px); border-color: var(--neon-turquoise); }
 
         .about-box { background: linear-gradient(180deg, var(--surface) 0%, rgba(11,14,23,0.6) 100%); border: 1px solid var(--border); border-radius: 24px; padding: 40px; text-align: center; }
         .about-company-name { font-size: 2rem; font-weight: 800; background: linear-gradient(90deg, var(--neon-turquoise), var(--neon-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
         
-        .contact-pill { display: inline-flex; align-items: center; gap: 10px; background: #1e293b; border: 1px solid #334155; padding: 10px 24px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: bold; margin-top: 20px; transition: all 0.3s; }
+        .contact-pill { display: inline-flex; align-items: center; gap: 10px; background: #1e293b; border: 1px solid #334155; padding: 10px 24px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: bold; margin-top: 20px; transition: all 0.3s; max-width: 100%; box-sizing: border-box; }
         .contact-pill:hover { background: #25d366; color: #000; transform: scale(1.05); }
 
         footer { text-align: center; padding: 40px; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.9rem; }
 
+        /* 📱 تعديلات الشاشات الصغيرة والجوال (Mobile First Priority) */
         @media (max-width: 992px) {
-            nav { display: none; }
+            /* ترتيب الهيدر ليكون الشعار والأزرار فوق، والتبويبات تحتهم */
+            header { flex-wrap: wrap; padding: 12px 4%; gap: 12px; }
+            .logo { font-size: 1.2rem; flex: 1; }
+            .header-actions { flex: 1; justify-content: flex-end; }
+            
+            /* تحويل التبويبات لشريط سحب أفقي صغير جداً وفخم */
+            .nav-container {
+                width: 100%;
+                order: 3; /* دفع التبويبات للسطر السفلي */
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .nav-container::-webkit-scrollbar { display: none; }
+            
+            nav { display: flex; gap: 8px; width: max-content; padding-bottom: 5px; }
+            nav a { 
+                font-size: 0.75rem; /* تصغير الخط جداً */
+                background: rgba(255,255,255,0.05); 
+                padding: 6px 14px; 
+                border-radius: 20px; 
+                white-space: nowrap; /* منع نزول النص لسطرين */
+                border: 1px solid rgba(255,255,255,0.05);
+            }
+            
+            .btn-login-nav { padding: 6px 12px; font-size: 0.8rem; }
+            .lang-switcher { padding: 4px 8px; font-size: 0.8rem; }
+            
+            /* تم زيادة المساحة العلوية لأن الهيدر أصبح سطرين */
+            .hero { padding: 140px 16px 40px 16px; }
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1.05rem; margin-bottom: 25px; }
+            .btn-cta { padding: 14px 30px; font-size: 1rem; }
+            section { padding: 60px 5%; }
+            .section-title { font-size: 1.9rem; margin-bottom: 35px; }
+            .card-info { padding: 25px; }
+            .about-box { padding: 25px 15px; }
+            .contact-pill { font-size: 0.9rem; padding: 10px 16px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- الشاشة الذكية لفحص تصريح الدخول -->
     <div id="smart-loader" class="loading-screen">
         <div style="width: 50px; height: 50px; border: 3px solid var(--border); border-top-color: var(--neon-turquoise); border-radius: 50%; animation: spin 1s infinite linear;"></div>
         <p style="margin-top: 20px; color: var(--text-muted);" id="loader-text">جاري فحص تصريح الدخول السينمائي...</p>
@@ -214,23 +263,32 @@
     
     <script>
         (function() {
-            const visitorKey = "scrollytale_last_movie_view";
-            const lastView = localStorage.getItem(visitorKey);
+            // المفتاح الذكي الذي يتم إنشاؤه فقط عند الضغط الفعلي على أزرار الدخول
+            const authUserKey = "scrollytale_authenticated_user";
+            const lastLoginSession = localStorage.getItem(authUserKey);
             const now = Date.now();
             const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
 
-            if (lastView && (now - parseInt(lastView) < sevenDaysInMs)) {
-                window.location.replace("auth.html");
+            // منطق الدخول التلقائي: يتم فقط إذا ضغط المستخدم على زر الدخول سابقاً ولم تنتهي الـ 7 أيام
+            if (lastLoginSession && (now - parseInt(lastLoginSession) < sevenDaysInMs)) {
+                // التوجيه الفوري والمستقر إلى صفحة التبويبات (Tabs) بحسابه الأخير
+                window.location.replace("tabs.html");
             } else {
-                localStorage.setItem(visitorKey, now.toString());
+                // إذا لم يسجل دخول، أو انتهت الـ 7 أيام، تفتح الصفحة بشكل دائم وحر بدون أي شروط
                 window.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         const loader = document.getElementById('smart-loader');
                         if (loader) loader.style.display = 'none';
-                    }, 600);
+                    }, 500);
                 });
             }
         })();
+
+        // دالة ذكية تسجل النية وتفعل وقت الضغط على زر تسجيل الدخول
+        function activateAutoLogin(event) {
+            const authUserKey = "scrollytale_authenticated_user";
+            localStorage.setItem(authUserKey, Date.now().toString());
+        }
     </script>
 
     <div class="cinema-bg"></div>
@@ -251,14 +309,15 @@
                 <option value="en">English (EN)</option>
                 <option value="fr">Français (FR)</option>
             </select>
-            <a href="auth.html" class="btn-login-nav" data-tr="nav_login">تسجيل الدخول</a>
+            <!-- تم ربط حدث الضغط لتفعيل التوجيه التلقائي -->
+            <a href="auth.html" onclick="activateAutoLogin(event)" class="btn-login-nav" data-tr="nav_login">تسجيل الدخول</a>
         </div>
     </header>
 
     <div class="hero">
         <h1><span data-tr="hero1">حرّك بكرة الماوس، واصنع فيلماً ويب عالمياً!</span></h1>
         <p data-tr="hero2">المنصة الذكية الأولى التي تمنحك القوة المطلقة لتحويل السطور البرمجية الجامدة والنصوص العادية إلى تجارب ويب تفاعلية سينمائية خارقة تبهر كل زائر بمجرد التدوير والشاشات.</p>
-        <a href="auth.html" class="btn-cta">
+        <a href="auth.html" onclick="activateAutoLogin(event)" class="btn-cta">
             <i class="fa-solid fa-play"></i>
             <span data-tr="hero3">ابدأ رحلة الإخراج مجاناً</span>
         </a>
@@ -320,7 +379,7 @@
                     <li><i class="fa-solid fa-check"></i> <span>تصدير الكود النظيف للموقع</span></li>
                     <li><i class="fa-solid fa-xmark"></i> <span style="color:var(--neon-pink);">شعار المنصة إلزامي بالأسفل</span></li>
                 </ul>
-                <a href="auth.html" class="btn-plan">خطتك الحالية</a>
+                <a href="auth.html" onclick="activateAutoLogin(event)" class="btn-plan">خطتك الحالية</a>
             </div>
 
             <div class="price-card">
@@ -334,7 +393,7 @@
                     <li><i class="fa-solid fa-check"></i> <span>تصدير الكود البرمجي بالكامل</span></li>
                     <li><i class="fa-solid fa-warning"></i> <span>شعار المنصة موجود (صغير جداً)</span></li>
                 </ul>
-                <a href="auth.html" class="btn-plan" data-tr="p_get">احصل على الباقة</a>
+                <a href="auth.html" onclick="activateAutoLogin(event)" class="btn-plan" data-tr="p_get">احصل على الباقة</a>
             </div>
 
             <div class="price-card popular">
@@ -349,7 +408,7 @@
                     <li><i class="fa-solid fa-check"></i> <span>الوصول الكامل لكل القوالب</span></li>
                     <li><i class="fa-solid fa-check"></i> <span style="color:var(--accent-green); font-weight:bold;">إزالة شعار المنصة تماماً</span></li>
                 </ul>
-                <a href="auth.html" class="btn-plan" data-tr="p_get">احصل على الباقة</a>
+                <a href="auth.html" onclick="activateAutoLogin(event)" class="btn-plan" data-tr="p_get">احصل على الباقة</a>
             </div>
 
             <div class="price-card">
@@ -364,7 +423,7 @@
                     <li><i class="fa-solid fa-check"></i> <span>إحصائيات تدوير الشاشة (Scroll Analytics)</span></li>
                     <li><i class="fa-solid fa-check"></i> <span>دعم فني VIP مباشر وسريع</span></li>
                 </ul>
-                <a href="auth.html" class="btn-plan" data-tr="p_get">احصل على الباقة</a>
+                <a href="auth.html" onclick="activateAutoLogin(event)" class="btn-plan" data-tr="p_get">احصل على الباقة</a>
             </div>
         </div>
     </section>
@@ -450,14 +509,22 @@
             });
         }
 
-        const revealConfig = { duration: 1200, distance: '60px', verticalFactor: 0.2, reset: true };
-        ScrollReveal().reveal('.hero h1', { ...revealConfig, origin: 'top', delay: 200 });
-        ScrollReveal().reveal('.hero p', { ...revealConfig, origin: 'bottom', delay: 400 });
-        ScrollReveal().reveal('.hero .btn-cta', { ...revealConfig, scale: 0.8, delay: 600 });
-        ScrollReveal().reveal('.section-title', { ...revealConfig, origin: 'right' });
-        ScrollReveal().reveal('.card-info', { ...revealConfig, origin: 'bottom', interval: 200 });
-        ScrollReveal().reveal('.price-card', { ...revealConfig, origin: 'top', interval: 150 });
-        ScrollReveal().reveal('.about-box', { ...revealConfig, scale: 0.9, duration: 1500 });
+        // 🎬 تفعيل حركات دخول سينمائية متقدمة وانسيابية لجميع الكروت
+        const revealConfig = { duration: 1000, distance: '50px', verticalFactor: 0.15, reset: false };
+        
+        ScrollReveal().reveal('.hero h1', { ...revealConfig, origin: 'top', delay: 100 });
+        ScrollReveal().reveal('.hero p', { ...revealConfig, origin: 'bottom', delay: 250 });
+        ScrollReveal().reveal('.hero .btn-cta', { ...revealConfig, scale: 0.85, delay: 400 });
+        
+        ScrollReveal().reveal('.section-title', { ...revealConfig, origin: 'right', duration: 800 });
+        
+        // حركة دخول جانبية متتالية لكروت المعلومات
+        ScrollReveal().reveal('.grid-info .card-info', { ...revealConfig, origin: 'bottom', interval: 150 });
+        
+        // حركات منبثقة مميزة ومختلفة لكروت خطط الأسعار لجذب الانتباه
+        ScrollReveal().reveal('#pricing .price-card', { ...revealConfig, origin: 'top', interval: 100 });
+        
+        ScrollReveal().reveal('.about-box', { ...revealConfig, scale: 0.95, duration: 1200 });
     </script>
 </body>
 </html>
