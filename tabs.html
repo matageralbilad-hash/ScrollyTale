@@ -460,14 +460,14 @@
         // لغة النظام الحالية
         window.currentLang = localStorage.getItem('scrolly_lang') || 'ar';
 
-        // [1] حارس البوابة المطور مع مهلة أمان لمنع الطرد الخاطئ عند التحميل السريع
+        // [1] حارس البوابة الآمن والمستقر (بدون مهلات زمنية تسبب ثغرات)
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-                setTimeout(() => {
-                    if (!auth.currentUser) {
-                        window.location.href = "index.html";
-                    }
-                }, 1000);
+                // إذا لم يكن هناك مستخدم مسجل، يتم طرده فوراً وبشكل حاسم إلى صفحة تسجيل الدخول
+                window.location.href = "index.html";
+            } else {
+                // المستخدم مسجل دخول بشكل صحيح وجاهز للعمل
+                console.log("مرحباً بك مجدداً:", user.email);
             }
         });
 
@@ -482,7 +482,6 @@
                 viewport.style.opacity = '0';
 
                 setTimeout(() => {
-                    // نقوم بتمرير معيار اللغة في الرابط ليتوافق المتصفح الداخلي مع اللغة الحالية
                     const targetPage = button.getAttribute('data-target');
                     viewport.src = targetPage + `?lang=${window.currentLang}`;
                     viewport.style.display = 'block';
@@ -502,8 +501,13 @@
         // [4] تسجيل الخروج الآمن
         document.getElementById('btn-logout-cloud').addEventListener('click', async () => {
             if(confirm(i18n[window.currentLang].logoutConfirm)) {
-                await signOut(auth);
-                window.location.href = "index.html";
+                try {
+                    // نكتفي بعمل signOut فقط! 
+                    await signOut(auth);
+                    // بمجرد نجاح الخروج، حارس البوابة (onAuthStateChanged) في الأعلى سيتعرف على تغيير الحالة وينقله تلقائياً فوراً.
+                } catch (error) {
+                    console.error("خطأ أثناء تسجيل الخروج:", error);
+                }
             }
         });
 
