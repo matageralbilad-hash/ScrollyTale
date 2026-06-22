@@ -101,7 +101,7 @@
             border-bottom: 2px solid var(--neon-active);
         }
 
-        /* قسم الأدوات المعزول (إعدادات + خروج) */
+        /* قسم الأدوات المعزول (إعدادات + حساب + خروج) */
         .utility-controls {
             display: flex;
             align-items: center;
@@ -129,6 +129,31 @@
             background: rgba(0, 242, 254, 0.05);
         }
 
+        /* زر الحساب الفاخر المعتمد على الصورة الشخصية */
+        .btn-account {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+        .btn-account img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .btn-account.active {
+            border-color: var(--neon-active);
+            box-shadow: 0 0 15px var(--neon-glow);
+            transform: scale(1.05);
+        }
+
         .btn-logout {
             background: transparent;
             border: 1px solid rgba(244, 63, 94, 0.2);
@@ -147,7 +172,7 @@
         }
 
         /* ==========================================================================
-           3. حاوية المحتوى المزدوجة (Iframe للروابط / Div للإعدادات)
+           3. حاوية المحتوى المزدوجة (Iframe للروابط / Div للإعدادات والحساب)
            ========================================================================== */
         .main-content-area {
             flex: 1;
@@ -161,8 +186,8 @@
             transition: opacity 0.2s ease;
         }
 
-        /* لوحة الإعدادات المدمجة الخرافية (Inline Panel) */
-        #settings-panel {
+        /* لوحات التحكم الداخلية (الإعدادات والحساب) */
+        #settings-panel, #account-panel {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: #04040c;
@@ -171,7 +196,7 @@
             overflow-y: auto;
             display: none; /* مخفية افتراضياً */
         }
-        #settings-panel.active {
+        #settings-panel.active, #account-panel.active {
             display: block;
             animation: fadeIn 0.4s ease forwards;
         }
@@ -231,19 +256,13 @@
         }
 
         /* ==========================================================================
-           4. الهيكلة الخاصة بالجوالات والتابلت (Responsive Engine) - تم التحديث والإصلاح بالكامل 🚀
+           4. الهيكلة الخاصة بالجوالات والتابلت (Responsive Engine)
            ========================================================================== */
         @media (max-width: 900px) {
             .global-navbar {
                 height: auto;
-                flex-direction: column;
                 padding: 12px;
                 gap: 12px;
-                align-items: stretch;
-            }
-
-            /* سطر علوي يحتوي على الشعار وأزرار التحكم معاً لتوفير المساحة ومنع التداخل */
-            .global-navbar {
                 display: grid;
                 grid-template-columns: 1fr auto;
                 align-items: center;
@@ -255,17 +274,16 @@
             }
 
             .utility-controls {
-                position: static !important; /* إلغاء التموضع المطلق المسبب للمشاكل */
+                position: static !important;
                 grid-column: 2;
                 gap: 8px;
             }
 
-            .btn-settings {
+            .btn-settings, .btn-account {
                 width: 36px;
                 height: 36px;
-                border-radius: 10px;
-                font-size: 1rem;
             }
+            .btn-settings { font-size: 1rem; border-radius: 10px; }
 
             .btn-logout {
                 padding: 6px 12px;
@@ -273,7 +291,6 @@
                 border-radius: 8px;
             }
 
-            /* حاوية التبويبات تأخذ السطر السفلي بالكامل بشكل منفصل */
             .tabs-wrapper {
                 grid-column: 1 / span 2;
                 width: 100%;
@@ -281,31 +298,30 @@
                 margin-top: 4px;
             }
 
-            /* تحويل التبويبات لشريط سحب أفقي ناعم جداً ومستقر */
             .tabs-container {
                 width: 100%;
                 overflow-x: auto;
                 white-space: nowrap;
                 display: flex;
-                flex-wrap: nowrap; /* منع نزول التبويبات لسطر جديد */
+                flex-wrap: nowrap;
                 gap: 4px;
                 padding: 4px;
-                scrollbar-width: none; /* إخفاء شريط التمرير للـ Firefox */
+                scrollbar-width: none;
                 -webkit-overflow-scrolling: touch;
             }
             
             .tabs-container::-webkit-scrollbar {
-                display: none; /* إخفاء شريط التمرير للـ Chrome والـ Safari */
+                display: none;
             }
 
             .tab-btn {
                 padding: 8px 14px;
                 font-size: 0.85rem;
-                flex: 0 0 auto; /* منع انكماش الأزرار لكي تظهر كاملة عند السحب */
+                flex: 0 0 auto;
                 border-radius: 8px;
             }
 
-            #settings-panel {
+            #settings-panel, #account-panel {
                 padding: 20px 15px;
             }
 
@@ -322,7 +338,7 @@
                 padding: 10px 16px;
                 font-size: 0.85rem;
                 border-radius: 10px;
-                flex: 1 1 calc(50% - 10px); /* توزيع مرن للأزرار داخل الإعدادات */
+                flex: 1 1 calc(50% - 10px);
                 text-align: center;
             }
         }
@@ -349,6 +365,11 @@
 
         <div class="utility-controls">
             <button class="btn-settings" id="trigger-settings" title="الإعدادات">⚙️</button>
+            
+            <button class="btn-account" id="trigger-account" title="الحساب">
+                <img id="user-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Scrolly" alt="Avatar">
+            </button>
+            
             <button class="btn-logout" id="btn-logout-cloud">خروج</button>
         </div>
     </header>
@@ -394,6 +415,35 @@
                 </div>
             </div>
         </div>
+
+        <div id="account-panel">
+            <div class="settings-grid">
+                <h2 style="font-size: 2rem; margin-bottom: 10px;" id="account-main-title">👤 حسابك الشخصي</h2>
+                <p style="color: #64748b; margin-bottom: 20px;" id="account-sub-title">إدارة تفاصيل حسابك ومتابعة مشاريعك واشتراكك اللحظي.</p>
+
+                <div class="settings-card" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                    <img id="account-panel-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Scrolly" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--neon-active); box-shadow: 0 0 15px var(--neon-glow); object-fit: cover;">
+                    <div>
+                        <h3 id="acc-name" style="margin-bottom: 5px;">مستكشف مبدع</h3>
+                        <p id="acc-email" style="color: #64748b; font-size: 0.95rem; font-family: monospace;"></p>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3 id="acc-stats-title">📊 نظرة عامة على الاشتراكات والبيانات</h3>
+                    <div class="options-row" style="margin-top: 15px; display: flex; gap: 20px;">
+                        <div class="settings-card" style="flex: 1; min-width: 200px; margin: 0; background: rgba(0,0,0,0.2); text-align: center; border-color: rgba(255,255,255,0.03);">
+                            <h4 style="color: #64748b; margin-bottom: 10px;" id="stat-projects-title">📁 عدد المشاريع</h4>
+                            <span id="user-projects-count" style="font-size: 2rem; font-weight: 800; color: var(--neon-active); text-shadow: 0 0 10px var(--neon-glow);">5</span>
+                        </div>
+                        <div class="settings-card" style="flex: 1; min-width: 200px; margin: 0; background: rgba(0,0,0,0.2); text-align: center; border-color: rgba(255,255,255,0.03);">
+                            <h4 style="color: #64748b; margin-bottom: 10px;" id="stat-plan-title">💎 الخطة الحالية</h4>
+                            <span id="user-plan-type" style="font-size: 1.2rem; font-weight: 800; color: #a855f7; display: block; margin-top: 5px; text-shadow: 0 0 10px rgba(168, 85, 247, 0.3);">باقة المحترفين (Pro)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script type="module">
@@ -414,10 +464,18 @@
 
         const viewport = document.getElementById('main-viewport');
         const settingsPanel = document.getElementById('settings-panel');
+        const accountPanel = document.getElementById('account-panel');
         const tabButtons = document.querySelectorAll('.tab-btn');
         const btnSettings = document.getElementById('trigger-settings');
+        const btnAccount = document.getElementById('trigger-account');
+        
+        // عناصر لوحة الحساب الشخصي الداخلي
+        const userAvatar = document.getElementById('user-avatar');
+        const accountPanelAvatar = document.getElementById('account-panel-avatar');
+        const accEmail = document.getElementById('acc-email');
+        const accName = document.getElementById('acc-name');
 
-        // قاموس الترجمات للوحة التحكم
+        // قاموس الترجمات الموسع للوحة التحكم بالكامل
         const i18n = {
             ar: {
                 pageTitle: "ScrollyTale Studio - لوحة التحكم العالمية",
@@ -435,7 +493,15 @@
                 langCardTitle: "🌐 لغة المنصة",
                 viewCardTitle: "👁️ وضع الرؤية والمظهر",
                 viewBtnDark: "سماوي داكن الفخامة (Deep Dark)",
-                viewBtnLight: "الوضع المضيء (خيار غير مستحب)"
+                viewBtnLight: "الوضع المضيء (خيار غير مستحب)",
+                // نصوص الحساب الشخصي المضافة
+                accountMainTitle: "👤 حسابك الشخصي",
+                accountSubTitle: "إدارة تفاصيل حسابك ومتابعة مشاريعك واشتراكك اللحظي.",
+                accStatsTitle: "📊 نظرة عامة على الاشتراكات والبيانات",
+                statProjectsTitle: "📁 عدد المشاريع",
+                statPlanTitle: "💎 الخطة الحالية",
+                currentPlanText: "باقة المحترفين (Pro)",
+                anonWarning: "⚠️ تنبيه أمني: أنت تحاول الدخول بدون حساب مسجل! سيتم تحويلك فوراً لصفحة التوثيق لحماية النظام."
             },
             en: {
                 pageTitle: "ScrollyTale Studio - Global Dashboard",
@@ -453,14 +519,22 @@
                 langCardTitle: "🌐 Platform Language",
                 viewCardTitle: "👁️ Interface Vision Mode",
                 viewBtnDark: "Deep Dark Luxury",
-                viewBtnLight: "Light Mode (Not recommended)"
+                viewBtnLight: "Light Mode (Not recommended)",
+                // Account Texts
+                accountMainTitle: "👤 Your Profile",
+                accountSubTitle: "Manage your account details, projects, and live subscription status.",
+                accStatsTitle: "📊 Subscription & Data Overview",
+                statProjectsTitle: "📁 Total Projects",
+                statPlanTitle: "💎 Current Plan",
+                currentPlanText: "Pro Package (Pro)",
+                anonWarning: "⚠️ Security Warning: You are trying to access without a valid account! Redirecting to the authentication gateway immediately."
             }
         };
 
         // لغة النظام الحالية
         window.currentLang = localStorage.getItem('scrolly_lang') || 'ar';
 
-        // [1] حارس البوابة المطور مع مهلة أمان لمنع الطرد الخاطئ عند التحميل السريع
+        // [1] حارس البوابة المطور مع جلب وتحديث صورة الحساب وبيانات المستخدم حياً
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 setTimeout(() => {
@@ -468,21 +542,35 @@
                         window.location.href = "auth.html";
                     }
                 }, 1000);
+            } else {
+                // إذا كان المستخدم مسجلاً، نقوم بحقن بياناته وصورته تلقائياً داخل الهيكل
+                if (user.photoURL) {
+                    userAvatar.src = user.photoURL;
+                    accountPanelAvatar.src = user.photoURL;
+                } else {
+                    // توليد صورة افتراضية فخمة مبنية على إيميل المستخدم لحين رفع صورة
+                    const seed = user.email ? encodeURIComponent(user.email) : 'Scrolly';
+                    userAvatar.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`;
+                    accountPanelAvatar.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`;
+                }
+                accEmail.innerText = user.email || "no-email@scrollytale.com";
+                accName.innerText = user.displayName || (window.currentLang === 'ar' ? "مستكشف مبدع" : "Creative Explorer");
             }
         });
 
-        // [2] التنقل بين الأزرار الرئيسية وإغلاق الإعدادات تلقائياً عند فتح صفحة أخرى
+        // [2] التنقل بين الأزرار الرئيسية وإغلاق اللوحات الجانبية تلقائياً عند فتح صفحة أخرى
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 document.querySelector('.tab-btn.active')?.classList.remove('active');
                 btnSettings.classList.remove('active'); 
+                btnAccount.classList.remove('active'); 
                 settingsPanel.classList.remove('active'); 
+                accountPanel.classList.remove('active'); 
                 
                 button.classList.add('active');
                 viewport.style.opacity = '0';
 
                 setTimeout(() => {
-                    // نقوم بتمرير معيار اللغة في الرابط ليتوافق المتصفح الداخلي مع اللغة الحالية
                     const targetPage = button.getAttribute('data-target');
                     viewport.src = targetPage + `?lang=${window.currentLang}`;
                     viewport.style.display = 'block';
@@ -491,15 +579,37 @@
             });
         });
 
-        // [3] كود زر الإعدادات المعزول (Inline Trigger)
+        // [3] كود زر الإعدادات المعزول
         btnSettings.addEventListener('click', () => {
             document.querySelector('.tab-btn.active')?.classList.remove('active');
+            btnAccount.classList.remove('active');
+            accountPanel.classList.remove('active');
+
             btnSettings.classList.add('active');
             viewport.style.display = 'none'; 
             settingsPanel.classList.add('active'); 
         });
 
-        // [4] تسجيل الخروج الآمن
+        // [4] كود زر الحساب الذكي مع ميزة التنبيه الفوري والطرد عند الدخول غير الشرعي
+        btnAccount.addEventListener('click', () => {
+            // التحقق الأمني الفوري قبل فتح اللوحة
+            if (!auth.currentUser) {
+                alert(i18n[window.currentLang].anonWarning);
+                window.location.href = "auth.html";
+                return;
+            }
+
+            // إغلاق كل شيء آخر وفتح لوحة الحساب
+            document.querySelector('.tab-btn.active')?.classList.remove('active');
+            btnSettings.classList.remove('active');
+            settingsPanel.classList.remove('active');
+
+            btnAccount.classList.add('active');
+            viewport.style.display = 'none';
+            accountPanel.classList.add('active');
+        });
+
+        // [5] تسجيل الخروج الآمن
         document.getElementById('btn-logout-cloud').addEventListener('click', async () => {
             if(confirm(i18n[window.currentLang].logoutConfirm)) {
                 await signOut(auth);
@@ -515,7 +625,7 @@
             element.classList.add('selected');
         }
 
-        // دالة تبديل اللغات الحية للوحة الرئيسية
+        // دالة تبديل اللغات الحية للوحة الرئيسية والفرعية
         window.changeLanguage = function(lang) {
             window.currentLang = lang;
             localStorage.setItem('scrolly_lang', lang);
@@ -530,7 +640,7 @@
             root.setAttribute('lang', window.currentLang);
             root.setAttribute('dir', window.currentLang === 'ar' ? 'rtl' : 'ltr');
 
-            // ترجمة عناصر الواجهة
+            // ترجمة عناصر الواجهة الرئيسية
             document.getElementById('page-title').innerText = data.pageTitle;
             document.getElementById('tab-templates').innerText = data.tabTemplates;
             document.getElementById('tab-projects').innerText = data.tabProjects;
@@ -551,10 +661,23 @@
             document.getElementById('view-btn-dark').innerText = data.viewBtnDark;
             document.getElementById('view-btn-light').innerText = data.viewBtnLight;
 
+            // ترجمة اللوحة الجديدة الخاصة بالحساب الشخصي
+            document.getElementById('account-main-title').innerText = data.accountMainTitle;
+            document.getElementById('account-sub-title').innerText = data.accountSubTitle;
+            document.getElementById('acc-stats-title').innerText = data.accStatsTitle;
+            document.getElementById('stat-projects-title').innerText = data.statProjectsTitle;
+            document.getElementById('stat-plan-title').innerText = data.statPlanTitle;
+            document.getElementById('user-plan-type').innerText = data.currentPlanText;
+
             // تحديث زر اللغة المختار بصرياً
             document.getElementById('lang-btn-ar').classList.remove('selected');
             document.getElementById('lang-btn-en').classList.remove('selected');
             document.getElementById(`lang-btn-${window.currentLang}`).classList.add('selected');
+
+            // تحديث اسم المستخدم التلقائي بناء على اللغة في حال عدم وجود displayName بـ Firebase
+            if (!auth.currentUser || !auth.currentUser.displayName) {
+                accName.innerText = window.currentLang === 'ar' ? "مستكشف مبدع" : "Creative Explorer";
+            }
 
             // تحديث رابط الـ iframe النشط حالياً ليعكس اللغة الجديدة فوراً
             const currentTab = document.querySelector('.tab-btn.active');
