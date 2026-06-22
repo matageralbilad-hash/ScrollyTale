@@ -209,7 +209,7 @@
             cursor: pointer; transition: all 0.3s; margin-bottom: 15px;
         }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 242, 254, 0.4); }
-
+.btn-submit:disabled { background: #374151; color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
         .divider {
             display: flex; align-items: center; color: #6b7280; font-size: 0.8rem; margin: 20px 0;
         }
@@ -353,13 +353,25 @@
 
         // [1] منطق البريد الإلكتروني وكلمة السر (إنشاء أو تسجيل دخول حقيقي)
         btnSubmitMain.addEventListener('click', async () => {
-            const email = document.getElementById('email-field').value;
+            const email = document.getElementById('email-field').value.trim();
             const password = document.getElementById('password-field').value;
 
             if(!email || !password) {
-                alert("برجاء ملء الحقول أولاً الكابتن!");
+                alert("برجاء ملء جميع الحقول أولاً!");
                 return;
             }
+
+            if(password.length < 6) {
+                statusLogger.style.display = "block";
+                statusLogger.style.color = "#ef4444";
+                statusLogger.textContent = "خطأ: يجب أن تكون كلمة المرور 6 أحرف على الأقل.";
+                return;
+            }
+
+            // حماية لمنع الضغط المتكرر أثناء الاتصال بالخادم
+            btnSubmitMain.disabled = true;
+            const originalBtnText = btnSubmitMain.textContent;
+            btnSubmitMain.textContent = "جاري التحقق... ⏳";
 
             statusLogger.style.display = "block";
             statusLogger.style.color = "#00f2fe";
@@ -368,11 +380,11 @@
             try {
                 if(isLoginMode) {
                     // تسجيل الدخول بالبريد
-                    const res = await signInWithEmailAndPassword(auth, email, password);
+                    await signInWithEmailAndPassword(auth, email, password);
                     statusLogger.textContent = `مرحباً بعودتك! جاري نقلك...`;
                 } else {
                     // إنشاء حساب جديد بالبريد
-                    const res = await createUserWithEmailAndPassword(auth, email, password);
+                    await createUserWithEmailAndPassword(auth, email, password);
                     statusLogger.textContent = `تم إنشاء حسابك بنجاح! جاري التوجيه...`;
                 }
                 
@@ -381,9 +393,13 @@
             } catch (error) {
                 statusLogger.style.color = "#ef4444";
                 statusLogger.textContent = `خطأ: ${error.message}`;
+                
+                // إعادة تفعيل الزر مجدداً إذا فشلت العملية ليحاول المستخدم مرة أخرى
+                btnSubmitMain.disabled = false;
+                btnSubmitMain.textContent = originalBtnText;
             }
         });
-
+    
         // [2] مصادقة جوجل الفورية مع التوجيه
         document.getElementById('btn-google').addEventListener('click', async () => {
             statusLogger.style.display = "block";
